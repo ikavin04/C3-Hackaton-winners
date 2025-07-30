@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Chennai - Inclusive Navigation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --dark: #0f172a;
+      --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      --glass: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-10px) rotate(0.5deg); }
+      50% { transform: translateY(-5px) rotate(-0.5deg); }
+      75% { transform: translateY(-7px) rotate(0.2deg); }
+    }
+
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .card-3d:hover {
+      transform: translateY(-5px) rotateX(5deg) rotateY(2deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .magnetic {
+      transition: transform 0.3s ease;
+    }
+
+    .magnetic:hover {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .slide-up {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    .slide-up.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Enhanced Accessibility Styles */
+    button:focus, input:focus, select:focus, textarea:focus, a:focus {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #f59e0b;
+      color: white;
+      padding: 8px 16px;
+      z-index: 1000;
+      transition: top 0.3s;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* High contrast mode */
+    @media (prefers-contrast: high) {
+      body {
+        background: #000;
+        color: #fff;
+      }
+      .glass, .glass-dark {
+        background: rgba(255, 255, 255, 0.9);
+        color: #000;
+      }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 40;
+      padding: 1rem;
+    }
+
+    .mobile-menu.show {
+      display: block;
+    }
+
+    /* Route display */
+    .route-container {
+      display: none;
+      margin-top: 2rem;
+    }
+
+    .route-container.show {
+      display: block;
+    }
+
+    /* Status indicators */
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .status-good { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+    .status-caution { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    .status-poor { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+    /* Speech recognition indicator */
+    .listening {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Loading states */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="text-white">
+  <!-- Skip to Content Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Screen Reader Announcements -->
+  <div id="announcements" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-dark backdrop-blur-xl" role="navigation" aria-label="Main navigation">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center group">
+            <div class="relative">
+              <i class="fas fa-wheelchair text-sky-400 text-3xl mr-3 floating" aria-hidden="true"></i>
+            </div>
+            <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
+          </div>
+        </div>
+        <div class="hidden sm:flex sm:items-center space-x-4">
+          <a href="#main-content" class="px-4 py-2 rounded-full font-medium magnetic" aria-current="page">Home</a>
+          <a href="#route-planner" class="px-4 py-2 rounded-full font-medium magnetic">Navigate</a>
+          <a href="#alerts" class="px-4 py-2 rounded-full font-medium magnetic">Alerts</a>
+          <a href="#community" class="px-4 py-2 rounded-full font-medium magnetic">Community</a>
+        </div>
+        <div class="sm:hidden flex items-center">
+          <button id="mobile-menu-button" class="glass p-3 rounded-lg magnetic" aria-label="Open navigation menu" aria-expanded="false">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu" role="menu">
+      <a href="#main-content" class="block py-2 px-4 text-white hover:bg-white/10 rounded" role="menuitem">Home</a>
+      <a href="#route-planner" class="block py-2 px-4 text-white hover:bg-white/10 rounded" role="menuitem">Navigate</a>
+      <a href="#alerts" class="block py-2 px-4 text-white hover:bg-white/10 rounded" role="menuitem">Alerts</a>
+      <a href="#community" class="block py-2 px-4 text-white hover:bg-white/10 rounded" role="menuitem">Community</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content" class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" tabindex="-1">
+    <!-- Hero Section -->
+    <section class="mb-16 slide-up" aria-labelledby="hero-heading">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h1 id="hero-heading" class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="text-gradient">Accessible Navigation</span> in Chennai
+        </h1>
+        <p class="text-xl text-gray-300 mb-6">
+          Find barrier-free routes with real-time accessibility information for wheelchair users, visually impaired individuals, and all commuters.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="startVoiceNavigation()" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-6 py-3 rounded-full font-bold ripple glow magnetic" aria-describedby="voice-nav-desc">
+            <i class="fas fa-microphone-alt mr-2" aria-hidden="true"></i> Voice Navigation
+          </button>
+          <p id="voice-nav-desc" class="sr-only">Start voice-guided navigation with speech recognition</p>
+          
+          <button onclick="showAccessibilityOptions()" class="glass px-6 py-3 rounded-full font-bold border border-white/20 magnetic" aria-describedby="access-settings-desc">
+            <i class="fas fa-universal-access mr-2" aria-hidden="true"></i> Accessibility Settings
+          </button>
+          <p id="access-settings-desc" class="sr-only">Configure accessibility preferences for your journey</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Current Status -->
+    <section class="mb-16 slide-up" style="transition-delay: 0.05s" aria-labelledby="status-heading">
+      <div class="glass-dark p-6 rounded-3xl">
+        <h2 id="status-heading" class="text-2xl font-bold mb-4 flex items-center">
+          <i class="fas fa-info-circle text-blue-400 mr-3" aria-hidden="true"></i>
+          <span>Current Chennai Transit Status</span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="flex items-center justify-between">
+            <span>Metro Rail Service</span>
+            <span id="metro-status" class="status-indicator status-good">
+              <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Normal
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>Bus Service</span>
+            <span id="bus-status" class="status-indicator status-caution">
+              <i class="fas fa-exclamation-triangle mr-1" aria-hidden="true"></i>Delays
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span>Accessibility Features</span>
+            <span id="accessibility-status" class="status-indicator status-good">
+              <i class="fas fa-check-circle mr-1" aria-hidden="true"></i>Available
+            </span>
+          </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-400">
+          Last updated: <span id="last-updated">Loading...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Route Planner -->
+    <section id="route-planner" class="mb-16 slide-up" style="transition-delay: 0.1s" aria-labelledby="route-heading">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 id="route-heading" class="text-3xl font-bold mb-6 flex items-center">
+          <i class="fas fa-route text-sky-400 mr-3" aria-hidden="true"></i>
+          <span>Plan Your Journey</span>
+        </h2>
+        
+        <form id="route-form" onsubmit="findRoute(event)" novalidate>
+          <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label for="start-location" class="block text-lg font-medium mb-2">
+                <i class="fas fa-map-marker-alt text-green-400 mr-2" aria-hidden="true"></i>
+                Starting Point
+              </label>
+              <div class="flex">
+                <input 
+                  type="text" 
+                  id="start-location" 
+                  placeholder="Current location or address" 
+                  class="flex-1 glass p-4 rounded-l-lg outline-none text-white placeholder-gray-400"
+                  aria-required="true"
+                  aria-describedby="start-help"
+                  list="start-suggestions"
+                >
+                <datalist id="start-suggestions"></datalist>
+                <button 
+                  type="button"
+                  onclick="getCurrentLocation('start')" 
+                  class="glass p-4 rounded-r-lg hover:bg-white/10 magnetic"
+                  aria-label="Use current location for starting point"
+                >
+                  <i class="fas fa-location-arrow" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div id="start-help" class="text-sm text-gray-400 mt-1">Enter your starting location or use current location</div>
+            </div>
+            
+            <div>
+              <label for="end-location" class="block text-lg font-medium mb-2">
+                <i class="fas fa-flag-checkered text-red-400 mr-2" aria-hidden="true"></i>
+                Destination
+              </label>
+              <div class="flex">
+                <input 
+                  type="text" 
+                  id="end-location" 
+                  placeholder="Where do you want to go?" 
+                  class="flex-1 glass p-4 rounded-l-lg outline-none text-white placeholder-gray-400"
+                  aria-required="true"
+                  aria-describedby="end-help"
+                  list="end-suggestions"
+                >
+                <datalist id="end-suggestions"></datalist>
+                <button 
+                  type="button"
+                  onclick="voiceInput('end')" 
+                  class="glass p-4 rounded-r-lg hover:bg-white/10 magnetic"
+                  aria-label="Voice input for destination"
+                >
+                  <i class="fas fa-microphone-alt" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div id="end-help" class="text-sm text-gray-400 mt-1">Enter your destination or use voice input</div>
+            </div>
+          </div>
+
+          <!-- Accessibility Options -->
+          <fieldset class="mb-8">
+            <legend class="text-xl font-medium mb-4 flex items-center">
+              <i class="fas fa-universal-access text-purple-400 mr-2" aria-hidden="true"></i>
+              <span>Accessibility Requirements</span>
+            </legend>
+            <div class="flex flex-wrap gap-3" role="group" aria-labelledby="accessibility-options">
+              <button 
+                type="button"
+                id="wheelchair-btn" 
+                class="glass px-5 py-3 rounded-lg flex items-center magnetic"
+                aria-pressed="false"
+                onclick="toggleAccessibilityOption(this, 'wheelchair')"
+                aria-describedby="wheelchair-desc"
+              >
+                <i class="fas fa-wheelchair text-green-400 mr-2" aria-hidden="true"></i>
+                Wheelchair Access
+              </button>
+              <div id="wheelchair-desc" class="sr-only">Routes with wheelchair accessible paths, ramps, and elevators</div>
+              
+              <button 
+                type="button"
+                id="visual-btn" 
+                class="glass px-5 py-3 rounded-lg flex items-center magnetic"
+                aria-pressed="false"
+                onclick="toggleAccessibilityOption(this, 'visual')"
+                aria-describedby="visual-desc"
+              >
+                <i class="fas fa-eye text-blue-400 mr-2" aria-hidden="true"></i>
+                Visual Assistance
+              </button>
+              <div id="visual-desc" class="sr-only">Routes with tactile pathways and audio announcements for visually impaired</div>
+              
+              <button 
+                type="button"
+                id="audio-btn" 
+                class="glass px-5 py-3 rounded-lg flex items-center magnetic"
+                aria-pressed="false"
+                onclick="toggleAccessibilityOption(this, 'audio')"
+                aria-describedby="audio-desc"
+              >
+                <i class="fas fa-volume-up text-yellow-400 mr-2" aria-hidden="true"></i>
+                Audio Guidance
+              </button>
+              <div id="audio-desc" class="sr-only">Enhanced audio navigation with detailed voice instructions</div>
+              
+              <button 
+                type="button"
+                id="tactile-btn" 
+                class="glass px-5 py-3 rounded-lg flex items-center magnetic"
+                aria-pressed="false"
+                onclick="toggleAccessibilityOption(this, 'tactile')"
+                aria-describedby="tactile-desc"
+              >
+                <i class="fas fa-hand-paper text-red-400 mr-2" aria-hidden="true"></i>
+                Tactile Paths
+              </button>
+              <div id="tactile-desc" class="sr-only">Routes with tactile paving and guidance systems</div>
+            </div>
+          </fieldset>
+
+          <!-- Find Route Button -->
+          <button 
+            type="submit"
+            class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white p-4 rounded-lg font-bold text-lg ripple glow magnetic"
+            aria-describedby="route-button-desc"
+          >
+            <i class="fas fa-search-location mr-2" aria-hidden="true"></i> 
+            <span id="route-button-text">Find Accessible Route</span>
+          </button>
+          <div id="route-button-desc" class="sr-only">Calculate the best accessible route based on your preferences</div>
+        </form>
+
+        <!-- Route Results -->
+        <div id="route-results" class="route-container">
+          <h3 class="text-2xl font-bold mb-4 mt-8">Route Options</h3>
+          <div id="route-list" class="space-y-4"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Locations -->
+    <section class="mb-16 slide-up" style="transition-delay: 0.2s" aria-labelledby="quick-locations-heading">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 id="quick-locations-heading" class="text-3xl font-bold mb-6 flex items-center">
+          <i class="fas fa-bolt text-amber-400 mr-3" aria-hidden="true"></i>
+          <span>Popular Accessible Destinations</span>
+        </h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" role="group" aria-labelledby="quick-locations-heading">
+          <button 
+            onclick="setQuickLocation('Chennai Central Railway Station')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="central-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-train text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">Chennai Central</h3>
+            </div>
+            <p class="text-gray-400">Fully accessible railway station with lifts, ramps, and tactile paths</p>
+          </button>
+          <div id="central-desc" class="sr-only">Major railway hub with complete accessibility features including wheelchair access and audio announcements</div>
+          
+          <button 
+            onclick="setQuickLocation('Chennai International Airport')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="airport-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-plane text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">Chennai Airport</h3>
+            </div>
+            <p class="text-gray-400">International airport with comprehensive accessibility services and assistance</p>
+          </button>
+          <div id="airport-desc" class="sr-only">Modern airport terminal with wheelchairs, special assistance counters, and accessible restrooms</div>
+          
+          <button 
+            onclick="setQuickLocation('Marina Beach')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="marina-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-umbrella-beach text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">Marina Beach</h3>
+            </div>
+            <p class="text-gray-400">Accessible beachfront with paved paths and tactile guidance systems</p>
+          </button>
+          <div id="marina-desc" class="sr-only">Popular beach destination with wheelchair-friendly walkways and accessible parking</div>
+          
+          <button 
+            onclick="setQuickLocation('T. Nagar Commercial Area')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="tnagar-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-shopping-bag text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">T. Nagar</h3>
+            </div>
+            <p class="text-gray-400">Major shopping area with accessible stores and metro connectivity</p>
+          </button>
+          <div id="tnagar-desc" class="sr-only">Bustling commercial district with accessible shopping centers and public transport links</div>
+          
+          <button 
+            onclick="setQuickLocation('Anna Nagar')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="anna-nagar-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-home text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">Anna Nagar</h3>
+            </div>
+            <p class="text-gray-400">Well-planned residential area with accessible parks and amenities</p>
+          </button>
+          <div id="anna-nagar-desc" class="sr-only">Modern residential locality with barrier-free infrastructure and green spaces</div>
+          
+          <button 
+            onclick="setQuickLocation('Phoenix MarketCity Mall')" 
+            class="glass p-5 rounded-xl text-left hover:bg-white/10 transition card-3d"
+            aria-describedby="phoenix-desc"
+          >
+            <div class="flex items-center mb-2">
+              <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-amber-500 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-store text-white" aria-hidden="true"></i>
+              </div>
+              <h3 class="text-xl font-bold">Phoenix MarketCity</h3>
+            </div>
+            <p class="text-gray-400">Premium mall with universal design and full accessibility compliance</p>
+          </button>
+          <div id="phoenix-desc" class="sr-only">Large shopping mall with elevators, accessible restrooms, and special parking</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Alerts -->
+    <section id="alerts" class="mb-16 slide-up" style="transition-delay: 0.25s" aria-labelledby="alerts-heading">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 id="alerts-heading" class="text-3xl font-bold mb-6 flex items-center">
+          <i class="fas fa-exclamation-triangle text-amber-400 mr-3" aria-hidden="true"></i>
+          <span>Live Accessibility Alerts</span>
+        </h2>
+        <div id="alerts-container" class="space-y-4">
+          <!-- Alerts will be populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Accessibility Features -->
+    <section class="slide-up" style="transition-delay: 0.3s" aria-labelledby="features-heading">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 id="features-heading" class="text-3xl font-bold mb-6 flex items-center">
+          <i class="fas fa-star text-yellow-400 mr-3" aria-hidden="true"></i>
+          <span>Accessibility Features</span>
+        </h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="glass p-6 rounded-xl card-3d">
+            <div class="w-16 h-16 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center mb-4 floating">
+              <i class="fas fa-wheelchair text-white text-2xl" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Wheelchair Navigation</h3>
+            <p class="text-gray-400">Routes optimized for wheelchair users with ramp access, wide pathways, elevator availability, and accessible restrooms along the way.</p>
+          </div>
+          
+          <div class="glass p-6 rounded-xl card-3d">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mb-4 floating" style="animation-delay: -1s;">
+              <i class="fas fa-eye text-white text-2xl" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Visual Assistance</h3>
+            <p class="text-gray-400">High-contrast mode, screen reader compatibility, tactile paving information, and detailed verbal descriptions of surroundings.</p>
+          </div>
+          
+          <div class="glass p-6 rounded-xl card-3d">
+            <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mb-4 floating" style="animation-delay: -2s;">
+              <i class="fas fa-volume-up text-white text-2xl" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Audio Guidance</h3>
+            <p class="text-gray-400">Turn-by-turn voice navigation with obstacle alerts, public transport announcements, and real-time hazard warnings.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="glass-dark py-8" role="contentinfo">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center mb-4 md:mb-0">
+          <i class="fas fa-wheelchair text-sky-400 text-2xl mr-3" aria-hidden="true"></i>
+          <span class="text-xl font-bold text-gradient">AccessibleChennai</span>
+        </div>
+        <nav aria-label="Footer navigation">
+          <div class="flex space-x-6">
+            <a href="#privacy" class="text-gray-400 hover:text-white transition" aria-label="Privacy Policy">Privacy</a>
+            <a href="#terms" class="text-gray-400 hover:text-white transition" aria-label="Terms of Service">Terms</a>
+            <a href="#contact" class="text-gray-400 hover:text-white transition" aria-label="Contact Us">Contact</a>
+            <a href="#accessibility-statement" class="text-gray-400 hover:text-white transition" aria-label="Accessibility Statement">Accessibility</a>
+          </div>
+        </nav>
+      </div>
+      <div class="mt-6 text-center text-gray-500 text-sm">
+        © 2025 Accessible Chennai. Making public transport inclusive for all.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Help Button -->
+  <button 
+    onclick="showHelp()" 
+    class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white text-xl shadow-2xl magnetic floating z-40"
+    aria-label="Get help and support"
+    title="Need help? Click for assistance"
+  >
+    <i class="fas fa-question" aria-hidden="true"></i>
+  </button>
+
+  <!-- Accessibility Settings Modal -->
+  <div id="accessibility-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+    <div class="glass-dark p-8 rounded-3xl max-w-2xl w-full mx-4">
+      <div class="flex justify-between items-center mb-6">
+        <h2 id="modal-title" class="text-2xl font-bold">Accessibility Settings</h2>
+        <button onclick="closeAccessibilityModal()" class="text-gray-400 hover:text-white text-2xl" aria-label="Close settings">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-6">
+        <div>
+          <label for="font-size" class="block text-lg font-medium mb-2">Font Size</label>
+          <select id="font-size" class="glass p-3 rounded-lg w-full" onchange="changeFontSize(this.value)">
+            <option value="normal">Normal</option>
+            <option value="large">Large</option>
+            <option value="x-large">Extra Large</option>
+          </select>
+        </div>
+        
+        <div>
+          <label for="contrast-mode" class="block text-lg font-medium mb-2">Contrast Mode</label>
+          <select id="contrast-mode" class="glass p-3 rounded-lg w-full" onchange="changeContrast(this.value)">
+            <option value="normal">Normal</option>
+            <option value="high">High Contrast</option>
+            <option value="dark">Dark Mode</option>
+          </select>
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <label for="screen-reader" class="text-lg font-medium">Enhanced Screen Reader Support</label>
+          <input type="checkbox" id="screen-reader" class="w-5 h-5" onchange="toggleScreenReader(this.checked)">
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <label for="reduce-motion" class="text-lg font-medium">Reduce Motion</label>
+          <input type="checkbox" id="reduce-motion" class="w-5 h-5" onchange="toggleReduceMotion(this.checked)">
+        </div>
+        
+        <div class="flex items-center justify-between">
+          <label for="voice-announcements" class="text-lg font-medium">Voice Announcements</label>
+          <input type="checkbox" id="voice-announcements" class="w-5 h-5" checked onchange="toggleVoiceAnnouncements(this.checked)">
+        </div>
+      </div>
+      
+      <div class="mt-8 flex justify-end space-x-4">
+        <button onclick="resetSettings()" class="glass px-6 py-3 rounded-lg">Reset to Default</button>
+        <button onclick="saveSettings()" class="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-3 rounded-lg">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global state
+    let currentLocation = null;
+    let accessibilityOptions = {
+      wheelchair: false,
+      visual: false,
+      audio: false,
+      tactile: false
+    };
+    let speechRecognition = null;
+    let speechSynthesis = window.speechSynthesis;
+    let isListening = false;
+
+    // Chennai locations data
+    const chennaiLocations = [
+      'Chennai Central Railway Station',
+      'Chennai International Airport',
+      'Marina Beach',
+      'T. Nagar Commercial Area',
+      'Anna Nagar',
+      'Phoenix MarketCity Mall',
+      'Express Avenue Mall',
+      'Egmore Railway Station',
+      'Chennai Metro Rail',
+      'Vadapalani',
+      'Adyar',
+      'Velachery',
+      'OMR (Old Mahabalipuram Road)',
+      'ECR (East Coast Road)',
+      'Guindy National Park',
+      'Kapaleeshwarar Temple',
+      'Government General Hospital',
+      'Apollo Hospital',
+      'IIT Madras',
+      'Anna University',
+      'Besant Nagar Beach',
+      'Elliot\'s Beach',
+      'Mahabalipuram',
+      'Kanchipuram',
+      'Pondicherry'
+    ];
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeApp();
+      loadSettings();
+      updateStatus();
+      populateAlerts();
+      setupSpeechRecognition();
+      setupAutocomplete();
+      
+      // Observe slide-up elements
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.slide-up').forEach(el => {
+        observer.observe(el);
+      });
+
+      // Set focus to main content if coming from skip link
+      if (window.location.hash === '#main-content') {
+        document.getElementById('main-content').focus();
+      }
+    });
+
+    function initializeApp() {
+      announce('Accessible Chennai navigation app loaded. Use tab to navigate or activate voice commands.');
+      updateLastUpdated();
+    }
+
+    function announce(message) {
+      const announcements = document.getElementById('announcements');
+      announcements.textContent = message;
+      
+      // Also use speech synthesis if enabled
+      if (document.getElementById('voice-announcements')?.checked) {
+        speak(message);
+      }
+    }
+
+    function speak(text) {
+      if (speechSynthesis && speechSynthesis.speaking === false) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.8;
+        utterance.pitch = 1;
+        utterance.volume = 0.8;
+        speechSynthesis.speak(utterance);
+      }
+    }
+
+    function updateLastUpdated() {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString('en-IN', { 
+        timeZone: 'Asia/Kolkata',
+        hour12: true 
+      });
+      document.getElementById('last-updated').textContent = timeString;
+    }
+
+    function updateStatus() {
+      // Simulate real-time status updates
+      const statuses = ['good', 'caution', 'poor'];
+      const statusTexts = {
+        good: 'Normal',
+        caution: 'Delays',
+        poor: 'Disrupted'
+      };
+      
+      // Update metro status
+      setTimeout(() => {
+        const metroStatus = Math.random() > 0.7 ? 'caution' : 'good';
+        updateStatusIndicator('metro-status', metroStatus, statusTexts[metroStatus]);
+      }, 2000);
+      
+      // Update bus status
+      setTimeout(() => {
+        const busStatus = Math.random() > 0.5 ? 'caution' : 'good';
+        updateStatusIndicator('bus-status', busStatus, statusTexts[busStatus]);
+      }, 3000);
+      
+      // Update every 30 seconds
+      setInterval(() => {
+        updateLastUpdated();
+        const metroStatus = Math.random() > 0.8 ? 'caution' : 'good';
+        const busStatus = Math.random() > 0.6 ? 'caution' : 'good';
+        updateStatusIndicator('metro-status', metroStatus, statusTexts[metroStatus]);
+        updateStatusIndicator('bus-status', busStatus, statusTexts[busStatus]);
+      }, 30000);
+    }
+
+    function updateStatusIndicator(elementId, status, text) {
+      const element = document.getElementById(elementId);
+      element.className = `status-indicator status-${status}`;
+      element.innerHTML = `<i class="fas fa-${status === 'good' ? 'check-circle' : status === 'caution' ? 'exclamation-triangle' : 'times-circle'} mr-1" aria-hidden="true"></i>${text}`;
+    }
+
+    function populateAlerts() {
+      const alerts = [
+        {
+          type: 'warning',
+          title: 'Metro Line 1 - Minor Delays',
+          message: 'Chennai Metro Blue Line experiencing 5-10 minute delays due to technical maintenance. Wheelchair accessible coaches available.',
+          time: '10 minutes ago'
+        },
+        {
+          type: 'info',
+          title: 'New Tactile Path - Marina Beach',
+          message: 'New tactile pathway installed from Marina Beach Metro station to the shoreline. Features audio beacons every 50 meters.',
+          time: '2 hours ago'
+        },
+        {
+          type: 'success',
+          title: 'Accessibility Upgrade - T. Nagar',
+          message: 'T. Nagar bus stops now equipped with audio announcements and braille signage. Real-time arrival information available.',
+          time: '1 day ago'
+        }
+      ];
+
+      const container = document.getElementById('alerts-container');
+      container.innerHTML = alerts.map(alert => `
+        <div class="glass p-4 rounded-lg border-l-4 border-${alert.type === 'warning' ? 'yellow' : alert.type === 'info' ? 'blue' : 'green'}-400">
+          <div class="flex items-start">
+            <i class="fas fa-${alert.type === 'warning' ? 'exclamation-triangle text-yellow-400' : alert.type === 'info' ? 'info-circle text-blue-400' : 'check-circle text-green-400'} text-xl mr-3 mt-1" aria-hidden="true"></i>
+            <div class="flex-1">
+              <h4 class="font-bold text-lg">${alert.title}</h4>
+              <p class="text-gray-300 mt-1">${alert.message}</p>
+              <p class="text-gray-500 text-sm mt-2">${alert.time}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setupAutocomplete() {
+      const startSuggestions = document.getElementById('start-suggestions');
+      const endSuggestions = document.getElementById('end-suggestions');
+      
+      chennaiLocations.forEach(location => {
+        const option1 = document.createElement('option');
+        option1.value = location;
+        startSuggestions.appendChild(option1);
+        
+        const option2 = document.createElement('option');
+        option2.value = location;
+        endSuggestions.appendChild(option2);
+      });
+    }
+
+    function setupSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        speechRecognition = new SpeechRecognition();
+        speechRecognition.continuous = false;
+        speechRecognition.interimResults = false;
+        speechRecognition.lang = 'en-IN';
+      }
+    }
+
+    // Navigation functions
+    function startVoiceNavigation() {
+      if (!speechRecognition) {
+        announce('Voice recognition not supported in this browser. Please use the text input instead.');
+        return;
+      }
+      
+      if (isListening) {
+        speechRecognition.stop();
+        isListening = false;
+        announce('Voice navigation stopped.');
+        return;
+      }
+      
+      isListening = true;
+      announce('Voice navigation started. Please say your destination clearly.');
+      
+      speechRecognition.onstart = () => {
+        document.querySelector('[onclick="startVoiceNavigation()"]').classList.add('listening');
+      };
+      
+      speechRecognition.onresult = (event) => {
+        const result = event.results[0][0].transcript;
+        document.getElementById('end-location').value = result;
+        announce(`Destination set to ${result}. You can now find your route.`);
+      };
+      
+      speechRecognition.onerror = (event) => {
+        announce('Voice recognition error. Please try again or use text input.');
+        isListening = false;
+      };
+      
+      speechRecognition.onend = () => {
+        document.querySelector('[onclick="startVoiceNavigation()"]').classList.remove('listening');
+        isListening = false;
+      };
+      
+      speechRecognition.start();
+    }
+
+    function showAccessibilityOptions() {
+      document.getElementById('accessibility-modal').classList.remove('hidden');
+      document.getElementById('accessibility-modal').classList.add('flex');
+      document.getElementById('accessibility-modal').focus();
+      announce('Accessibility settings modal opened. Use tab to navigate through options.');
+    }
+
+    function closeAccessibilityModal() {
+      document.getElementById('accessibility-modal').classList.add('hidden');
+      document.getElementById('accessibility-modal').classList.remove('flex');
+      announce('Accessibility settings modal closed.');
+    }
+
+    function getCurrentLocation(field) {
+      if (!navigator.geolocation) {
+        announce('Geolocation not supported. Please enter your location manually.');
+        return;
+      }
+      
+      const button = event.target.closest('button');
+      const originalHTML = button.innerHTML;
+      button.innerHTML = '<div class="loading"></div>';
+      button.disabled = true;
+      
+      announce('Getting your current location...');
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // In a real app, you would reverse geocode these coordinates
+          const locationName = `Current Location (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`;
+          document.getElementById(`${field}-location`).value = locationName;
+          currentLocation = { latitude, longitude };
+          
+          button.innerHTML = originalHTML;
+          button.disabled = false;
+          announce(`Current location set for ${field === 'start' ? 'starting point' : 'destination'}.`);
+        },
+        (error) => {
+          button.innerHTML = originalHTML;
+          button.disabled = false;
+          announce('Could not get your location. Please enter it manually.');
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 300000
+        }
+      );
+    }
+
+    function voiceInput(field) {
+      if (!speechRecognition) {
+        announce('Voice input not supported. Please type your destination.');
+        return;
+      }
+      
+      const button = event.target.closest('button');
+      button.classList.add('listening');
+      announce(`Listening for ${field === 'end' ? 'destination' : 'starting point'}. Please speak clearly.`);
+      
+      speechRecognition.onresult = (event) => {
+        const result = event.results[0][0].transcript;
+        document.getElementById(`${field}-location`).value = result;
+        announce(`${field === 'end' ? 'Destination' : 'Starting point'} set to ${result}.`);
+      };
+      
+      speechRecognition.onend = () => {
+        button.classList.remove('listening');
+      };
+      
+      speechRecognition.start();
+    }
+
+    function toggleAccessibilityOption(button, option) {
+      const isPressed = button.getAttribute('aria-pressed') === 'true';
+      const newState = !isPressed;
+      
+      button.setAttribute('aria-pressed', newState);
+      accessibilityOptions[option] = newState;
+      
+      if (newState) {
+        button.classList.add('bg-sky-500/20', 'border-sky-400');
+        announce(`${option} accessibility option enabled.`);
+      } else {
+        button.classList.remove('bg-sky-500/20', 'border-sky-400');
+        announce(`${option} accessibility option disabled.`);
+      }
+    }
+
+    function findRoute(event) {
+      if (event) event.preventDefault();
+      
+      const start = document.getElementById('start-location').value.trim();
+      const end = document.getElementById('end-location').value.trim();
+      
+      if (!end) {
+        announce('Please enter a destination before finding a route.');
+        document.getElementById('end-location').focus();
+        return;
+      }
+      
+      const startLocation = start || 'Current location';
+      const button = document.querySelector('#route-button-text');
+      const originalText = button.textContent;
+      
+      button.innerHTML = '<div class="loading mr-2"></div> Finding Route...';
+      announce('Searching for accessible routes. Please wait...');
+      
+      // Simulate API call
+      setTimeout(() => {
+        displayRouteResults(startLocation, end);
+        button.textContent = originalText;
+        announce('Route options found and displayed. Use tab to navigate through the results.');
+      }, 2000);
+    }
+
+    function displayRouteResults(start, end) {
+      const routes = generateRoutes(start, end);
+      const container = document.getElementById('route-results');
+      const list = document.getElementById('route-list');
+      
+      list.innerHTML = routes.map((route, index) => `
+        <div class="glass p-6 rounded-xl" role="article" aria-labelledby="route-${index}-title">
+          <div class="flex justify-between items-start mb-4">
+            <h4 id="route-${index}-title" class="text-xl font-bold flex items-center">
+              <i class="fas fa-route text-sky-400 mr-2" aria-hidden="true"></i>
+              Route ${index + 1}: ${route.type}
+            </h4>
+            <div class="text-right">
+              <div class="text-2xl font-bold text-green-400">${route.duration}</div>
+              <div class="text-sm text-gray-400">${route.distance}</div>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <div class="flex items-center mb-2">
+              <i class="fas fa-star text-yellow-400 mr-2" aria-hidden="true"></i>
+              <span class="font-medium">Accessibility Score: ${route.accessibilityScore}/5</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              ${route.features.map(feature => `
+                <span class="px-2 py-1 bg-green-500/20 text-green-300 rounded-full text-sm">
+                  <i class="fas fa-check mr-1" aria-hidden="true"></i>${feature}
+                </span>
+              `).join('')}
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <h5 class="font-medium mb-2">Route Details:</h5>
+            <ol class="space-y-2 text-sm" role="list">
+              ${route.steps.map((step, stepIndex) => `
+                <li class="flex items-start" role="listitem">
+                  <span class="w-6 h-6 bg-sky-500 text-white rounded-full flex items-center justify-center text-xs mr-3 mt-0.5">${stepIndex + 1}</span>
+                  <span>${step}</span>
+                </li>
+              `).join('')}
+            </ol>
+          </div>
+          
+          <div class="flex flex-wrap gap-3">
+            <button 
+              onclick="selectRoute(${index})"
+              class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-6 py-2 rounded-full font-medium magnetic"
+              aria-describedby="route-${index}-desc"
+            >
+              <i class="fas fa-navigation mr-2" aria-hidden="true"></i>Start Navigation
+            </button>
+            <div id="route-${index}-desc" class="sr-only">Start turn-by-turn navigation for route ${index + 1}</div>
+            
+            <button 
+              onclick="shareRoute(${index})"
+              class="glass px-6 py-2 rounded-full font-medium magnetic"
+              aria-label="Share route ${index + 1}"
+            >
+              <i class="fas fa-share-alt mr-2" aria-hidden="true"></i>Share
+            </button>
+            
+            <button 
+              onclick="saveRoute(${index})"
+              class="glass px-6 py-2 rounded-full font-medium magnetic"
+              aria-label="Save route ${index + 1} for later"
+            >
+              <i class="fas fa-bookmark mr-2" aria-hidden="true"></i>Save
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      container.classList.add('show');
+      container.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function generateRoutes(start, end) {
+      // Generate realistic route options based on accessibility requirements
+      const baseRoutes = [
+        {
+          type: 'Metro + Walk',
+          duration: '35 min',
+          distance: '12.5 km',
+          accessibilityScore: 5,
+          features: ['Wheelchair Access', 'Audio Announcements', 'Tactile Paths', 'Elevator Access'],
+          steps: [
+            `Walk 3 minutes from ${start} to nearest Metro station`,
+            'Take Blue Line Metro towards Airport (wheelchair accessible coach)',
+            'Audio announcement: "Next station announcement in Tamil and English"',
+            `Get off at ${end.includes('Central') ? 'Central Metro' : 'nearest station to ' + end}`,
+            'Use elevator to exit station (tactile guidance available)',
+            `Walk 5 minutes to ${end} via accessible pathway`
+          ]
+        },
+        {
+          type: 'Bus Route',
+          duration: '45 min',
+          distance: '14.2 km',
+          accessibilityScore: 4,
+          features: ['Low-floor Bus', 'Priority Seating', 'Audio Stops'],
+          steps: [
+            `Walk 2 minutes to bus stop near ${start}`,
+            'Board MTC Bus 21G (low-floor, wheelchair accessible)',
+            'Audio announcement will announce each stop',
+            'Request stop announcement for your destination',
+            `Get off at stop nearest to ${end}`,
+            `Walk 4 minutes to ${end}`
+          ]
+        },
+        {
+          type: 'Mixed Transport',
+          duration: '28 min',
+          distance: '11.8 km',
+          accessibilityScore: 4,
+          features: ['Wheelchair Access', 'Audio Guidance', 'Ramp Access'],
+          steps: [
+            `Auto-rickshaw from ${start} to Metro station (3 min)`,
+            'Take Metro Green Line (accessible entrance)',
+            'Change at Egmore (elevator access available)',
+            'Continue on Blue Line',
+            `Exit at station nearest to ${end}`,
+            'Walk via covered walkway with tactile guidance'
+          ]
+        }
+      ];
+
+      // Filter routes based on accessibility options
+      return baseRoutes.filter(route => {
+        if (accessibilityOptions.wheelchair && !route.features.includes('Wheelchair Access')) {
+          return false;
+        }
+        if (accessibilityOptions.visual && !route.features.some(f => f.includes('Audio') || f.includes('Tactile'))) {
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function selectRoute(index) {
+      announce(`Starting navigation for route ${index + 1}. Turn-by-turn directions will be provided.`);
+      // In a real app, this would start the navigation
+      alert(`Navigation started for route ${index + 1}. In a real app, this would provide turn-by-turn directions with accessibility features.`);
+    }
+
+    function shareRoute(index) {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Accessible Route in Chennai',
+          text: `Check out this accessible route I found using AccessibleChennai app`,
+          url: window.location.href
+        });
+      } else {
+        // Fallback for browsers that don't support Web Share API
+        const url = window.location.href;
+        navigator.clipboard.writeText(url).then(() => {
+          announce('Route link copied to clipboard.');
+        });
+      }
+    }
+
+    function saveRoute(index) {
+      // In a real app, this would save to user's account or local storage
+      announce(`Route ${index + 1} saved to your favorites.`);
+      alert(`Route saved! In a real app, this would be saved to your account for quick access later.`);
+    }
+
+    function setQuickLocation(location) {
+      document.getElementById('end-location').value = location;
+      document.getElementById('end-location').focus();
+      announce(`Destination set to ${location}. You can now find your accessible route.`);
+    }
+
+    function showHelp() {
+      const helpContent = `
+        Welcome to Accessible Chennai Help:
+        
+        • Use Tab key to navigate between elements
+        • Press Space or Enter to activate buttons
+        • Use arrow keys in menus and lists
+        • Voice commands: Click the microphone buttons
+        • Screen reader: All content is properly labeled
+        • Keyboard shortcuts: Alt+M for main menu, Alt+S for search
+        
+        For technical support, call: 1800-XXX-XXXX
+        Email: support@accessiblechennai.org
+      `;
+      
+      announce('Help information displayed.');
+      alert(helpContent);
+    }
+
+    // Mobile menu functionality
+    document.getElementById('mobile-menu-button').addEventListener('click', () => {
+      const menu = document.getElementById('mobile-menu');
+      const button = document.getElementById('mobile-menu-button');
+      const isOpen = menu.classList.contains('show');
+      
+      if (isOpen) {
+        menu.classList.remove('show');
+        button.setAttribute('aria-expanded', 'false');
+        announce('Mobile menu closed.');
+      } else {
+        menu.classList.add('show');
+        button.setAttribute('aria-expanded', 'true');
+        announce('Mobile menu opened. Use tab to navigate menu items.');
+      }
+    });
+
+    // Accessibility settings functions
+    function changeFontSize(size) {
+      document.documentElement.style.fontSize = size === 'large' ? '18px' : size === 'x-large' ? '22px' : '16px';
+      announce(`Font size changed to ${size}.`);
+    }
+
+    function changeContrast(mode) {
+      document.body.classList.remove('high-contrast', 'dark-mode');
+      if (mode !== 'normal') {
+        document.body.classList.add(mode === 'high' ? 'high-contrast' : 'dark-mode');
+      }
+      announce(`Contrast mode changed to ${mode}.`);
+    }
+
+    function toggleScreenReader(enabled) {
+      // Enhanced screen reader support
+      if (enabled) {
+        document.body.setAttribute('data-screen-reader', 'true');
+        announce('Enhanced screen reader support enabled. More detailed descriptions will be provided.');
+      } else {
+        document.body.removeAttribute('data-screen-reader');
+        announce('Enhanced screen reader support disabled.');
+      }
+    }
+
+    function toggleReduceMotion(enabled) {
+      if (enabled) {
+        document.body.classList.add('reduce-motion');
+        announce('Animations and motion effects reduced.');
+      } else {
+        document.body.classList.remove('reduce-motion');
+        announce('Animations and motion effects restored.');
+      }
+    }
+
+    function toggleVoiceAnnouncements(enabled) {
+      if (enabled) {
+        announce('Voice announcements enabled. Important updates will be spoken aloud.');
+      } else {
+        announce('Voice announcements disabled.');
+      }
+    }
+
+    function resetSettings() {
+      document.getElementById('font-size').value = 'normal';
+      document.getElementById('contrast-mode').value = 'normal';
+      document.getElementById('screen-reader').checked = false;
+      document.getElementById('reduce-motion').checked = false;
+      document.getElementById('voice-announcements').checked = true;
+      
+      changeFontSize('normal');
+      changeContrast('normal');
+      toggleScreenReader(false);
+      toggleReduceMotion(false);
+      toggleVoiceAnnouncements(true);
+      
+      announce('All accessibility settings reset to default values.');
+    }
+
+    function saveSettings() {
+      // In a real app, this would save to user preferences
+      const settings = {
+        fontSize: document.getElementById('font-size').value,
+        contrast: document.getElementById('contrast-mode').value,
+        screenReader: document.getElementById('screen-reader').checked,
+        reduceMotion: document.getElementById('reduce-motion').checked,
+        voiceAnnouncements: document.getElementById('voice-announcements').checked
+      };
+      
+      // Store in memory (in a real app, this would be saved to server or localStorage)
+      window.userSettings = settings;
+      
+      closeAccessibilityModal();
+      announce('Accessibility settings saved successfully.');
+    }
+
+    function loadSettings() {
+      // In a real app, this would load from user preferences
+      const settings = window.userSettings || {
+        fontSize: 'normal',
+        contrast: 'normal',
+        screenReader: false,
+        reduceMotion: false,
+        voiceAnnouncements: true
+      };
+      
+      document.getElementById('font-size').value = settings.fontSize;
+      document.getElementById('contrast-mode').value = settings.contrast;
+      document.getElementById('screen-reader').checked = settings.screenReader;
+      document.getElementById('reduce-motion').checked = settings.reduceMotion;
+      document.getElementById('voice-announcements').checked = settings.voiceAnnouncements;
+      
+      changeFontSize(settings.fontSize);
+      changeContrast(settings.contrast);
+      toggleScreenReader(settings.screenReader);
+      toggleReduceMotion(settings.reduceMotion);
+      toggleVoiceAnnouncements(settings.voiceAnnouncements);
+    }
+
+    // Keyboard navigation enhancements
+    document.addEventListener('keydown', (event) => {
+      // Alt + M for main menu
+      if (event.altKey && event.key === 'm') {
+        event.preventDefault();
+        document.getElementById('mobile-menu-button').click();
+      }
+      
+      // Alt + S for search/route planner
+      if (event.altKey && event.key === 's') {
+        event.preventDefault();
+        document.getElementById('start-location').focus();
+      }
+      
+      // Alt + H for help
+      if (event.altKey && event.key === 'h') {
+        event.preventDefault();
+        showHelp();
+      }
+      
+      // Alt + V for voice navigation
+      if (event.altKey && event.key === 'v') {
+        event.preventDefault();
+        startVoiceNavigation();
+      }
+      
+      // Escape to close modals
+      if (event.key === 'Escape') {
+        const modal = document.getElementById('accessibility-modal');
+        if (!modal.classList.contains('hidden')) {
+          closeAccessibilityModal();
+        }
+      }
+    });
+
+    // Real-time Chennai transit data simulation
+    function fetchRealTimeData() {
+      // Simulate API calls to Chennai Metro, MTC buses, etc.
+      const transitData = {
+        metro: {
+          lines: {
+            blue: {
+              status: 'operational',
+              delays: Math.random() > 0.8 ? 5 : 0,
+              accessibility: 'full',
+              nextTrain: Math.floor(Math.random() * 10) + 2
+            },
+            green: {
+              status: 'operational',
+              delays: Math.random() > 0.9 ? 3 : 0,
+              accessibility: 'full',
+              nextTrain: Math.floor(Math.random() * 8) + 3
+            }
+          }
+        },
+        buses: {
+          routes: {
+            '21G': { delay: Math.random() > 0.7 ? 8 : 0, accessibility: 'wheelchair' },
+            '27': { delay: Math.random() > 0.6 ? 12 : 0, accessibility: 'partial' },
+            '19B': { delay: Math.random() > 0.8 ? 5 : 0, accessibility: 'full' }
+          }
+        },
+        weather: {
+          condition: 'partly_cloudy',
+          temperature: 29,
+          visibility: 'good',
+          rainProbability: 20
+        },
+        alerts: [
+          {
+            type: 'construction',
+            location: 'Anna Salai',
+            impact: 'partial_closure',
+            alternateRoute: true,
+            duration: '2 weeks'
+          }
+        ]
+      };
+      
+      return transitData;
+    }
+
+    // Enhanced route calculation with real Chennai data
+    function calculateAccessibleRoute(start, end, preferences) {
+      const realTimeData = fetchRealTimeData();
+      
+      // Consider real factors
+      const factors = {
+        wheelchairAccess: preferences.wheelchair,
+        visualAid: preferences.visual,
+        audioGuidance: preferences.audio,
+        tactilePaths: preferences.tactile,
+        weatherConditions: realTimeData.weather,
+        currentDelays: realTimeData.metro.lines,
+        busStatus: realTimeData.buses.routes
+      };
+      
+      // Generate optimized routes
+      return generateOptimizedRoutes(start, end, factors);
+    }
+
+    function generateOptimizedRoutes(start, end, factors) {
+      // Real Chennai locations and connections
+      const chennaiRoutes = [
+        {
+          type: 'Chennai Metro Rail',
+          duration: calculateDuration(start, end, 'metro', factors),
+          distance: calculateDistance(start, end),
+          accessibilityScore: 5,
+          features: getAccessibilityFeatures('metro', factors),
+          steps: generateMetroSteps(start, end, factors),
+          cost: '₹20-40',
+          realTime: {
+            nextService: '3 minutes',
+            crowdLevel: 'moderate',
+            accessibility: 'all features operational'
+          }
+        },
+        {
+          type: 'MTC Bus Service',
+          duration: calculateDuration(start, end, 'bus', factors),
+          distance: calculateDistance(start, end),
+          accessibilityScore: factors.wheelchairAccess ? 4 : 3,
+          features: getAccessibilityFeatures('bus', factors),
+          steps: generateBusSteps(start, end, factors),
+          cost: '₹5-15',
+          realTime: {
+            nextService: '7 minutes',
+            crowdLevel: 'high',
+            accessibility: 'wheelchair lift available'
+          }
+        },
+        {
+          type: 'Combined Transport',
+          duration: calculateDuration(start, end, 'combined', factors),
+          distance: calculateDistance(start, end),
+          accessibilityScore: 4,
+          features: getAccessibilityFeatures('combined', factors),
+          steps: generateCombinedSteps(start, end, factors),
+          cost: '₹25-55',
+          realTime: {
+            nextService: '5 minutes',
+            crowdLevel: 'low',
+            accessibility: 'full accessibility chain'
+          }
+        }
+      ];
+      
+      return chennaiRoutes.sort((a, b) => b.accessibilityScore - a.accessibilityScore);
+    }
+
+    function calculateDuration(start, end, type, factors) {
+      const baseTimes = {
+        metro: 25,
+        bus: 40,
+        combined: 35
+      };
+      
+      let duration = baseTimes[type];
+      
+      // Add time for accessibility needs
+      if (factors.wheelchairAccess) duration += 5;
+      if (factors.visualAid) duration += 3;
+      
+      // Consider weather
+      if (factors.weatherConditions.rainProbability > 50) duration += 10;
+      
+      return `${duration} min`;
+    }
+
+    function calculateDistance(start, end) {
+      // Simplified distance calculation
+      const distances = ['8.5 km', '12.3 km', '15.7 km', '6.2 km', '10.9 km'];
+      return distances[Math.floor(Math.random() * distances.length)];
+    }
+
+    function getAccessibilityFeatures(type, factors) {
+      const features = {
+        metro: ['Wheelchair Access', 'Audio Announcements in Tamil & English', 'Tactile Paths', 'Elevator Access', 'Braille Signage'],
+        bus: ['Low-floor Entry', 'Priority Seating', 'Audio Stop Announcements', 'Wheelchair Space'],
+        combined: ['Multi-modal Accessibility', 'Covered Walkways', 'Ramp Access', 'Audio Guidance']
+      };
+      
+      let selectedFeatures = features[type] || [];
+      
+      if (factors.visualAid) {
+        selectedFeatures = selectedFeatures.filter(f => f.includes('Audio') || f.includes('Tactile') || f.includes('Braille'));
+      }
+      
+      return selectedFeatures.slice(0, 4);
+    }
+
+    function generateMetroSteps(start, end, factors) {
+      const stations = getMetroStations(start, end);
+      
+      return [
+        `Walk ${Math.floor(Math.random() * 5) + 2} minutes from ${start} to ${stations.startStation} Metro Station`,
+        `Enter station using ${factors.wheelchairAccess ? 'accessible entrance with lift' : 'main entrance'}`,
+        `Take ${stations.line} Line towards ${stations.direction}`,
+        `Audio announcement: "अगला स्टेशन / Next station announcement in Hindi, Tamil and English"`,
+        `Travel ${stations.stops} stops (${Math.floor(Math.random() * 15) + 10} minutes)`,
+        `Exit at ${stations.endStation} using ${factors.wheelchairAccess ? 'elevator to ground level' : 'escalator or stairs'}`,
+        `Walk ${Math.floor(Math.random() * 8) + 3} minutes to ${end} via accessible pathway with tactile guidance`
+      ];
+    }
+
+    function generateBusSteps(start, end, factors) {
+      const busRoutes = ['21G', '27', '19B', '45', '70'];
+      const selectedRoute = busRoutes[Math.floor(Math.random() * busRoutes.length)];
+      
+      return [
+        `Walk 2 minutes to nearest bus stop from ${start}`,
+        `Board MTC Bus Route ${selectedRoute} - Low-floor bus with wheelchair accessibility`,
+        `Audio announcement will announce each stop in Tamil and English`,
+        `Journey time approximately ${Math.floor(Math.random() * 20) + 15} minutes`,
+        `Press stop button or inform conductor before your destination`,
+        `Exit using ${factors.wheelchairAccess ? 'wheelchair ramp at rear door' : 'front door'}`,
+        `Walk 4 minutes to ${end} - well-lit path with tactile guidance available`
+      ];
+    }
+
+    function generateCombinedSteps(start, end, factors) {
+      return [
+        `Share auto or taxi from ${start} to nearest Metro station (wheelchair accessible vehicle available)`,
+        `Take Metro for main journey segment`,
+        `Change at major interchange with full accessibility features`,
+        `Continue on connecting line with audio announcements`,
+        `Exit at destination station`,
+        `Short walk via covered accessible pathway to ${end}`
+      ];
+    }
+
+    function getMetroStations(start, end) {
+      const stations = {
+        startStation: start.includes('Central') ? 'Chennai Central' : start.includes('Airport') ? 'Airport' : 'Egmore',
+        endStation: end.includes('Central') ? 'Chennai Central' : end.includes('T.Nagar') ? 'T.Nagar' : 'Koyambedu',
+        line: Math.random() > 0.5 ? 'Blue' : 'Green',
+        direction: Math.random() > 0.5 ? 'Airport' : 'Washermanpet',
+        stops: Math.floor(Math.random() * 8) + 3
+      };
+      
+      return stations;
+    }
+
+    // Emergency assistance function
+    function emergencyAssistance() {
+      const emergencyContacts = {
+        police: '100',
+        medical: '108',
+        fire: '101',
+        accessibility_helpline: '1800-XXX-XXXX',
+        chennai_metro_helpline: '1800-425-1515',
+        mtc_helpline: '1800-XXX-XXXX'
+      };
+      
+      announce('Emergency assistance contacts displayed. Police: 100, Medical: 108, Fire: 101.');
+      
+      const contactsList = Object.entries(emergencyContacts)
+        .map(([service, number]) => `${service.replace('_', ' ').toUpperCase()}: ${number}`)
+        .join('\n');
+      
+      alert(`Emergency Contacts:\n\n${contactsList}\n\nFor immediate assistance, press the appropriate contact or dial directly.`);
+    }
+
+    // Live location tracking (simplified simulation)
+    function startLiveTracking() {
+      if (!navigator.geolocation) {
+        announce('Location tracking not supported on this device.');
+        return;
+      }
+      
+      announce('Live location tracking started. Your position will be updated during navigation.');
+      
+      const watchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          // In a real app, this would update the route progress
+          console.log(`Current position: ${latitude}, ${longitude}`);
+        },
+        (error) => {
+          announce('Location tracking error. Please check your GPS settings.');
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 30000,
+          timeout: 27000
+        }
+      );
+      
+      // Store watch ID for later cleanup
+      window.locationWatchId = watchId;
+    }
+
+    function stopLiveTracking() {
+      if (window.locationWatchId) {
+        navigator.geolocation.clearWatch(window.locationWatchId);
+        window.locationWatchId = null;
+        announce('Live location tracking stopped.');
+      }
+    }
+
+    // Offline support detection
+    function checkOfflineSupport() {
+      if (!navigator.onLine) {
+        announce('You are currently offline. Basic navigation features are available using cached data.');
+        
+        // Show offline indicator
+        const offlineIndicator = document.createElement('div');
+        offlineIndicator.className = 'fixed top-20 left-4 bg-yellow-600 text-white px-4 py-2 rounded-lg z-50';
+        offlineIndicator.innerHTML = '<i class="fas fa-wifi-slash mr-2"></i>Offline Mode';
+        document.body.appendChild(offlineIndicator);
+      }
+    }
+
+    // Network status monitoring
+    window.addEventListener('online', () => {
+      announce('Internet connection restored. All features are now available.');
+      const offlineIndicator = document.querySelector('.fixed.top-20.left-4');
+      if (offlineIndicator) offlineIndicator.remove();
+    });
+
+    window.addEventListener('offline', () => {
+      checkOfflineSupport();
+    });
+
+    // Initialize offline support check
+    checkOfflineSupport();
+
+    // Service worker registration for offline support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then((registration) => {
+        console.log('Service Worker registered successfully');
+      }).catch((error) => {
+        console.log('Service Worker registration failed');
+      });
+    }
+
+    // Accessibility audit function (for development)
+    function runAccessibilityAudit() {
+      const issues = [];
+      
+      // Check for missing alt text
+      const images = document.querySelectorAll('img:not([alt])');
+      if (images.length > 0) {
+        issues.push(`${images.length} images missing alt text`);
+      }
+      
+      // Check for missing form labels
+      const inputs = document.querySelectorAll('input:not([aria-label]):not([aria-labelledby])');
+      inputs.forEach(input => {
+        const label = document.querySelector(`label[for="${input.id}"]`);
+        if (!label && !input.getAttribute('aria-label')) {
+          issues.push(`Input ${input.id || input.type} missing label`);
+        }
+      });
+      
+      // Check color contrast (simplified)
+      const elements = document.querySelectorAll('.text-gray-400, .text-gray-500');
+      if (elements.length > 0) {
+        issues.push(`${elements.length} elements may have insufficient color contrast`);
+      }
+      
+      if (issues.length === 0) {
+        console.log('✅ No accessibility issues found');
+      } else {
+        console.warn('⚠️ Accessibility issues found:', issues);
+      }
+      
+      return issues;
+    }
+
+    // Run accessibility audit in development
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      setTimeout(runAccessibilityAudit, 2000);
+    }
+
+    // Periodic updates
+    setInterval(() => {
+      updateStatus();
+      updateLastUpdated();
+    }, 60000); // Update every minute
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      if (speechRecognition && isListening) {
+        speechRecognition.stop();
+      }
+      if (window.locationWatchId) {
+        stopLiveTracking();
+      }
+    });
+  </script>
+</body>
+</html>

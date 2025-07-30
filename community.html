@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Chennai - Community Support</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --dark: #0f172a;
+      --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      --glass: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+      color: white;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-10px) rotate(0.5deg); }
+      50% { transform: translateY(-5px) rotate(-0.5deg); }
+      75% { transform: translateY(-7px) rotate(0.2deg); }
+    }
+
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .card-3d:hover {
+      transform: translateY(-5px) rotateX(5deg) rotateY(2deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .magnetic {
+      transition: transform 0.3s ease;
+    }
+
+    .magnetic:hover {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .slide-up {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    .slide-up.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Pulse animation */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    /* Online status dot */
+    .online-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Button scale effect */
+    .btn-scale {
+      transition: transform 0.1s ease;
+    }
+    .btn-scale:active {
+      transform: scale(0.95);
+    }
+
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Accessibility focus styles */
+    button:focus, input:focus, select:focus, textarea:focus {
+      outline: 3px solid #f59e0b;
+      outline-offset: 2px;
+    }
+
+    /* Skip to content link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #f59e0b;
+      color: white;
+      padding: 8px;
+      z-index: 100;
+      transition: top 0.3s;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to Content Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-dark backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center group">
+            <div class="relative">
+              <i class="fas fa-wheelchair text-sky-400 text-3xl mr-3 floating" aria-hidden="true"></i>
+            </div>
+            <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
+          </div>
+        </div>
+        <div class="hidden sm:flex sm:items-center space-x-4">
+          <a href="index.html" class="px-4 py-2 rounded-full font-medium magnetic">Home</a>
+          <a href="navigate.html" class="px-4 py-2 rounded-full font-medium magnetic">Navigate</a>
+          <a href="alerts.html" class="px-4 py-2 rounded-full font-medium magnetic">Alerts</a>
+          <a href="community.html" class="px-4 py-2 rounded-full font-medium magnetic" aria-current="page">Community</a>
+        </div>
+        <div class="sm:hidden flex items-center">
+          <button id="mobile-menu-button" class="glass p-3 rounded-lg magnetic" aria-label="Open menu">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="main-content" class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <section class="mb-12 slide-up">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          <span class="text-gradient">Community Support</span> Network
+        </h1>
+        <p class="text-xl text-gray-300 mb-6">
+          Connect with volunteers and fellow travelers for real-time assistance in navigating Chennai's public spaces.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <button onclick="showTab('volunteers')" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-6 py-3 rounded-full font-bold ripple glow magnetic">
+            <i class="fas fa-hands-helping mr-2"></i> Find Volunteers
+          </button>
+          <button onclick="showTab('forum')" class="glass px-6 py-3 rounded-full font-bold border border-white/20 magnetic">
+            <i class="fas fa-comments mr-2"></i> Community Forum
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-gray-600 mb-8">
+      <button id="volunteers-tab" class="tab-btn active px-6 py-3 font-medium border-b-2 border-sky-400 text-sky-400" data-tab="volunteers">
+        <i class="fas fa-users mr-2"></i> Volunteers
+      </button>
+      <button id="forum-tab" class="tab-btn px-6 py-3 font-medium text-gray-400 hover:text-white" data-tab="forum">
+        <i class="fas fa-comments mr-2"></i> Community Forum
+      </button>
+      <button id="help-tab" class="tab-btn px-6 py-3 font-medium text-gray-400 hover:text-white" data-tab="help">
+        <i class="fas fa-question-circle mr-2"></i> Get Help
+      </button>
+    </div>
+
+    <!-- Volunteers Section -->
+    <div id="volunteers" class="tab-content active">
+      <div class="glass-dark p-6 rounded-3xl mb-8">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <i class="fas fa-hands text-sky-400 mr-3"></i>
+          <span>Available Volunteers in Chennai</span>
+        </h2>
+        
+        <!-- Filter Options -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-3">Filter by:</h3>
+          <div class="flex flex-wrap gap-3">
+            <button data-filter="all" class="filter-btn active glass px-4 py-2 rounded-full text-sm font-medium border border-sky-400 text-sky-400">
+              All Volunteers
+            </button>
+            <button data-filter="wheelchair" class="filter-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-green-400 hover:text-green-400">
+              <i class="fas fa-wheelchair mr-1"></i> Wheelchair
+            </button>
+            <button data-filter="visual" class="filter-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-blue-400 hover:text-blue-400">
+              <i class="fas fa-eye mr-1"></i> Visual
+            </button>
+            <button data-filter="hearing" class="filter-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-purple-400 hover:text-purple-400">
+              <i class="fas fa-deaf mr-1"></i> Hearing
+            </button>
+            <button data-filter="mobility" class="filter-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-amber-400 hover:text-amber-400">
+              <i class="fas fa-walking mr-1"></i> Mobility
+            </button>
+          </div>
+        </div>
+
+        <!-- Volunteer Cards Grid -->
+        <div id="volunteers-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Volunteer cards will be dynamically loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Forum Section -->
+    <div id="forum" class="tab-content">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <i class="fas fa-comments text-purple-400 mr-3"></i>
+          <span>Chennai Accessibility Forum</span>
+        </h2>
+        
+        <!-- Search and New Post -->
+        <div class="flex flex-col md:flex-row gap-4 mb-6">
+          <div class="flex-1 flex">
+            <input type="text" placeholder="Search discussions..." class="flex-1 glass p-3 rounded-l-lg outline-none">
+            <button class="glass p-3 rounded-r-lg hover:bg-white/10 magnetic">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <button onclick="showNewPostModal()" class="glass px-6 py-3 rounded-lg font-medium border border-white/20 magnetic">
+            <i class="fas fa-plus mr-2"></i> New Post
+          </button>
+        </div>
+
+        <!-- Discussion Categories -->
+        <div class="mb-6">
+          <h3 class="text-lg font-medium mb-3">Categories:</h3>
+          <div class="flex flex-wrap gap-3">
+            <button data-category="all" class="category-btn active glass px-4 py-2 rounded-full text-sm font-medium border border-sky-400 text-sky-400">
+              All Topics
+            </button>
+            <button data-category="metro" class="category-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-purple-400 hover:text-purple-400">
+              <i class="fas fa-subway mr-1"></i> Metro
+            </button>
+            <button data-category="bus" class="category-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-amber-400 hover:text-amber-400">
+              <i class="fas fa-bus mr-1"></i> Buses
+            </button>
+            <button data-category="station" class="category-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-green-400 hover:text-green-400">
+              <i class="fas fa-train mr-1"></i> Stations
+            </button>
+            <button data-category="general" class="category-btn glass px-4 py-2 rounded-full text-sm font-medium hover:border-gray-400 hover:text-gray-400">
+              <i class="fas fa-comment mr-1"></i> General
+            </button>
+          </div>
+        </div>
+
+        <!-- Discussions List -->
+        <div id="discussions-container" class="space-y-4">
+          <!-- Discussions will be dynamically loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Get Help Section -->
+    <div id="help" class="tab-content">
+      <div class="glass-dark p-8 rounded-3xl">
+        <h2 class="text-2xl font-bold mb-6 flex items-center">
+          <i class="fas fa-question-circle text-amber-400 mr-3"></i>
+          <span>Get Immediate Assistance</span>
+        </h2>
+        
+        <!-- Emergency Contacts -->
+        <div class="mb-8">
+          <h3 class="text-xl font-bold mb-4 text-red-400 flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            Emergency Contacts
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-ambulance text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Medical Emergency</h4>
+              </div>
+              <p class="text-gray-300 mb-4">For urgent medical assistance in Chennai</p>
+              <button onclick="callEmergency('108')" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-phone-alt mr-2"></i> Call 108
+              </button>
+            </div>
+            
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-shield-alt text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Police Assistance</h4>
+              </div>
+              <p class="text-gray-300 mb-4">For safety and security emergencies</p>
+              <button onclick="callEmergency('100')" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-phone-alt mr-2"></i> Call 100
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Help Options -->
+        <div class="mb-8">
+          <h3 class="text-xl font-bold mb-4 text-green-400 flex items-center">
+            <i class="fas fa-hands-helping mr-2"></i>
+            Quick Help Options
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-comments text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Chat Support</h4>
+              </div>
+              <p class="text-gray-300 mb-4">Connect with our support team via chat</p>
+              <button onclick="startChatSupport()" class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-comment-dots mr-2"></i> Start Chat
+              </button>
+            </div>
+            
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-video text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Video Call</h4>
+              </div>
+              <p class="text-gray-300 mb-4">Get visual assistance from a volunteer</p>
+              <button onclick="startVideoCall()" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-video mr-2"></i> Request Call
+              </button>
+            </div>
+            
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-map-marked-alt text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Live Guide</h4>
+              </div>
+              <p class="text-gray-300 mb-4">Get real-time navigation assistance</p>
+              <button onclick="requestLiveGuide()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-location-arrow mr-2"></i> Find Guide
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resources -->
+        <div>
+          <h3 class="text-xl font-bold mb-4 text-sky-400 flex items-center">
+            <i class="fas fa-book mr-2"></i>
+            Accessibility Resources
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-map text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Accessibility Map</h4>
+              </div>
+              <p class="text-gray-300 mb-4">Interactive map of accessible locations</p>
+              <button onclick="openAccessibilityMap()" class="w-full bg-sky-600 hover:bg-sky-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-external-link-alt mr-2"></i> Open Map
+              </button>
+            </div>
+            
+            <div class="glass p-6 rounded-xl card-3d">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full flex items-center justify-center mr-4">
+                  <i class="fas fa-file-pdf text-white text-xl"></i>
+                </div>
+                <h4 class="text-lg font-bold">Chennai Guide</h4>
+              </div>
+              <p class="text-gray-300 mb-4">Download our accessibility guide</p>
+              <button onclick="downloadGuide()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-bold ripple magnetic">
+                <i class="fas fa-download mr-2"></i> Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Floating Help Button -->
+  <button id="floating-help-btn" class="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white text-2xl shadow-2xl magnetic floating" aria-label="Get help">
+    <i class="fas fa-question"></i>
+  </button>
+
+  <!-- Help Panel -->
+  <div id="help-panel" class="fixed bottom-24 right-6 glass-dark p-6 rounded-xl shadow-2xl hidden w-80 z-50">
+    <h3 class="text-xl font-bold mb-4 flex items-center text-amber-400">
+      <i class="fas fa-life-ring mr-2"></i>
+      Quick Help
+    </h3>
+    <p class="text-gray-300 mb-4">How can we assist you today?</p>
+    <div class="space-y-3">
+      <button onclick="showTab('volunteers')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition flex items-center">
+        <i class="fas fa-users text-sky-400 mr-3"></i>
+        <span>Find a Volunteer</span>
+      </button>
+      <button onclick="showTab('forum')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition flex items-center">
+        <i class="fas fa-comments text-purple-400 mr-3"></i>
+        <span>Ask the Community</span>
+      </button>
+      <button onclick="showTab('help')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition flex items-center">
+        <i class="fas fa-phone-alt text-green-400 mr-3"></i>
+        <span>Emergency Contacts</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Request Volunteer Modal -->
+  <div id="request-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="glass-dark p-8 rounded-xl max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold" id="modal-title">Request Volunteer Assistance</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-white magnetic">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="request-form">
+        <div class="mb-4">
+          <label for="request-name" class="block text-gray-300 mb-2">Your Name</label>
+          <input type="text" id="request-name" class="w-full glass p-3 rounded-lg outline-none" required>
+        </div>
+        <div class="mb-4">
+          <label for="request-contact" class="block text-gray-300 mb-2">Contact Method</label>
+          <select id="request-contact" class="w-full glass p-3 rounded-lg outline-none" required>
+            <option value="">Select contact method</option>
+            <option value="phone">Phone Call</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="sms">Text Message</option>
+            <option value="video">Video Call</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="request-details" class="block text-gray-300 mb-2">What do you need help with?</label>
+          <textarea id="request-details" rows="4" class="w-full glass p-3 rounded-lg outline-none" required></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-sky-500 to-cyan-500 text-white py-3 rounded-lg font-bold ripple glow magnetic">
+          <i class="fas fa-paper-plane mr-2"></i> Send Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- New Post Modal -->
+  <div id="new-post-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="glass-dark p-8 rounded-xl max-w-md w-full mx-4">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-2xl font-bold">New Community Post</h3>
+        <button onclick="closeNewPostModal()" class="text-gray-400 hover:text-white magnetic">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form id="new-post-form">
+        <div class="mb-4">
+          <label for="post-title" class="block text-gray-300 mb-2">Title</label>
+          <input type="text" id="post-title" class="w-full glass p-3 rounded-lg outline-none" placeholder="What's your question?" required>
+        </div>
+        <div class="mb-4">
+          <label for="post-category" class="block text-gray-300 mb-2">Category</label>
+          <select id="post-category" class="w-full glass p-3 rounded-lg outline-none" required>
+            <option value="general">General Discussion</option>
+            <option value="metro">Metro Accessibility</option>
+            <option value="bus">Bus Accessibility</option>
+            <option value="station">Station Accessibility</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label for="post-content" class="block text-gray-300 mb-2">Details</label>
+          <textarea id="post-content" rows="5" class="w-full glass p-3 rounded-lg outline-none" placeholder="Describe your question or share your experience..." required></textarea>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-bold ripple glow magnetic">
+          <i class="fas fa-share mr-2"></i> Post to Community
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const categoryBtns = document.querySelectorAll('.category-btn');
+    const floatingHelpBtn = document.getElementById('floating-help-btn');
+    const helpPanel = document.getElementById('help-panel');
+    const requestModal = document.getElementById('request-modal');
+    const newPostModal = document.getElementById('new-post-modal');
+    const requestForm = document.getElementById('request-form');
+    const newPostForm = document.getElementById('new-post-form');
+    const volunteersContainer = document.getElementById('volunteers-container');
+    const discussionsContainer = document.getElementById('discussions-container');
+
+    // Real-time data for volunteers (simulated API response)
+    const volunteersData = [
+      {
+        id: 1,
+        name: "Priya Sharma",
+        initials: "PS",
+        location: "T. Nagar",
+        rating: 4.9,
+        helped: 127,
+        responseTime: "5 mins",
+        online: true,
+        specializations: ["wheelchair", "metro", "navigation"],
+        image: "https://randomuser.me/api/portraits/women/43.jpg"
+      },
+      {
+        id: 2,
+        name: "Raj Kumar",
+        initials: "RK",
+        location: "Anna Nagar",
+        rating: 4.8,
+        helped: 89,
+        responseTime: "10 mins",
+        online: true,
+        specializations: ["visual", "bus", "platform"],
+        image: "https://randomuser.me/api/portraits/men/32.jpg"
+      },
+      {
+        id: 3,
+        name: "Meera Krishnan",
+        initials: "MK",
+        location: "Velachery",
+        rating: 4.7,
+        helped: 156,
+        responseTime: "15 mins",
+        online: false,
+        specializations: ["hearing", "sign language", "general"],
+        image: "https://randomuser.me/api/portraits/women/65.jpg"
+      },
+      {
+        id: 4,
+        name: "Arun Patel",
+        initials: "AP",
+        location: "Nungambakkam",
+        rating: 4.6,
+        helped: 72,
+        responseTime: "5 mins",
+        online: true,
+        specializations: ["wheelchair", "tactile", "elevators"],
+        image: "https://randomuser.me/api/portraits/men/44.jpg"
+      },
+      {
+        id: 5,
+        name: "Deepa Iyer",
+        initials: "DI",
+        location: "Adyar",
+        rating: 4.8,
+        helped: 93,
+        responseTime: "20 mins",
+        online: true,
+        specializations: ["visual", "audio guidance", "metro"],
+        image: "https://randomuser.me/api/portraits/women/33.jpg"
+      },
+      {
+        id: 6,
+        name: "Karthik Murali",
+        initials: "KM",
+        location: "Mylapore",
+        rating: 4.5,
+        helped: 64,
+        responseTime: "30 mins",
+        online: false,
+        specializations: ["mobility", "bus", "stations"],
+        image: "https://randomuser.me/api/portraits/men/22.jpg"
+      }
+    ];
+
+    // Real-time data for discussions (simulated API response)
+    const discussionsData = [
+      {
+        id: 1,
+        title: "Wheelchair access at Chennai Central?",
+        author: "Arun",
+        category: "station",
+        replies: 5,
+        likes: 12,
+        time: "2 hours ago",
+        content: "Has anyone used the wheelchair facilities at Chennai Central recently? How accessible is it?",
+        authorImage: "https://randomuser.me/api/portraits/men/22.jpg"
+      },
+      {
+        id: 2,
+        title: "MRTS Beach Station elevator working?",
+        author: "Deepa",
+        category: "station",
+        replies: 3,
+        likes: 8,
+        time: "5 hours ago",
+        content: "Last time I visited the elevator wasn't working. Has it been repaired?",
+        authorImage: "https://randomuser.me/api/portraits/women/33.jpg"
+      },
+      {
+        id: 3,
+        title: "Best accessible restaurants near Koyambedu",
+        author: "Kavita",
+        category: "general",
+        replies: 7,
+        likes: 15,
+        time: "1 day ago",
+        content: "Looking for recommendations for wheelchair accessible restaurants near the bus stand.",
+        authorImage: "https://randomuser.me/api/portraits/women/55.jpg"
+      },
+      {
+        id: 4,
+        title: "Metro audio announcements clarity",
+        author: "Rahul",
+        category: "metro",
+        replies: 4,
+        likes: 6,
+        time: "1 day ago",
+        content: "Are the audio announcements on the metro clear enough for visually impaired travelers?",
+        authorImage: "https://randomuser.me/api/portraits/men/45.jpg"
+      },
+      {
+        id: 5,
+        title: "MTC low-floor bus availability",
+        author: "Priya",
+        category: "bus",
+        replies: 9,
+        likes: 18,
+        time: "2 days ago",
+        content: "Which routes have the most consistent low-floor bus availability?",
+        authorImage: "https://randomuser.me/api/portraits/women/28.jpg"
+      },
+      {
+        id: 6,
+        title: "Tactile paths in T. Nagar",
+        author: "Suresh",
+        category: "general",
+        replies: 2,
+        likes: 5,
+        time: "3 days ago",
+        content: "Are the tactile walking paths well-maintained in the T. Nagar shopping area?",
+        authorImage: "https://randomuser.me/api/portraits/men/35.jpg"
+      }
+    ];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load volunteers
+      renderVolunteers(volunteersData);
+      
+      // Load discussions
+      renderDiscussions(discussionsData);
+      
+      // Set up event listeners
+      setupEventListeners();
+      
+      // Initialize animations
+      initAnimations();
+      
+      // Set focus to main content if coming from skip link
+      if (window.location.hash === '#main-content') {
+        document.getElementById('main-content').setAttribute('tabindex', '-1');
+        document.getElementById('main-content').focus();
+      }
+    });
+
+    // Set up event listeners
+    function setupEventListeners() {
+      // Tab switching
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.dataset.tab;
+          showTab(tabId);
+        });
+      });
+
+      // Volunteer filtering
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active', 'border-sky-400', 'text-sky-400'));
+          btn.classList.add('active', 'border-sky-400', 'text-sky-400');
+          filterVolunteers(btn.dataset.filter);
+        });
+      });
+
+      // Discussion category filtering
+      categoryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          categoryBtns.forEach(b => b.classList.remove('active', 'border-sky-400', 'text-sky-400'));
+          btn.classList.add('active', 'border-sky-400', 'text-sky-400');
+          filterDiscussions(btn.dataset.category);
+        });
+      });
+
+      // Floating help button
+      floatingHelpBtn.addEventListener('click', toggleHelpPanel);
+
+      // Close help panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!helpPanel.contains(e.target) && e.target !== floatingHelpBtn) {
+          helpPanel.classList.add('hidden');
+        }
+      });
+
+      // Request volunteer modal
+      document.getElementById('request-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        closeModal();
+        alert('Your volunteer request has been sent!');
+      });
+
+      // New post modal
+      document.getElementById('new-post-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        closeNewPostModal();
+        alert('Your post has been submitted to the community!');
+      });
+    }
+
+    // Tab switching logic
+    function showTab(tabId) {
+      tabBtns.forEach(btn => btn.classList.remove('active', 'border-b-2', 'border-sky-400', 'text-sky-400'));
+      document.querySelector(`[data-tab="${tabId}"]`).classList.add('active', 'border-b-2', 'border-sky-400', 'text-sky-400');
+      tabContents.forEach(content => content.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Volunteer filtering logic
+    function filterVolunteers(filter) {
+      let filtered = volunteersData;
+      if (filter !== 'all') {
+        filtered = volunteersData.filter(v => v.specializations.includes(filter));
+      }
+      renderVolunteers(filtered);
+    }
+
+    // Render volunteers
+    function renderVolunteers(data) {
+      volunteersContainer.innerHTML = data.map(v => `
+        <div class="glass p-6 rounded-xl card-3d flex gap-4 items-center">
+          <img src="${v.image}" alt="${v.name}" class="w-16 h-16 rounded-full border-4 border-sky-400 object-cover mr-4">
+          <div class="flex-1">
+            <h4 class="text-lg font-bold mb-1">${v.name} ${v.online ? '<span class="online-dot bg-green-400 ml-2"></span>' : '<span class="online-dot bg-gray-400 ml-2"></span>'}</h4>
+            <p class="text-sm text-gray-300 mb-1">${v.location} &middot; <span class="font-semibold text-sky-400">${v.responseTime} response</span></p>
+            <p class="text-xs text-gray-400 mb-2">Helped: ${v.helped} &middot; Rating: ${v.rating} ⭐</p>
+            <div class="flex flex-wrap gap-2 mb-2">
+              ${v.specializations.map(s => `<span class="px-2 py-1 rounded-full bg-sky-600 text-xs">${s}</span>`).join('')}
+            </div>
+            <button onclick="openRequestModal('${v.name}')" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-lg font-medium ripple magnetic mt-2">
+              <i class="fas fa-paper-plane mr-2"></i> Request Help
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Discussion filtering logic
+    function filterDiscussions(category) {
+      let filtered = discussionsData;
+      if (category !== 'all') {
+        filtered = discussionsData.filter(d => d.category === category);
+      }
+      renderDiscussions(filtered);
+    }
+
+    // Render discussions
+    function renderDiscussions(data) {
+      discussionsContainer.innerHTML = data.map(d => `
+        <div class="glass p-6 rounded-xl card-3d flex gap-4">
+          <img src="${d.authorImage}" alt="${d.author}" class="w-12 h-12 rounded-full border-2 border-purple-400 object-cover mr-4">
+          <div class="flex-1">
+            <h4 class="text-lg font-bold mb-1">${d.title}</h4>
+            <p class="text-sm text-gray-300 mb-1">${d.author} &middot; <span class="text-xs text-gray-400">${d.time}</span></p>
+            <p class="text-xs text-gray-400 mb-2">${d.content}</p>
+            <div class="flex gap-4 text-xs text-gray-400">
+              <span><i class="fas fa-reply mr-1"></i> ${d.replies} replies</span>
+              <span><i class="fas fa-thumbs-up mr-1"></i> ${d.likes} likes</span>
+              <span class="px-2 py-1 rounded-full bg-purple-600 text-white">${d.category}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Help panel toggle
+    function toggleHelpPanel() {
+      helpPanel.classList.toggle('hidden');
+    }
+
+    // Request modal logic
+    function openRequestModal(volunteerName) {
+      requestModal.classList.remove('hidden');
+      document.getElementById('modal-title').textContent = `Request Assistance from ${volunteerName}`;
+    }
+    function closeModal() {
+      requestModal.classList.add('hidden');
+    }
+
+    // New post modal logic
+    function showNewPostModal() {
+      newPostModal.classList.remove('hidden');
+    }
+    function closeNewPostModal() {
+      newPostModal.classList.add('hidden');
+    }
+
+    // Emergency call logic
+    function callEmergency(number) {
+      window.location.href = `tel:${number}`;
+    }
+
+    // Quick help actions
+    function startChatSupport() {
+      alert('Chat support is coming soon!');
+    }
+    function startVideoCall() {
+      alert('Video call feature is coming soon!');
+    }
+    function requestLiveGuide() {
+      alert('A live guide will be assigned to you shortly!');
+    }
+    function openAccessibilityMap() {
+      window.open('https://www.google.com/maps/search/accessibility+chennai', '_blank');
+    }
+    function downloadGuide() {
+      window.open('https://example.com/chennai_accessibility_guide.pdf', '_blank');
+    }
+
+    // Initialize animations
+    function initAnimations() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+
+      document.querySelectorAll('.slide-up').forEach(el => {
+        observer.observe(el);
+      });
+    }
+  </script>
+</body>
+</html>

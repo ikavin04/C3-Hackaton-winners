@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AccessibleChennai - Live Alerts Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --dark: #0f172a;
+      --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      --glass: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .pulse-ring {
+      animation: pulseRing 2s infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.33); }
+      40%, 50% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.2); }
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-10px) rotate(0.5deg); }
+      50% { transform: translateY(-5px) rotate(-0.5deg); }
+      75% { transform: translateY(-7px) rotate(0.2deg); }
+    }
+
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .card-3d:hover {
+      transform: translateY(-5px) rotateX(5deg) rotateY(2deg);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .magnetic {
+      transition: transform 0.3s ease;
+    }
+
+    .magnetic:hover {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .status-indicator::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    .status-available::before { background: rgba(16, 185, 129, 0.3); }
+    .status-delayed::before { background: rgba(245, 158, 11, 0.3); }
+    .status-unavailable::before { background: rgba(239, 68, 68, 0.3); }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.5); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 0.8; }
+    }
+
+    .filter-tag {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-tag.active {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+    }
+
+    .filter-tag::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .filter-tag:hover::before {
+      left: 100%;
+    }
+
+    .alert-card {
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alert-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: left 0.8s;
+    }
+
+    .alert-card:hover::before {
+      left: 100%;
+    }
+
+    .live-indicator {
+      animation: livePulse 1.5s infinite;
+    }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .countdown {
+      font-variant-numeric: tabular-nums;
+      font-weight: bold;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.5s ease-in-out;
+    }
+
+    .slide-in {
+      transform: translateX(-100px);
+      opacity: 0;
+      transition: all 0.6s ease;
+    }
+
+    .slide-in.visible {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .notification-badge {
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+      40%, 43% { transform: translate3d(0,-8px,0); }
+      70% { transform: translate3d(0,-4px,0); }
+      90% { transform: translate3d(0,-2px,0); }
+    }
+
+    .refresh-animation {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Grid improvements */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .alerts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .alerts-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Filter alignment */
+    .filter-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    /* Enhanced notification */
+    .notification {
+      animation: slideInRight 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+    }
+
+    /* Modal improvements */
+    .modal-backdrop {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-content {
+      animation: modalSlideIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes modalSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+  <!-- Header with Live Status -->
+  <div class="sticky top-0 z-50 glass-dark backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex items-center space-x-2">
+            <i class="fas fa-satellite-dish text-sky-400 text-xl floating"></i>
+            <h1 class="text-xl font-bold text-gradient">AccessibleChennai</h1>
+          </div>
+          <div class="hidden sm:flex items-center space-x-2 glass px-3 py-1 rounded-full">
+            <div class="status-indicator bg-green-400 status-available"></div>
+            <span class="text-sm text-green-400 live-indicator">LIVE</span>
+          </div>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="hidden sm:block text-sm text-gray-300">
+            Last update: <span id="lastUpdate" class="text-sky-400 font-medium">Just now</span>
+          </div>
+          <button id="refreshBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10">
+            <i class="fas fa-sync-alt text-sky-400"></i>
+          </button>
+          <div class="relative">
+            <button id="notificationBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10">
+              <i class="fas fa-bell text-amber-400"></i>
+              <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center notification-badge">3</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Quick Stats Dashboard -->
+    <div class="stats-grid mb-8">
+      <div class="glass-dark p-4 rounded-2xl card-3d">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">Active Alerts</p>
+            <p class="text-2xl font-bold text-sky-400" id="activeAlerts">0</p>
+          </div>
+          <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-xl flex items-center justify-center">
+            <i class="fas fa-exclamation-triangle text-white"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-dark p-4 rounded-2xl card-3d">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">Accessible Services</p>
+            <p class="text-2xl font-bold text-green-400" id="accessibleServices">0</p>
+          </div>
+          <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center">
+            <i class="fas fa-wheelchair text-white"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-dark p-4 rounded-2xl card-3d">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">Service Delays</p>
+            <p class="text-2xl font-bold text-amber-400" id="serviceDelays">0</p>
+          </div>
+          <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
+            <i class="fas fa-clock text-white"></i>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-dark p-4 rounded-2xl card-3d">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">Online Users</p>
+            <p class="text-2xl font-bold text-purple-400" id="onlineUsers">0</p>
+          </div>
+          <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+            <i class="fas fa-users text-white"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Smart Filters -->
+    <div class="glass-dark p-6 rounded-3xl mb-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+        <h2 class="text-xl font-bold text-white flex items-center space-x-2">
+          <i class="fas fa-filter text-sky-400"></i>
+          <span>Smart Filters</span>
+        </h2>
+        <button id="aiFilterBtn" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium ripple magnetic self-start">
+          <i class="fas fa-robot mr-2"></i>AI Suggest
+        </button>
+      </div>
+      
+      <div class="filter-container mb-4">
+        <div class="filter-row">
+          <button data-filter="all" class="filter-tag active glass px-4 py-2 rounded-full text-sm font-medium border border-sky-400 text-sky-400">
+            <i class="fas fa-globe mr-2"></i>All Alerts <span class="ml-1 bg-sky-400 text-white px-2 py-0.5 rounded-full text-xs" id="count-all">0</span>
+          </button>
+          <button data-filter="metro" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-emerald-400 hover:text-emerald-400">
+            <i class="fas fa-subway mr-2"></i>Metro <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-metro">0</span>
+          </button>
+          <button data-filter="bus" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-amber-400 hover:text-amber-400">
+            <i class="fas fa-bus mr-2"></i>Buses <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-bus">0</span>
+          </button>
+          <button data-filter="wheelchair" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-purple-400 hover:text-purple-400">
+            <i class="fas fa-wheelchair mr-2"></i>Wheelchair <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-wheelchair">0</span>
+          </button>
+          <button data-filter="delay" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-red-400 hover:text-red-400">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Delays <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-delay">0</span>
+          </button>
+        </div>
+      </div>
+      
+      <div id="advancedFilters" class="hidden border-t border-gray-600 pt-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <button data-filter="audio" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
+            <i class="fas fa-volume-up mr-2"></i>Audio Support
+          </button>
+          <button data-filter="visual" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
+            <i class="fas fa-eye mr-2"></i>Visual Aid
+          </button>
+          <button data-filter="tactile" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
+            <i class="fas fa-hand-paper mr-2"></i>Tactile Guide
+          </button>
+          <button data-filter="emergency" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
+            <i class="fas fa-exclamation-circle mr-2"></i>Emergency
+          </button>
+        </div>
+      </div>
+      
+      <button id="showAdvanced" class="mt-4 text-sky-400 text-sm flex items-center space-x-1 hover:text-sky-300">
+        <i class="fas fa-chevron-down"></i>
+        <span>Advanced Filters</span>
+      </button>
+    </div>
+
+    <!-- Real-time Alerts Feed -->
+    <div class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 class="text-2xl font-bold text-white flex items-center space-x-2">
+          <i class="fas fa-broadcast-tower text-sky-400 floating"></i>
+          <span>Live Feed</span>
+        </h2>
+        <div class="flex items-center space-x-3">
+          <select id="sortBy" class="glass bg-transparent text-white px-4 py-2 rounded-lg border border-gray-600">
+            <option value="time">Latest First</option>
+            <option value="priority">High Priority</option>
+            <option value="distance">Nearest</option>
+            <option value="relevance">Most Relevant</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Alerts Container -->
+      <div id="alertsContainer" class="alerts-grid"></div>
+      
+      <!-- No alerts message -->
+      <div id="noAlertsMessage" class="hidden text-center py-12">
+        <div class="glass-dark p-8 rounded-3xl max-w-md mx-auto">
+          <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+          <h3 class="text-xl font-bold text-gray-300 mb-2">No Alerts Found</h3>
+          <p class="text-gray-400">Try adjusting your filters or check back later for updates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating AI Assistant -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <button id="aiAssistant" class="w-14 h-14 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xl shadow-2xl magnetic floating">
+      <i class="fas fa-robot"></i>
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden modal-backdrop">
+    <div class="glass-dark p-6 rounded-3xl max-w-md w-full mx-4 modal-content">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-white" id="modalTitle">Modal Title</h3>
+        <button id="closeModal" class="text-gray-400 hover:text-white magnetic">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="text-gray-300 mb-6" id="modalContent">Modal content</div>
+      <div class="flex justify-end space-x-3">
+        <button id="modalCancel" class="glass px-4 py-2 rounded-lg hover:bg-white/10">Cancel</button>
+        <button id="modalConfirm" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-lg ripple">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notificationContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+  <script>
+    // Enhanced Chennai transportation data
+    const alertsData = [
+      {
+        id: 1,
+        type: 'metro',
+        title: 'Blue Line - Chennai Central',
+        location: 'Platform 2',
+        message: 'Next metro train has wheelchair access and audio announcements available. Train arriving in 3 minutes.',
+        status: 'available',
+        time: new Date(Date.now() - 2 * 60 * 1000),
+        priority: 'high',
+        tags: ['wheelchair', 'audio', 'tactile'],
+        countdown: 3,
+        category: 'metro wheelchair audio'
+      },
+      {
+        id: 2,
+        type: 'bus',
+        title: 'MTC Route 21G',
+        location: 'T. Nagar Bus Stand',
+        message: 'Low-floor accessible bus arriving in 4 minutes with kneeling feature and priority seating.',
+        status: 'available',
+        time: new Date(Date.now() - 3 * 60 * 1000),
+        priority: 'high',
+        tags: ['wheelchair', 'low-floor', 'kneeling'],
+        countdown: 4,
+        category: 'bus wheelchair'
+      },
+      {
+        id: 3,
+        type: 'metro',
+        title: 'Green Line Service Update',
+        location: 'Guindy to Airport',
+        message: 'All stations now equipped with tactile path markers and braille signage for enhanced navigation.',
+        status: 'info',
+        time: new Date(Date.now() - 15 * 60 * 1000),
+        priority: 'medium',
+        tags: ['tactile', 'visual', 'braille'],
+        category: 'metro tactile visual'
+      },
+      {
+        id: 4,
+        type: 'bus',
+        title: 'MTC Route 29C - Service Delay',
+        location: 'Vadapalani - KK Nagar',
+        message: 'Service delayed by 15 minutes due to heavy traffic. Alternative accessible routes available via Route 47A.',
+        status: 'delayed',
+        time: new Date(Date.now() - 5 * 60 * 1000),
+        priority: 'high',
+        tags: ['delay', 'wheelchair', 'alternative'],
+        category: 'bus delay wheelchair'
+      },
+      {
+        id: 5,
+        type: 'station',
+        title: 'Chennai Central Railway Station',
+        location: 'Platform 7',
+        message: 'New accessible restroom facility opened with adult changing table and emergency assistance button.',
+        status: 'info',
+        time: new Date(Date.now() - 25 * 60 * 1000),
+        priority: 'medium',
+        tags: ['restroom', 'wheelchair', 'changing-table'],
+        category: 'station wheelchair'
+      },
+      {
+        id: 6,
+        type: 'metro',
+        title: 'Airport Metro - Technical Issue',
+        location: 'Meenambakkam Station',
+        message: 'Elevator temporarily out of service. Station staff available for assistance. Alternative lift access via Platform B.',
+        status: 'unavailable',
+        time: new Date(Date.now() - 10 * 60 * 1000),
+        priority: 'high',
+        tags: ['elevator', 'assistance', 'wheelchair'],
+        category: 'metro wheelchair emergency'
+      },
+      {
+        id: 7,
+        type: 'bus',
+        title: 'MTC Route 54C - New Fleet',
+        location: 'Thiruvanmiyur to OMR',
+        message: 'New fleet of electric buses with enhanced accessibility features now operational. Features include USB charging and wider aisles.',
+        status: 'available',
+        time: new Date(Date.now() - 30 * 60 * 1000),
+        priority: 'medium',
+        tags: ['electric', 'wheelchair', 'audio', 'visual'],
+        category: 'bus wheelchair audio visual'
+      },
+      {
+        id: 8,
+        type: 'metro',
+        title: 'Red Line - Voice System Upgrade',
+        location: 'All Stations',
+        message: 'Voice announcement system upgraded with multilingual support (Tamil, English, Hindi) and improved clarity.',
+        status: 'info',
+        time: new Date(Date.now() - 45 * 60 * 1000),
+        priority: 'medium',
+        tags: ['audio', 'multilingual', 'announcement'],
+        category: 'metro audio'
+      }
+    ];
+
+    // DOM Elements
+    const refreshBtn = document.getElementById('refreshBtn');
+    const lastUpdate = document.getElementById('lastUpdate');
+    const alertsContainer = document.getElementById('alertsContainer');
+    const noAlertsMessage = document.getElementById('noAlertsMessage');
+    const filterBtns = document.querySelectorAll('.filter-tag');
+    const showAdvanced = document.getElementById('showAdvanced');
+    const advancedFilters = document.getElementById('advancedFilters');
+    const sortBy = document.getElementById('sortBy');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    const closeModal = document.getElementById('closeModal');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalConfirm = document.getElementById('modalConfirm');
+    const aiAssistant = document.getElementById('aiAssistant');
+    const notificationContainer = document.getElementById('notificationContainer');
+    const notificationBtn = document.getElementById('notificationBtn');
+    const notificationCount = document.getElementById('notificationCount');
+
+    let activeFilter = 'all';
+    let countdownIntervals = [];
+    let currentAlerts = [...alertsData];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAlerts();
+      startRealTimeUpdates();
+      updateStats();
+      updateFilterCounts();
+    });
+
+    // Render alerts with proper filtering and sorting
+    function renderAlerts(filter = 'all', sort = 'time') {
+      let filteredAlerts = filter === 'all' ? currentAlerts : 
+        currentAlerts.filter(alert => {
+          if (filter === 'delay') return alert.status === 'delayed';
+          return alert.category.includes(filter);
+        });
+
+      // Sort alerts
+      filteredAlerts.sort((a, b) => {
+        switch(sort) {
+          case 'priority':
+            const priorityOrder = { high: 3, medium: 2, low: 1 };
+            return priorityOrder[b.priority] - priorityOrder[a.priority];
+          case 'time':
+            return b.time - a.time;
+          case 'distance':
+            return Math.random() - 0.5; // Simulated for demo
+          case 'relevance':
+            return b.priority === 'high' ? 1 : -1;
+          default:
+            return b.time - a.time;
+        }
+      });
+
+      // Clear existing content
+      alertsContainer.innerHTML = '';
+      
+      // Clear existing intervals
+      countdownIntervals.forEach(interval => clearInterval(interval));
+      countdownIntervals = [];
+
+      if (filteredAlerts.length === 0) {
+        noAlertsMessage.classList.remove('hidden');
+        alertsContainer.classList.add('hidden');
+        return;
+      }
+
+      noAlertsMessage.classList.add('hidden');
+      alertsContainer.classList.remove('hidden');
+      
+      filteredAlerts.forEach((alert, index) => {
+        const alertCard = createAlertCard(alert, index);
+        alertsContainer.appendChild(alertCard);
+      });
+
+      // Start countdowns
+      filteredAlerts.forEach(alert => {
+        if (alert.countdown) {
+          startCountdown(alert.id, alert.countdown);
+        }
+      });
+
+      // Animate cards
+      setTimeout(() => {
+        document.querySelectorAll('.slide-in').forEach(card => {
+          card.classList.add('visible');
+        });
+      }, 100);
+    }
+
+    // Create enhanced alert card
+    function createAlertCard(alert, index) {
+      const card = document.createElement('div');
+      card.className = 'alert-card glass-dark p-6 rounded-3xl card-3d slide-in';
+      card.style.animationDelay = `${index * 0.1}s`;
+      
+      const statusColors = {
+        available: 'text-green-400 border-green-400',
+        delayed: 'text-amber-400 border-amber-400',
+        unavailable: 'text-red-400 border-red-400',
+        info: 'text-sky-400 border-sky-400'
+      };
+
+      const statusBgColors = {
+        available: 'bg-green-400',
+        delayed: 'bg-amber-400',
+        unavailable: 'bg-red-400',
+        info: 'bg-sky-400'
+      };
+
+      const typeIcons = {
+        metro: 'fas fa-subway',
+        bus: 'fas fa-bus',
+        station: 'fas fa-map-marker-alt'
+      };
+
+      const typeColors = {
+        metro: 'from-purple-500 to-indigo-500',
+        bus: 'from-orange-500 to-red-500',
+        station: 'from-green-500 to-teal-500'
+      };
+
+      card.innerHTML = `
+        <div class="flex items-start justify-between mb-4">
+          <div class="flex items-center space-x-3 flex-1">
+            <div class="w-12 h-12 bg-gradient-to-r ${typeColors[alert.type]} rounded-xl flex items-center justify-center floating">
+              <i class="${typeIcons[alert.type]} text-white text-lg"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-bold text-white truncate">${alert.title}</h3>
+              <p class="text-gray-400 text-sm flex items-center space-x-1">
+                <i class="fas fa-map-marker-alt text-xs"></i>
+                <span class="truncate">${alert.location}</span>
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <div class="status-indicator ${statusBgColors[alert.status]} status-${alert.status}"></div>
+            <span class="text-sm font-medium ${statusColors[alert.status]} capitalize whitespace-nowrap">${alert.status}</span>
+          </div>
+        </div>
+        
+        <p class="text-gray-300 mb-4 leading-relaxed">${alert.message}</p>
+        
+        ${alert.countdown ? `
+          <div class="mb-4 flex items-center space-x-3">
+            <div class="relative w-16 h-16 flex-shrink-0">
+              <svg class="progress-ring w-16 h-16" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="36" stroke="rgba(14, 165, 233, 0.2)" stroke-width="8" fill="none"/>
+                <circle id="countdown-${alert.id}" cx="40" cy="40" r="36" stroke="#0ea5e9" stroke-width="8" fill="none" class="progress-ring-circle"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span id="time-${alert.id}" class="text-xl font-bold text-sky-400 countdown">${alert.countdown}</span>
+              </div>
+            </div>
+            <div>
+              <p class="text-sky-400 font-medium">Arriving in</p>
+              <p class="text-gray-400 text-sm">minutes</p>
+            </div>
+          </div>
+        ` : ''}
+        
+        <div class="flex flex-wrap gap-2 mb-4">
+          ${alert.tags.map(tag => `
+            <span class="glass px-3 py-1 rounded-full text-xs font-medium text-sky-400 border border-sky-400/30 whitespace-nowrap">
+              ${getTagIcon(tag)} ${tag}
+            </span>
+          `).join('')}
+        </div>
+        
+        <div class="flex items-center justify-between pt-4 border-t border-gray-600">
+          <div class="flex items-center space-x-4 flex-1 min-w-0">
+            <p class="text-gray-400 text-sm flex items-center space-x-1">
+              <i class="far fa-clock"></i>
+              <span>${getTimeAgo(alert.time)}</span>
+            </p>
+            <span class="px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(alert.priority)} whitespace-nowrap">${alert.priority.toUpperCase()}</span>
+          </div>
+          <div class="flex items-center space-x-2 flex-shrink-0">
+            <button onclick="shareAlert(${alert.id})" class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Share Alert">
+              <i class="fas fa-share-alt text-gray-400 hover:text-white"></i>
+            </button>
+            <button onclick="bookmarkAlert(${alert.id})" class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Bookmark">
+              <i class="far fa-bookmark text-gray-400 hover:text-amber-400"></i>
+            </button>
+            <button onclick="getDirections(${alert.id})" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-sm ripple magnetic whitespace-nowrap">
+              <i class="fas fa-directions mr-1"></i>Navigate
+            </button>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Helper functions
+    function getTagIcon(tag) {
+      const icons = {
+        'wheelchair': '♿',
+        'audio': '🔊',
+        'visual': '👁️',
+        'tactile': '✋',
+        'low-floor': '📐',
+        'kneeling': '🔽',
+        'elevator': '🛗',
+        'delay': '⏰',
+        'braille': '⠃',
+        'electric': '⚡',
+        'multilingual': '🌐',
+        'restroom': '🚻',
+        'assistance': '🤝',
+        'alternative': '🔄',
+        'changing-table': '👶',
+        'announcement': '📢'
+      };
+      return icons[tag] || '🏷️';
+    }
+
+    function getTimeAgo(time) {
+      const now = new Date();
+      const diff = Math.floor((now - time) / 1000 / 60);
+      if (diff < 1) return 'Just now';
+      if (diff < 60) return `${diff}m ago`;
+      return `${Math.floor(diff / 60)}h ago`;
+    }
+
+    function getPriorityColor(priority) {
+      const colors = {
+        high: 'bg-red-500/20 text-red-400 border border-red-400/30',
+        medium: 'bg-amber-500/20 text-amber-400 border border-amber-400/30',
+        low: 'bg-gray-500/20 text-gray-400 border border-gray-400/30'
+      };
+      return colors[priority];
+    }
+
+    // Enhanced countdown functionality
+    function startCountdown(alertId, initialTime) {
+      let timeLeft = initialTime * 60; // Convert to seconds
+      const timeElement = document.getElementById(`time-${alertId}`);
+      const circleElement = document.getElementById(`countdown-${alertId}`);
+      
+      if (!timeElement || !circleElement) return;
+      
+      const totalTime = initialTime * 60;
+      
+      const interval = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        if (minutes > 0) {
+          timeElement.textContent = minutes;
+        } else {
+          timeElement.textContent = seconds < 10 ? `0${seconds}` : seconds;
+        }
+        
+        // Update progress ring
+        const progress = (totalTime - timeLeft) / totalTime;
+        const offset = 251.2 * progress;
+        circleElement.style.strokeDashoffset = offset;
+        
+        // Change color when time is running out
+        if (timeLeft <= 30) {
+          circleElement.style.stroke = '#ef4444'; // Red
+          timeElement.style.color = '#ef4444';
+        } else if (timeLeft <= 60) {
+          circleElement.style.stroke = '#f59e0b'; // Amber
+          timeElement.style.color = '#f59e0b';
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(interval);
+          timeElement.parentElement.innerHTML = '<i class="fas fa-check text-green-400 text-2xl pulse-ring"></i>';
+          showNotification('Arrival Alert', `${currentAlerts.find(a => a.id === alertId)?.title} has arrived!`);
+        }
+      }, 1000);
+      
+      countdownIntervals.push(interval);
+    }
+
+    // Enhanced filter functionality
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => {
+          b.classList.remove('active', 'border-sky-400', 'text-sky-400');
+          b.classList.add('border-gray-600', 'text-gray-400');
+        });
+        btn.classList.add('active', 'border-sky-400', 'text-sky-400');
+        btn.classList.remove('border-gray-600', 'text-gray-400');
+        activeFilter = btn.dataset.filter;
+        renderAlerts(activeFilter, sortBy.value);
+      });
+    });
+
+    // Advanced filters toggle
+    showAdvanced.addEventListener('click', () => {
+      const isHidden = advancedFilters.classList.contains('hidden');
+      advancedFilters.classList.toggle('hidden');
+      showAdvanced.innerHTML = isHidden ? 
+        '<i class="fas fa-chevron-up"></i><span>Hide Advanced</span>' :
+        '<i class="fas fa-chevron-down"></i><span>Advanced Filters</span>';
+    });
+
+    // Sort functionality
+    sortBy.addEventListener('change', () => {
+      renderAlerts(activeFilter, sortBy.value);
+    });
+
+    // Enhanced refresh functionality
+    refreshBtn.addEventListener('click', () => {
+      refreshBtn.classList.add('refresh-animation');
+      
+      // Simulate API call with realistic delay
+      setTimeout(() => {
+        refreshBtn.classList.remove('refresh-animation');
+        lastUpdate.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        // Simulate new data
+        simulateNewData();
+        renderAlerts(activeFilter, sortBy.value);
+        updateStats();
+        updateFilterCounts();
+        
+        showNotification('Data Refreshed', 'Latest transportation data has been successfully updated.');
+      }, 1500);
+    });
+
+    // Simulate new data for demo
+    function simulateNewData() {
+      // Randomly update some alerts
+      currentAlerts.forEach(alert => {
+        if (Math.random() < 0.3) {
+          alert.time = new Date(Date.now() - Math.random() * 30 * 60 * 1000);
+          if (alert.countdown && Math.random() < 0.5) {
+            alert.countdown = Math.floor(Math.random() * 10) + 1;
+          }
+        }
+      });
+
+      // Occasionally add a new alert
+      if (Math.random() < 0.2) {
+        addRandomAlert();
+      }
+    }
+
+    // Update statistics with animation
+    function updateStats() {
+      const stats = {
+        activeAlerts: currentAlerts.length,
+        accessibleServices: currentAlerts.filter(a => a.tags.includes('wheelchair')).length,
+        serviceDelays: currentAlerts.filter(a => a.status === 'delayed').length,
+        onlineUsers: Math.floor(Math.random() * 500 + 1000)
+      };
+
+      Object.entries(stats).forEach(([key, value]) => {
+        const element = document.getElementById(key);
+        const currentValue = parseInt(element.textContent);
+        if (currentValue !== value) {
+          animateNumber(element, currentValue, value);
+        }
+      });
+    }
+
+    // Animate number changes
+    function animateNumber(element, start, end) {
+      const duration = 1000;
+      const startTime = Date.now();
+      const difference = end - start;
+
+      function update() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const current = Math.floor(start + difference * progress);
+        element.textContent = current.toLocaleString();
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      update();
+    }
+
+    // Update filter counts
+    function updateFilterCounts() {
+      const counts = {
+        all: currentAlerts.length,
+        metro: currentAlerts.filter(a => a.type === 'metro').length,
+        bus: currentAlerts.filter(a => a.type === 'bus').length,
+        wheelchair: currentAlerts.filter(a => a.tags.includes('wheelchair')).length,
+        delay: currentAlerts.filter(a => a.status === 'delayed').length
+      };
+
+      Object.entries(counts).forEach(([filter, count]) => {
+        const countElement = document.getElementById(`count-${filter}`);
+        if (countElement) {
+          countElement.textContent = count;
+        }
+      });
+    }
+
+    // Real-time updates
+    function startRealTimeUpdates() {
+      setInterval(() => {
+        lastUpdate.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        // Simulate live updates
+        if (Math.random() < 0.1) {
+          simulateNewData();
+          renderAlerts(activeFilter, sortBy.value);
+          updateStats();
+          updateFilterCounts();
+        }
+      }, 30000); // Update every 30 seconds
+    }
+
+    // Add random alert simulation
+    function addRandomAlert() {
+      const types = ['metro', 'bus', 'station'];
+      const statuses = ['available', 'delayed', 'info', 'unavailable'];
+      const priorities = ['high', 'medium', 'low'];
+      
+      const locations = [
+        'Chennai Central', 'T. Nagar', 'Vadapalani', 'Airport', 'Guindy',
+        'Anna Nagar', 'Adyar', 'Thiruvanmiyur', 'OMR', 'ECR'
+      ];
+
+      const services = [
+        'MTC Route 21G', 'MTC Route 29C', 'Blue Line Metro', 'Green Line Metro',
+        'Red Line Metro', 'Airport Express', 'City Bus Service'
+      ];
+
+      const newAlert = {
+        id: Date.now(),
+        type: types[Math.floor(Math.random() * types.length)],
+        title: services[Math.floor(Math.random() * services.length)],
+        location: locations[Math.floor(Math.random() * locations.length)],
+        message: 'New accessibility update detected. Real-time information available.',
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        time: new Date(),
+        priority: priorities[Math.floor(Math.random() * priorities.length)],
+        tags: ['wheelchair', 'audio', 'new'],
+        category: 'bus wheelchair audio',
+        countdown: Math.random() < 0.5 ? Math.floor(Math.random() * 10) + 1 : null
+      };
+      
+      currentAlerts.unshift(newAlert);
+      
+      // Limit to 20 alerts max
+      if (currentAlerts.length > 20) {
+        currentAlerts.pop();
+      }
+    }
+
+    // Enhanced modal functionality
+    function showModal(title, content) {
+      modalTitle.textContent = title;
+      modalContent.innerHTML = content;
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideModal() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Modal event listeners
+    closeModal.addEventListener('click', hideModal);
+    modalCancel.addEventListener('click', hideModal);
+    modalConfirm.addEventListener('click', hideModal);
+
+    // Close modal on backdrop click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        hideModal();
+      }
+    });
+
+    // Alert actions
+    function shareAlert(alertId) {
+      const alert = currentAlerts.find(a => a.id === alertId);
+      if (!alert) return;
+
+      showModal('Share Alert', `
+        <div class="space-y-4">
+          <p class="text-gray-300">Share this accessibility alert:</p>
+          <div class="glass p-4 rounded-lg border border-gray-600">
+            <h4 class="font-bold text-white mb-2">${alert.title}</h4>
+            <p class="text-sm text-gray-300 mb-2"><i class="fas fa-map-marker-alt mr-1"></i>${alert.location}</p>
+            <p class="text-sm text-gray-400">${alert.message}</p>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="copyToClipboard('${alert.title} - ${alert.message}')" class="flex items-center justify-center space-x-2 bg-gray-600 hover:bg-gray-500 text-white py-2 px-3 rounded-lg text-sm">
+              <i class="fas fa-copy"></i>
+              <span>Copy</span>
+            </button>
+            <button class="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-3 rounded-lg text-sm">
+              <i class="fab fa-twitter"></i>
+              <span>Tweet</span>
+            </button>
+            <button class="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-500 text-white py-2 px-3 rounded-lg text-sm">
+              <i class="fab fa-whatsapp"></i>
+              <span>Share</span>
+            </button>
+          </div>
+        </div>
+                              `);
+    }
+    // End of shareAlert function
+
+    // (No stray closing brace here)
+    // The script continues below...
+
+    function bookmarkAlert(alertId) {
+      const alert = currentAlerts.find(a => a.id === alertId);
+      if (!alert) return;
+
+      // Simulate saving to bookmarks
+      showNotification('Bookmarked', `"${alert.title}" has been saved to your bookmarks.`);
+      
+      // Visual feedback
+      event.target.classList.remove('far');
+      event.target.classList.add('fas', 'text-amber-400');
+    }
+
+    function getDirections(alertId) {
+      const alert = currentAlerts.find(a => a.id === alertId);
+      if (!alert) return;
+
+      showModal('Get Directions', `
+        <div class="space-y-4">
+          <div class="text-center">
+            <i class="fas fa-map-marked-alt text-sky-400 text-4xl mb-4"></i>
+            <h4 class="font-bold text-white mb-2">Navigate to:</h4>
+            <p class="text-gray-300">${alert.title}</p>
+            <p class="text-sm text-gray-400"><i class="fas fa-map-marker-alt mr-1"></i>${alert.location}</p>
+          </div>
+          
+          <div class="grid grid-cols-1 gap-3">
+            <button onclick="openGoogleMaps('${alert.location}')" class="flex items-center justify-center space-x-3 bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-lg">
+              <i class="fab fa-google text-xl"></i>
+              <span>Open in Google Maps</span>
+            </button>
+            <button onclick="getAccessibleRoute('${alert.location}')" class="flex items-center justify-center space-x-3 bg-purple-600 hover:bg-purple-500 text-white py-3 px-4 rounded-lg">
+              <i class="fas fa-wheelchair text-xl"></i>
+              <span>Accessible Route</span>
+            </button>
+            <button onclick="callAssistance()" class="flex items-center justify-center space-x-3 bg-green-600 hover:bg-green-500 text-white py-3 px-4 rounded-lg">
+              <i class="fas fa-phone text-xl"></i>
+              <span>Call for Assistance</span>
+            </button>
+          </div>
+        </div>
+      `);
+    }
+
+    // Navigation functions
+    function openGoogleMaps(location) {
+      const url = `https://maps.google.com/?q=${encodeURIComponent(location + ', Chennai')}`;
+      window.open(url, '_blank');
+      hideModal();
+      showNotification('Opening Maps', 'Google Maps is opening in a new tab.');
+    }
+
+    function getAccessibleRoute(location) {
+      showNotification('Accessible Route', 'Calculating the most accessible route with ramps, elevators, and wide pathways.');
+      hideModal();
+    }
+
+    function callAssistance() {
+      showNotification('Assistance Called', 'Transportation assistance has been notified. Help will arrive shortly.');
+      hideModal();
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showNotification('Copied', 'Alert details copied to clipboard.');
+        hideModal();
+      });
+    }
+
+    // AI Assistant functionality
+    aiAssistant.addEventListener('click', () => {
+      showModal('Accessibility AI Assistant', `
+        <div class="space-y-4">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center">
+              <i class="fas fa-robot text-white text-xl"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-white">AI Assistant</h4>
+              <p class="text-sm text-gray-400">How can I help you today?</p>
+            </div>
+          </div>
+          
+          <div class="space-y-2">
+            <button onclick="aiAction('route')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fas fa-route text-sky-400 mr-3"></i>
+              <span>Find accessible route to destination</span>
+            </button>
+            <button onclick="aiAction('updates')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fas fa-clock text-green-400 mr-3"></i>
+              <span>Check real-time service updates</span>
+            </button>
+            <button onclick="aiAction('filter')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fas fa-wheelchair text-purple-400 mr-3"></i>
+              <span>Filter by accessibility needs</span>
+            </button>
+            <button onclick="aiAction('alerts')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fas fa-bell text-amber-400 mr-3"></i>
+              <span>Set up personalized alerts</span>
+            </button>
+            <button onclick="aiAction('emergency')" class="w-full text-left glass p-3 rounded-lg hover:bg-white/10 transition-colors">
+              <i class="fas fa-exclamation-triangle text-red-400 mr-3"></i>
+              <span>Emergency assistance</span>
+            </button>
+          </div>
+        </div>
+      `);
+    });
+
+    // AI Assistant actions
+    function aiAction(action) {
+      hideModal();
+      switch(action) {
+        case 'route':
+          showNotification('AI Route Finder', 'Analyzing accessible routes based on your preferences...');
+          break;
+        case 'updates':
+          showNotification('Real-time Updates', 'Fetching latest service information...');
+          setTimeout(() => {
+            refreshBtn.click();
+          }, 1000);
+          break;
+        case 'filter':
+          showNotification('Smart Filtering', 'Applying personalized accessibility filters...');
+          document.querySelector('[data-filter="wheelchair"]').click();
+          break;
+        case 'alerts':
+          showNotification('Alert Setup', 'Configuring personalized notifications for your routes...');
+          break;
+        case 'emergency':
+          showModal('Emergency Assistance', `
+            <div class="text-center space-y-4">
+              <i class="fas fa-exclamation-triangle text-red-400 text-4xl"></i>
+              <h4 class="text-xl font-bold text-white">Emergency Assistance</h4>
+              <p class="text-gray-300">Do you need immediate help?</p>
+              <div class="grid grid-cols-1 gap-3">
+                <button onclick="emergencyCall('911')" class="bg-red-600 hover:bg-red-500 text-white py-3 px-4 rounded-lg font-bold">
+                  <i class="fas fa-phone mr-2"></i>Call Emergency (108)
+                </button>
+                <button onclick="emergencyCall('transport')" class="bg-orange-600 hover:bg-orange-500 text-white py-3 px-4 rounded-lg">
+                  <i class="fas fa-ambulance mr-2"></i>Transport Assistance
+                </button>
+                <button onclick="emergencyCall('medical')" class="bg-blue-600 hover:bg-blue-500 text-white py-3 px-4 rounded-lg">
+                  <i class="fas fa-user-md mr-2"></i>Medical Help
+                </button>
+              </div>
+            </div>
+          `);
+          break;
+      }
+    }
+
+    function emergencyCall(type) {
+      const messages = {
+        '911': 'Connecting to emergency services (108)...',
+        'transport': 'Calling accessible transportation services...',
+        'medical': 'Connecting to medical assistance...'
+      };
+      showNotification('Emergency Call', messages[type]);
+      hideModal();
+    }
+
+    // Enhanced notification system
+    function showNotification(title, message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = 'glass-dark p-4 rounded-lg shadow-2xl max-w-sm notification';
+      
+      const icons = {
+        info: 'fas fa-info-circle text-sky-400',
+        success: 'fas fa-check-circle text-green-400',
+        warning: 'fas fa-exclamation-triangle text-amber-400',
+        error: 'fas fa-times-circle text-red-400'
+      };
+
+      notification.innerHTML = `
+        <div class="flex items-start space-x-3">
+          <i class="${icons[type]} mt-1 text-lg"></i>
+          <div class="flex-1">
+            <h4 class="font-bold text-white text-sm">${title}</h4>
+            <p class="text-gray-300 text-sm mt-1">${message}</p>
+          </div>
+          <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-white ml-2">
+            <i class="fas fa-times text-sm"></i>
+          </button>
+        </div>
+      `;
+      
+      notificationContainer.appendChild(notification);
+      
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 5000);
+    }
+
+    // Notification button functionality
+    notificationBtn.addEventListener('click', () => {
+      showModal('Notifications', `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-bold text-white">Recent Notifications</h4>
+            <button onclick="clearNotifications()" class="text-sky-400 hover:text-sky-300 text-sm">Clear All</button>
+          </div>
+          <div class="space-y-3 max-h-60 overflow-y-auto">
+            <div class="glass p-3 rounded-lg border-l-4 border-green-400">
+              <p class="text-sm font-medium text-white">Service Restored</p>
+              <p class="text-xs text-gray-400 mt-1">Blue Line elevator at Chennai Central is now operational</p>
+              <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-amber-400">
+              <p class="text-sm font-medium text-white">Route Update</p>
+              <p class="text-xs text-gray-400 mt-1">MTC 21G now has enhanced accessibility features</p>
+              <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
+            </div>
+            <div class="glass p-3 rounded-lg border-l-4 border-sky-400">
+              <p class="text-sm font-medium text-white">New Feature</p>
+              <p class="text-xs text-gray-400 mt-1">Voice announcements now available in Tamil</p>
+              <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
+            </div>
+          </div>
+        </div>
+      `);
+    });
+
+    // Clear notifications function
+    function clearNotifications() {
+      // Simulate clearing notifications
+      showNotification('Notifications Cleared', 'All notifications have been cleared.', 'success');
+      hideModal();
+      // Optionally update notification count
+    }
+  </script>
+</body>
+</html>
