@@ -339,9 +339,148 @@
         transform: translateY(0) scale(1);
       }
     }
+
+    /* Mobile menu styles */
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .mobile-menu.open {
+      max-height: 500px;
+    }
+
+    /* Notification badge position */
+    .notification-badge-container {
+      position: relative;
+    }
+
+    .notification-badge-outer {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #ef4444;
+      border-radius: 9999px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: bold;
+      animation: bounce 2s infinite;
+      z-index: 10;
+    }
+
+    /* Voice Navigation Styles */
+    .voice-indicator {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .voice-indicator.listening {
+      background: rgba(239, 68, 68, 0.9);
+      animation: pulse 1s infinite;
+    }
+
+    .voice-indicator.processing {
+      background: rgba(245, 158, 11, 0.9);
+    }
+
+    .voice-feedback {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 16px;
+      border-radius: 12px;
+      display: none;
+      backdrop-filter: blur(10px);
+    }
+
+    .voice-commands-help {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.95);
+      color: white;
+      padding: 24px;
+      border-radius: 16px;
+      max-width: 500px;
+      width: 90%;
+      z-index: 1001;
+      display: none;
+      backdrop-filter: blur(20px);
+    }
+
+    .voice-navigation-focus {
+      outline: 3px solid #ef4444 !important;
+      outline-offset: 2px;
+      background: rgba(239, 68, 68, 0.1) !important;
+    }
+
+    .voice-highlight {
+      background: rgba(14, 165, 233, 0.3) !important;
+      border: 2px solid #0ea5e9 !important;
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+    }
   </style>
 </head>
 <body class="text-white min-h-screen">
+  <!-- Voice Navigation Indicator -->
+  <div id="voiceIndicator" class="voice-indicator">
+    <i class="fas fa-microphone"></i>
+    <span id="voiceStatus">Voice Ready</span>
+  </div>
+
+  <!-- Voice Feedback -->
+  <div id="voiceFeedback" class="voice-feedback">
+    <div class="flex items-center gap-3">
+      <i class="fas fa-volume-up text-blue-400"></i>
+      <span id="voiceFeedbackText"></span>
+    </div>
+  </div>
+
+  <!-- Voice Commands Help -->
+  <div id="voiceCommandsHelp" class="voice-commands-help">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-bold text-white">Voice Commands</h3>
+      <button onclick="hideVoiceHelp()" class="text-gray-400 hover:text-white">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="space-y-3 text-sm">
+      <div><strong>"navigate to [section]"</strong> - Go to dashboard, alerts, stats, filters</div>
+      <div><strong>"read alerts"</strong> - Read all current alerts</div>
+      <div><strong>"filter by [type]"</strong> - Filter by metro, bus, wheelchair, delays</div>
+      <div><strong>"refresh data"</strong> - Update latest information</div>
+      <div><strong>"emergency help"</strong> - Access emergency assistance</div>
+      <div><strong>"get directions to [location]"</strong> - Navigate to location</div>
+      <div><strong>"bookmark alert [number]"</strong> - Save alert to bookmarks</div>
+      <div><strong>"call assistance"</strong> - Contact transportation help</div>
+      <div><strong>"sort by priority"</strong> - Sort alerts by importance</div>
+      <div><strong>"show notifications"</strong> - View recent notifications</div>
+      <div><strong>"voice help"</strong> - Show this help menu</div>
+      <div><strong>"stop voice"</strong> - Disable voice navigation</div>
+    </div>
+  </div>
+
   <!-- Header with Live Status -->
   <div class="sticky top-0 z-50 glass-dark backdrop-blur-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -351,25 +490,50 @@
             <i class="fas fa-satellite-dish text-sky-400 text-xl floating"></i>
             <h1 class="text-xl font-bold text-gradient">AccessibleChennai</h1>
           </div>
+          
           <div class="hidden sm:flex items-center space-x-2 glass px-3 py-1 rounded-full">
             <div class="status-indicator bg-green-400 status-available"></div>
             <span class="text-sm text-green-400 live-indicator">LIVE</span>
           </div>
         </div>
         
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-6">
+          <a href="index.html" class="text-gray-300 hover:text-white transition-colors">Dashboard</a>
+          <a href="navigate.html" class="text-gray-300 hover:text-white transition-colors">Navigate</a>
+          <a href="community.html" class="text-gray-300 hover:text-white transition-colors">Community</a>
+          <a href="settings.html" class="text-gray-300 hover:text-white transition-colors"> Settings</a>
+          <a href="about.html" class="text-gray-300 hover:text-white transition-colors">About</a>
+        </div>
+        
         <div class="flex items-center space-x-4">
           <div class="hidden sm:block text-sm text-gray-300">
             Last update: <span id="lastUpdate" class="text-sky-400 font-medium">Just now</span>
           </div>
-          <button id="refreshBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10">
+          <button id="refreshBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10" title="Refresh data">
             <i class="fas fa-sync-alt text-sky-400"></i>
           </button>
-          <div class="relative">
-            <button id="notificationBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10">
+          <div class="notification-badge-container">
+            <button id="notificationBtn" class="glass p-2 rounded-full magnetic ripple hover:bg-white/10 relative" title="View notifications">
               <i class="fas fa-bell text-amber-400"></i>
-              <span id="notificationCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center notification-badge">3</span>
             </button>
+            <div id="notificationCount" class="notification-badge-outer">3</div>
           </div>
+          <!-- Mobile menu button -->
+          <button id="mobileMenuButton" class="md:hidden glass p-2 rounded-full magnetic ripple hover:bg-white/10" title="Menu">
+            <i class="fas fa-bars text-white"></i>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobileMenu" class="mobile-menu md:hidden mt-4">
+        <div class="flex flex-col space-y-2 py-2">
+          <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">Dashboard</a>
+          <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">Map</a>
+          <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">Routes</a>
+          <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">Services</a>
+          <a href="#" class="text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-white/10 transition-colors">About</a>
         </div>
       </div>
     </div>
@@ -377,107 +541,107 @@
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <!-- Quick Stats Dashboard -->
-    <div class="stats-grid mb-8">
-      <div class="glass-dark p-4 rounded-2xl card-3d">
+    <div id="statsSection" class="stats-grid mb-8">
+      <div class="glass-dark p-4 rounded-2xl card-3d" role="region" aria-label="Active alerts statistics">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-gray-400 text-sm">Active Alerts</p>
             <p class="text-2xl font-bold text-sky-400" id="activeAlerts">0</p>
           </div>
           <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-xl flex items-center justify-center">
-            <i class="fas fa-exclamation-triangle text-white"></i>
+            <i class="fas fa-exclamation-triangle text-white" aria-hidden="true"></i>
           </div>
         </div>
       </div>
       
-      <div class="glass-dark p-4 rounded-2xl card-3d">
+      <div class="glass-dark p-4 rounded-2xl card-3d" role="region" aria-label="Accessible services statistics">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-gray-400 text-sm">Accessible Services</p>
             <p class="text-2xl font-bold text-green-400" id="accessibleServices">0</p>
           </div>
           <div class="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl flex items-center justify-center">
-            <i class="fas fa-wheelchair text-white"></i>
+            <i class="fas fa-wheelchair text-white" aria-hidden="true"></i>
           </div>
         </div>
       </div>
       
-      <div class="glass-dark p-4 rounded-2xl card-3d">
+      <div class="glass-dark p-4 rounded-2xl card-3d" role="region" aria-label="Service delays statistics">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-gray-400 text-sm">Service Delays</p>
             <p class="text-2xl font-bold text-amber-400" id="serviceDelays">0</p>
           </div>
           <div class="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl flex items-center justify-center">
-            <i class="fas fa-clock text-white"></i>
+            <i class="fas fa-clock text-white" aria-hidden="true"></i>
           </div>
         </div>
       </div>
       
-      <div class="glass-dark p-4 rounded-2xl card-3d">
+      <div class="glass-dark p-4 rounded-2xl card-3d" role="region" aria-label="Online users statistics">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-gray-400 text-sm">Online Users</p>
             <p class="text-2xl font-bold text-purple-400" id="onlineUsers">0</p>
           </div>
           <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
-            <i class="fas fa-users text-white"></i>
+            <i class="fas fa-users text-white" aria-hidden="true"></i>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Smart Filters -->
-    <div class="glass-dark p-6 rounded-3xl mb-8">
+    <div id="filtersSection" class="glass-dark p-6 rounded-3xl mb-8" role="region" aria-label="Smart filters">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
         <h2 class="text-xl font-bold text-white flex items-center space-x-2">
-          <i class="fas fa-filter text-sky-400"></i>
+          <i class="fas fa-filter text-sky-400" aria-hidden="true"></i>
           <span>Smart Filters</span>
         </h2>
-        <button id="aiFilterBtn" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium ripple magnetic self-start">
-          <i class="fas fa-robot mr-2"></i>AI Suggest
+        <button id="aiFilterBtn" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-full text-sm font-medium ripple magnetic self-start" title="Get AI filter suggestions">
+          <i class="fas fa-robot mr-2" aria-hidden="true"></i>AI Suggest
         </button>
       </div>
       
-      <div class="filter-container mb-4">
+      <div class="filter-container mb-4" role="group" aria-label="Alert filters">
         <div class="filter-row">
-          <button data-filter="all" class="filter-tag active glass px-4 py-2 rounded-full text-sm font-medium border border-sky-400 text-sky-400">
-            <i class="fas fa-globe mr-2"></i>All Alerts <span class="ml-1 bg-sky-400 text-white px-2 py-0.5 rounded-full text-xs" id="count-all">0</span>
+          <button data-filter="all" class="filter-tag active glass px-4 py-2 rounded-full text-sm font-medium border border-sky-400 text-sky-400" title="Show all alerts">
+            <i class="fas fa-globe mr-2" aria-hidden="true"></i>All Alerts <span class="ml-1 bg-sky-400 text-white px-2 py-0.5 rounded-full text-xs" id="count-all">0</span>
           </button>
-          <button data-filter="metro" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-emerald-400 hover:text-emerald-400">
-            <i class="fas fa-subway mr-2"></i>Metro <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-metro">0</span>
+          <button data-filter="metro" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-emerald-400 hover:text-emerald-400" title="Show metro alerts">
+            <i class="fas fa-subway mr-2" aria-hidden="true"></i>Metro <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-metro">0</span>
           </button>
-          <button data-filter="bus" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-amber-400 hover:text-amber-400">
-            <i class="fas fa-bus mr-2"></i>Buses <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-bus">0</span>
+          <button data-filter="bus" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-amber-400 hover:text-amber-400" title="Show bus alerts">
+            <i class="fas fa-bus mr-2" aria-hidden="true"></i>Buses <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-bus">0</span>
           </button>
-          <button data-filter="wheelchair" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-purple-400 hover:text-purple-400">
-            <i class="fas fa-wheelchair mr-2"></i>Wheelchair <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-wheelchair">0</span>
+          <button data-filter="wheelchair" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-purple-400 hover:text-purple-400" title="Show wheelchair accessible alerts">
+            <i class="fas fa-wheelchair mr-2" aria-hidden="true"></i>Wheelchair <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-wheelchair">0</span>
           </button>
-          <button data-filter="delay" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-red-400 hover:text-red-400">
-            <i class="fas fa-exclamation-triangle mr-2"></i>Delays <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-delay">0</span>
+          <button data-filter="delay" class="filter-tag glass px-4 py-2 rounded-full text-sm font-medium hover:border-red-400 hover:text-red-400" title="Show delay alerts">
+            <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i>Delays <span class="ml-1 bg-gray-600 text-white px-2 py-0.5 rounded-full text-xs" id="count-delay">0</span>
           </button>
         </div>
       </div>
       
-      <div id="advancedFilters" class="hidden border-t border-gray-600 pt-4">
+      <div id="advancedFilters" class="hidden border-t border-gray-600 pt-4" role="group" aria-label="Advanced filters">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button data-filter="audio" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
-            <i class="fas fa-volume-up mr-2"></i>Audio Support
+          <button data-filter="audio" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10" title="Audio support filter">
+            <i class="fas fa-volume-up mr-2" aria-hidden="true"></i>Audio Support
           </button>
-          <button data-filter="visual" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
-            <i class="fas fa-eye mr-2"></i>Visual Aid
+          <button data-filter="visual" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10" title="Visual aid filter">
+            <i class="fas fa-eye mr-2" aria-hidden="true"></i>Visual Aid
           </button>
-          <button data-filter="tactile" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
-            <i class="fas fa-hand-paper mr-2"></i>Tactile Guide
+          <button data-filter="tactile" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10" title="Tactile guide filter">
+            <i class="fas fa-hand-paper mr-2" aria-hidden="true"></i>Tactile Guide
           </button>
-          <button data-filter="emergency" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10">
-            <i class="fas fa-exclamation-circle mr-2"></i>Emergency
+          <button data-filter="emergency" class="filter-tag glass px-3 py-2 rounded-lg text-sm hover:bg-white/10" title="Emergency filter">
+            <i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>Emergency
           </button>
         </div>
       </div>
       
-      <button id="showAdvanced" class="mt-4 text-sky-400 text-sm flex items-center space-x-1 hover:text-sky-300">
-        <i class="fas fa-chevron-down"></i>
+      <button id="showAdvanced" class="mt-4 text-sky-400 text-sm flex items-center space-x-1 hover:text-sky-300" title="Toggle advanced filters">
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
         <span>Advanced Filters</span>
       </button>
     </div>
@@ -485,12 +649,12 @@
     <!-- Real-time Alerts Feed -->
     <div class="space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h2 class="text-2xl font-bold text-white flex items-center space-x-2">
-          <i class="fas fa-broadcast-tower text-sky-400 floating"></i>
+        <h2 id="alertsTitle" class="text-2xl font-bold text-white flex items-center space-x-2">
+          <i class="fas fa-broadcast-tower text-sky-400 floating" aria-hidden="true"></i>
           <span>Live Feed</span>
         </h2>
         <div class="flex items-center space-x-3">
-          <select id="sortBy" class="glass bg-transparent text-white px-4 py-2 rounded-lg border border-gray-600">
+          <select id="sortBy" class="glass bg-transparent text-white px-4 py-2 rounded-lg border border-gray-600" title="Sort alerts">
             <option value="time">Latest First</option>
             <option value="priority">High Priority</option>
             <option value="distance">Nearest</option>
@@ -500,12 +664,12 @@
       </div>
 
       <!-- Alerts Container -->
-      <div id="alertsContainer" class="alerts-grid"></div>
+      <div id="alertsContainer" class="alerts-grid" role="main" aria-label="Transportation alerts"></div>
       
       <!-- No alerts message -->
       <div id="noAlertsMessage" class="hidden text-center py-12">
         <div class="glass-dark p-8 rounded-3xl max-w-md mx-auto">
-          <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+          <i class="fas fa-search text-gray-400 text-4xl mb-4" aria-hidden="true"></i>
           <h3 class="text-xl font-bold text-gray-300 mb-2">No Alerts Found</h3>
           <p class="text-gray-400">Try adjusting your filters or check back later for updates.</p>
         </div>
@@ -515,7 +679,7 @@
 
   <!-- Floating AI Assistant -->
   <div class="fixed bottom-6 right-6 z-50">
-    <button id="aiAssistant" class="w-14 h-14 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xl shadow-2xl magnetic floating">
+    <button id="aiAssistant" class="w-14 h-14 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center text-white text-xl shadow-2xl magnetic floating" title="AI Assistant">
       <i class="fas fa-robot"></i>
     </button>
   </div>
@@ -541,6 +705,433 @@
   <div id="notificationContainer" class="fixed top-20 right-4 z-50 space-y-2"></div>
 
   <script>
+    // Voice Navigation System
+    let isVoiceEnabled = false;
+    let recognition = null;
+    let synth = window.speechSynthesis;
+    let currentFocusIndex = 0;
+    let focusableElements = [];
+
+    // Check for voice preference from homepage
+    function checkVoicePreference() {
+      const voiceEnabled = localStorage.getItem('voiceNavigationEnabled');
+      if (voiceEnabled === 'true') {
+        enableVoiceNavigation();
+      }
+    }
+
+    function enableVoiceNavigation() {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        speak('Voice navigation is not supported in this browser.');
+        return;
+      }
+
+      isVoiceEnabled = true;
+      localStorage.setItem('voiceNavigationEnabled', 'true');
+      
+      // Initialize speech recognition
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        updateVoiceIndicator('listening', 'Listening...');
+      };
+
+      recognition.onresult = (event) => {
+        const command = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+        updateVoiceIndicator('processing', 'Processing...');
+        processVoiceCommand(command);
+      };
+
+      recognition.onerror = (event) => {
+        updateVoiceIndicator('error', 'Voice Error');
+        setTimeout(() => {
+          if (isVoiceEnabled) {
+            recognition.start();
+            updateVoiceIndicator('ready', 'Voice Ready');
+          }
+        }, 2000);
+      };
+
+      recognition.onend = () => {
+        if (isVoiceEnabled) {
+          setTimeout(() => {
+            recognition.start();
+            updateVoiceIndicator('ready', 'Voice Ready');
+          }, 1000);
+        }
+      };
+
+      // Start recognition
+      recognition.start();
+      document.getElementById('voiceIndicator').style.display = 'flex';
+      
+      // Update focusable elements
+      updateFocusableElements();
+      
+      // Welcome message
+      speak('Voice navigation enabled for AccessibleChennai Dashboard. Say "voice help" for available commands.');
+      
+      // Add keyboard support
+      document.addEventListener('keydown', handleVoiceKeyboard);
+    }
+
+    function disableVoiceNavigation() {
+      isVoiceEnabled = false;
+      localStorage.setItem('voiceNavigationEnabled', 'false');
+      
+      if (recognition) {
+        recognition.stop();
+        recognition = null;
+      }
+      
+      document.getElementById('voiceIndicator').style.display = 'none';
+      clearVoiceHighlights();
+      document.removeEventListener('keydown', handleVoiceKeyboard);
+      
+      speak('Voice navigation disabled.');
+    }
+
+    function updateVoiceIndicator(state, text) {
+      const indicator = document.getElementById('voiceIndicator');
+      const status = document.getElementById('voiceStatus');
+      
+      indicator.className = `voice-indicator ${state}`;
+      status.textContent = text;
+    }
+
+    function speak(text, priority = false, callback = null) {
+      if (!isVoiceEnabled && !priority) return;
+      
+      if (synth.speaking) {
+        synth.cancel();
+      }
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      utterance.volume = 0.8;
+      
+      if (callback) {
+        utterance.onend = callback;
+      }
+      
+      // Show feedback
+      showVoiceFeedback(text);
+      
+      synth.speak(utterance);
+    }
+
+    function showVoiceFeedback(text) {
+      const feedback = document.getElementById('voiceFeedback');
+      const feedbackText = document.getElementById('voiceFeedbackText');
+      
+      feedbackText.textContent = text;
+      feedback.style.display = 'block';
+      
+      setTimeout(() => {
+        feedback.style.display = 'none';
+      }, 3000);
+    }
+
+    function processVoiceCommand(command) {
+      console.log('Voice command:', command);
+      
+      // Navigation commands
+      if (command.includes('navigate to') || command.includes('go to')) {
+        if (command.includes('dashboard') || command.includes('stats')) {
+          navigateToSection('statsSection', 'Navigating to dashboard statistics');
+        } else if (command.includes('alerts') || command.includes('feed')) {
+          navigateToSection('alertsContainer', 'Navigating to alerts feed');
+        } else if (command.includes('filters')) {
+          navigateToSection('filtersSection', 'Navigating to filters section');
+        }
+        return;
+      }
+
+      // Alert reading commands
+      if (command.includes('read alerts') || command.includes('list alerts')) {
+        readCurrentAlerts();
+        return;
+      }
+
+      // Filter commands
+      if (command.includes('filter by') || command.includes('show only')) {
+        if (command.includes('metro')) {
+          activateFilter('metro', 'Filtering by metro alerts');
+        } else if (command.includes('bus')) {
+          activateFilter('bus', 'Filtering by bus alerts');
+        } else if (command.includes('wheelchair')) {
+          activateFilter('wheelchair', 'Filtering by wheelchair accessible services');
+        } else if (command.includes('delay')) {
+          activateFilter('delay', 'Filtering by service delays');
+        } else if (command.includes('all')) {
+          activateFilter('all', 'Showing all alerts');
+        }
+        return;
+      }
+
+      // Refresh commands
+      if (command.includes('refresh') || command.includes('update')) {
+        refreshData();
+        return;
+      }
+
+      // Emergency commands
+      if (command.includes('emergency') || command.includes('help')) {
+        triggerEmergencyAssistance();
+        return;
+      }
+
+      // Direction commands
+      if (command.includes('directions to') || command.includes('navigate to')) {
+        const location = extractLocation(command);
+        if (location) {
+          getDirectionsToLocation(location);
+        }
+        return;
+      }
+
+      // Bookmark commands
+      if (command.includes('bookmark alert')) {
+        const alertNumber = extractNumber(command);
+        if (alertNumber) {
+          bookmarkAlertByNumber(alertNumber);
+        }
+        return;
+      }
+
+      // Assistance commands
+      if (command.includes('call assistance') || command.includes('contact help')) {
+        callTransportationAssistance();
+        return;
+      }
+
+      // Sort commands
+      if (command.includes('sort by')) {
+        if (command.includes('priority')) {
+          sortAlerts('priority', 'Sorting alerts by priority');
+        } else if (command.includes('time') || command.includes('latest')) {
+          sortAlerts('time', 'Sorting alerts by time');
+        } else if (command.includes('distance') || command.includes('nearest')) {
+          sortAlerts('distance', 'Sorting alerts by distance');
+        }
+        return;
+      }
+
+      // Notification commands
+      if (command.includes('show notifications') || command.includes('view notifications')) {
+        showNotifications();
+        return;
+      }
+
+      // Statistics commands
+      if (command.includes('read stats') || command.includes('statistics')) {
+        readStatistics();
+        return;
+      }
+
+      // Share commands
+      if (command.includes('share alert')) {
+        const alertNumber = extractNumber(command);
+        if (alertNumber) {
+          shareAlertByNumber(alertNumber);
+        }
+        return;
+      }
+
+      // Voice help
+      if (command.includes('voice help') || command.includes('help me') || command.includes('commands')) {
+        showVoiceHelp();
+        return;
+      }
+
+      // Stop voice
+      if (command.includes('stop voice') || command.includes('disable voice')) {
+        disableVoiceNavigation();
+        return;
+      }
+
+      // Default response
+      speak('Command not recognized. Say "voice help" for available commands.');
+    }
+
+    // Voice command implementations
+    function navigateToSection(sectionId, message) {
+      const section = document.getElementById(sectionId);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        highlightElement(section);
+        speak(message);
+      }
+    }
+
+    function readCurrentAlerts() {
+      const alertCards = document.querySelectorAll('.alert-card:not(.hidden)');
+      if (alertCards.length === 0) {
+        speak('No alerts currently available.');
+        return;
+      }
+
+      speak(`Reading ${alertCards.length} alerts.`);
+      
+      alertCards.forEach((card, index) => {
+        setTimeout(() => {
+          const title = card.querySelector('h3').textContent;
+          const location = card.querySelector('.text-gray-400').textContent.replace('📍', '').trim();
+          const message = card.querySelector('.text-gray-300').textContent;
+          const status = card.querySelector('.capitalize').textContent;
+          
+          const alertText = `Alert ${index + 1}: ${title} at ${location}. Status: ${status}. ${message}`;
+          speak(alertText);
+          highlightElement(card);
+        }, index * 4000);
+      });
+    }
+
+    function activateFilter(filterType, message) {
+      const filterBtn = document.querySelector(`[data-filter="${filterType}"]`);
+      if (filterBtn) {
+        filterBtn.click();
+        speak(message);
+        highlightElement(filterBtn);
+      }
+    }
+
+    function refreshData() {
+      document.getElementById('refreshBtn').click();
+      speak('Refreshing transportation data...');
+    }
+
+    function triggerEmergencyAssistance() {
+      speak('Opening emergency assistance options.');
+      aiAction('emergency');
+    }
+
+    function getDirectionsToLocation(location) {
+      speak(`Getting directions to ${location}`);
+      openGoogleMaps(location);
+    }
+
+    function bookmarkAlertByNumber(number) {
+      const alertCards = document.querySelectorAll('.alert-card:not(.hidden)');
+      if (number > 0 && number <= alertCards.length) {
+        const bookmarkBtn = alertCards[number - 1].querySelector('[title="Bookmark"]');
+        if (bookmarkBtn) {
+          bookmarkBtn.click();
+          speak(`Alert ${number} bookmarked successfully.`);
+        }
+      } else {
+        speak(`Alert ${number} not found. There are ${alertCards.length} alerts available.`);
+      }
+    }
+
+    function callTransportationAssistance() {
+      speak('Connecting to transportation assistance...');
+      callAssistance();
+    }
+
+    function sortAlerts(sortType, message) {
+      const sortSelect = document.getElementById('sortBy');
+      sortSelect.value = sortType;
+      sortSelect.dispatchEvent(new Event('change'));
+      speak(message);
+    }
+
+    function showNotifications() {
+      document.getElementById('notificationBtn').click();
+      speak('Showing recent notifications.');
+    }
+
+    function readStatistics() {
+      const stats = [
+        `Active alerts: ${document.getElementById('activeAlerts').textContent}`,
+        `Accessible services: ${document.getElementById('accessibleServices').textContent}`,
+        `Service delays: ${document.getElementById('serviceDelays').textContent}`,
+        `Online users: ${document.getElementById('onlineUsers').textContent}`
+      ];
+      
+      speak(`Current statistics: ${stats.join(', ')}`);
+    }
+
+    function shareAlertByNumber(number) {
+      const alertCards = document.querySelectorAll('.alert-card:not(.hidden)');
+      if (number > 0 && number <= alertCards.length) {
+        const shareBtn = alertCards[number - 1].querySelector('[title="Share Alert"]');
+        if (shareBtn) {
+          shareBtn.click();
+          speak(`Sharing alert ${number}.`);
+        }
+      } else {
+        speak(`Alert ${number} not found.`);
+      }
+    }
+
+    function showVoiceHelp() {
+      const helpModal = document.getElementById('voiceCommandsHelp');
+      helpModal.style.display = 'block';
+      speak('Showing voice commands help. Press escape to close.');
+    }
+
+    function hideVoiceHelp() {
+      document.getElementById('voiceCommandsHelp').style.display = 'none';
+    }
+
+    // Helper functions
+    function extractLocation(command) {
+      const matches = command.match(/(?:directions to|navigate to)\s+(.+)/);
+      return matches ? matches[1].trim() : null;
+    }
+
+    function extractNumber(command) {
+      const matches = command.match(/\d+/);
+      return matches ? parseInt(matches[0]) : null;
+    }
+
+    function highlightElement(element) {
+      element.classList.add('voice-highlight');
+      setTimeout(() => {
+        element.classList.remove('voice-highlight');
+      }, 3000);
+    }
+
+    function clearVoiceHighlights() {
+      document.querySelectorAll('.voice-highlight').forEach(el => {
+        el.classList.remove('voice-highlight');
+      });
+    }
+
+    function updateFocusableElements() {
+      focusableElements = Array.from(document.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"]), .alert-card'
+      )).filter(el => !el.disabled && !el.hidden);
+    }
+
+    function handleVoiceKeyboard(event) {
+      if (!isVoiceEnabled) return;
+
+      switch(event.key) {
+        case 'Escape':
+          hideVoiceHelp();
+          break;
+        case 'F1':
+          event.preventDefault();
+          showVoiceHelp();
+          break;
+        case 'F2':
+          event.preventDefault();
+          readCurrentAlerts();
+          break;
+        case 'F3':
+          event.preventDefault();
+          readStatistics();
+          break;
+      }
+    }
+
     // Enhanced Chennai transportation data
     const alertsData = [
       {
@@ -662,17 +1253,52 @@
     const notificationContainer = document.getElementById('notificationContainer');
     const notificationBtn = document.getElementById('notificationBtn');
     const notificationCount = document.getElementById('notificationCount');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
 
     let activeFilter = 'all';
     let countdownIntervals = [];
     let currentAlerts = [...alertsData];
+    let notifications = [
+      {
+        id: 1,
+        title: 'Service Restored',
+        message: 'Blue Line elevator at Chennai Central is now operational',
+        time: new Date(Date.now() - 2 * 60 * 1000),
+        type: 'success'
+      },
+      {
+        id: 2,
+        title: 'Route Update',
+        message: 'MTC 21G now has enhanced accessibility features',
+        time: new Date(Date.now() - 15 * 60 * 1000),
+        type: 'info'
+      },
+      {
+        id: 3,
+        title: 'New Feature',
+        message: 'Voice announcements now available in Tamil',
+        time: new Date(Date.now() - 60 * 60 * 1000),
+        type: 'info'
+      }
+    ];
 
     // Initialize
     document.addEventListener('DOMContentLoaded', () => {
+      checkVoicePreference();
       renderAlerts();
       startRealTimeUpdates();
       updateStats();
       updateFilterCounts();
+      updateNotificationCount();
+    });
+
+    // Mobile menu toggle
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      mobileMenuButton.innerHTML = mobileMenu.classList.contains('open') ? 
+        '<i class="fas fa-times text-white"></i>' : 
+        '<i class="fas fa-bars text-white"></i>';
     });
 
     // Render alerts with proper filtering and sorting
@@ -710,6 +1336,9 @@
       if (filteredAlerts.length === 0) {
         noAlertsMessage.classList.remove('hidden');
         alertsContainer.classList.add('hidden');
+        if (isVoiceEnabled) {
+          speak('No alerts found matching your criteria.');
+        }
         return;
       }
 
@@ -734,6 +1363,11 @@
           card.classList.add('visible');
         });
       }, 100);
+
+      // Update focusable elements for voice navigation
+      if (isVoiceEnabled) {
+        updateFocusableElements();
+      }
     }
 
     // Create enhanced alert card
@@ -741,6 +1375,9 @@
       const card = document.createElement('div');
       card.className = 'alert-card glass-dark p-6 rounded-3xl card-3d slide-in';
       card.style.animationDelay = `${index * 0.1}s`;
+      card.setAttribute('role', 'article');
+      card.setAttribute('aria-label', `Alert: ${alert.title} at ${alert.location}`);
+      card.setAttribute('tabindex', '0');
       
       const statusColors = {
         available: 'text-green-400 border-green-400',
@@ -772,18 +1409,18 @@
         <div class="flex items-start justify-between mb-4">
           <div class="flex items-center space-x-3 flex-1">
             <div class="w-12 h-12 bg-gradient-to-r ${typeColors[alert.type]} rounded-xl flex items-center justify-center floating">
-              <i class="${typeIcons[alert.type]} text-white text-lg"></i>
+              <i class="${typeIcons[alert.type]} text-white text-lg" aria-hidden="true"></i>
             </div>
             <div class="flex-1 min-w-0">
               <h3 class="text-lg font-bold text-white truncate">${alert.title}</h3>
               <p class="text-gray-400 text-sm flex items-center space-x-1">
-                <i class="fas fa-map-marker-alt text-xs"></i>
+                <i class="fas fa-map-marker-alt text-xs" aria-hidden="true"></i>
                 <span class="truncate">${alert.location}</span>
               </p>
             </div>
           </div>
           <div class="flex items-center space-x-2 flex-shrink-0">
-            <div class="status-indicator ${statusBgColors[alert.status]} status-${alert.status}"></div>
+            <div class="status-indicator ${statusBgColors[alert.status]} status-${alert.status}" aria-label="Status: ${alert.status}"></div>
             <span class="text-sm font-medium ${statusColors[alert.status]} capitalize whitespace-nowrap">${alert.status}</span>
           </div>
         </div>
@@ -793,12 +1430,12 @@
         ${alert.countdown ? `
           <div class="mb-4 flex items-center space-x-3">
             <div class="relative w-16 h-16 flex-shrink-0">
-              <svg class="progress-ring w-16 h-16" viewBox="0 0 80 80">
+              <svg class="progress-ring w-16 h-16" viewBox="0 0 80 80" aria-hidden="true">
                 <circle cx="40" cy="40" r="36" stroke="rgba(14, 165, 233, 0.2)" stroke-width="8" fill="none"/>
                 <circle id="countdown-${alert.id}" cx="40" cy="40" r="36" stroke="#0ea5e9" stroke-width="8" fill="none" class="progress-ring-circle"/>
               </svg>
               <div class="absolute inset-0 flex items-center justify-center">
-                <span id="time-${alert.id}" class="text-xl font-bold text-sky-400 countdown">${alert.countdown}</span>
+                <span id="time-${alert.id}" class="text-xl font-bold text-sky-400 countdown" aria-label="Arriving in ${alert.countdown} minutes">${alert.countdown}</span>
               </div>
             </div>
             <div>
@@ -808,9 +1445,9 @@
           </div>
         ` : ''}
         
-        <div class="flex flex-wrap gap-2 mb-4">
+        <div class="flex flex-wrap gap-2 mb-4" role="list" aria-label="Alert features">
           ${alert.tags.map(tag => `
-            <span class="glass px-3 py-1 rounded-full text-xs font-medium text-sky-400 border border-sky-400/30 whitespace-nowrap">
+            <span class="glass px-3 py-1 rounded-full text-xs font-medium text-sky-400 border border-sky-400/30 whitespace-nowrap" role="listitem">
               ${getTagIcon(tag)} ${tag}
             </span>
           `).join('')}
@@ -819,20 +1456,20 @@
         <div class="flex items-center justify-between pt-4 border-t border-gray-600">
           <div class="flex items-center space-x-4 flex-1 min-w-0">
             <p class="text-gray-400 text-sm flex items-center space-x-1">
-              <i class="far fa-clock"></i>
+              <i class="far fa-clock" aria-hidden="true"></i>
               <span>${getTimeAgo(alert.time)}</span>
             </p>
             <span class="px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(alert.priority)} whitespace-nowrap">${alert.priority.toUpperCase()}</span>
           </div>
           <div class="flex items-center space-x-2 flex-shrink-0">
-            <button onclick="shareAlert(${alert.id})" class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Share Alert">
+            <button class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Share Alert" onclick="shareAlert(${alert.id})" aria-label="Share this alert">
               <i class="fas fa-share-alt text-gray-400 hover:text-white"></i>
             </button>
-            <button onclick="bookmarkAlert(${alert.id})" class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Bookmark">
+            <button class="magnetic glass p-2 rounded-lg hover:bg-white/10" title="Bookmark" onclick="bookmarkAlert(${alert.id})" aria-label="Bookmark this alert">
               <i class="far fa-bookmark text-gray-400 hover:text-amber-400"></i>
             </button>
-            <button onclick="getDirections(${alert.id})" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-sm ripple magnetic whitespace-nowrap">
-              <i class="fas fa-directions mr-1"></i>Navigate
+            <button class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-4 py-2 rounded-lg text-sm ripple magnetic whitespace-nowrap" onclick="getDirections(${alert.id})" aria-label="Get directions to ${alert.location}">
+              <i class="fas fa-directions mr-1" aria-hidden="true"></i>Navigate
             </button>
           </div>
         </div>
@@ -898,8 +1535,10 @@
         
         if (minutes > 0) {
           timeElement.textContent = minutes;
+          timeElement.setAttribute('aria-label', `Arriving in ${minutes} minutes`);
         } else {
           timeElement.textContent = seconds < 10 ? `0${seconds}` : seconds;
+          timeElement.setAttribute('aria-label', `Arriving in ${seconds} seconds`);
         }
         
         // Update progress ring
@@ -918,8 +1557,12 @@
         
         if (timeLeft <= 0) {
           clearInterval(interval);
-          timeElement.parentElement.innerHTML = '<i class="fas fa-check text-green-400 text-2xl pulse-ring"></i>';
-          showNotification('Arrival Alert', `${currentAlerts.find(a => a.id === alertId)?.title} has arrived!`);
+          timeElement.parentElement.innerHTML = '<i class="fas fa-check text-green-400 text-2xl pulse-ring" aria-label="Vehicle has arrived"></i>';
+          const alertTitle = currentAlerts.find(a => a.id === alertId)?.title || 'Transportation';
+          showNotification('Arrival Alert', `${alertTitle} has arrived!`, 'success');
+          if (isVoiceEnabled) {
+            speak(`${alertTitle} has arrived at the station.`);
+          }
         }
       }, 1000);
       
@@ -937,6 +1580,11 @@
         btn.classList.remove('border-gray-600', 'text-gray-400');
         activeFilter = btn.dataset.filter;
         renderAlerts(activeFilter, sortBy.value);
+        
+        if (isVoiceEnabled) {
+          const filterName = btn.textContent.trim().split(' ')[0];
+          speak(`Filtering by ${filterName}`);
+        }
       });
     });
 
@@ -947,16 +1595,28 @@
       showAdvanced.innerHTML = isHidden ? 
         '<i class="fas fa-chevron-up"></i><span>Hide Advanced</span>' :
         '<i class="fas fa-chevron-down"></i><span>Advanced Filters</span>';
+      
+      if (isVoiceEnabled) {
+        speak(isHidden ? 'Showing advanced filters' : 'Hiding advanced filters');
+      }
     });
 
     // Sort functionality
     sortBy.addEventListener('change', () => {
       renderAlerts(activeFilter, sortBy.value);
+      if (isVoiceEnabled) {
+        const sortName = sortBy.options[sortBy.selectedIndex].text;
+        speak(`Sorting by ${sortName}`);
+      }
     });
 
     // Enhanced refresh functionality
     refreshBtn.addEventListener('click', () => {
       refreshBtn.classList.add('refresh-animation');
+      
+      if (isVoiceEnabled) {
+        speak('Refreshing transportation data...');
+      }
       
       // Simulate API call with realistic delay
       setTimeout(() => {
@@ -969,7 +1629,10 @@
         updateStats();
         updateFilterCounts();
         
-        showNotification('Data Refreshed', 'Latest transportation data has been successfully updated.');
+        showNotification('Data Refreshed', 'Latest transportation data has been successfully updated.', 'success');
+        if (isVoiceEnabled) {
+          speak('Data refreshed successfully.');
+        }
       }, 1500);
     });
 
@@ -1098,6 +1761,10 @@
       if (currentAlerts.length > 20) {
         currentAlerts.pop();
       }
+
+      if (isVoiceEnabled) {
+        speak(`New alert: ${newAlert.title} at ${newAlert.location}`);
+      }
     }
 
     // Enhanced modal functionality
@@ -1106,6 +1773,10 @@
       modalContent.innerHTML = content;
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
+      
+      if (isVoiceEnabled) {
+        speak(`Opening ${title} dialog`);
+      }
     }
 
     function hideModal() {
@@ -1153,23 +1824,29 @@
             </button>
           </div>
         </div>
-                              `);
+      `);
     }
-    // End of shareAlert function
-
-    // (No stray closing brace here)
-    // The script continues below...
 
     function bookmarkAlert(alertId) {
       const alert = currentAlerts.find(a => a.id === alertId);
       if (!alert) return;
 
       // Simulate saving to bookmarks
-      showNotification('Bookmarked', `"${alert.title}" has been saved to your bookmarks.`);
+      showNotification('Bookmarked', `"${alert.title}" has been saved to your bookmarks.`, 'success');
+      
+      if (isVoiceEnabled) {
+        speak(`${alert.title} bookmarked successfully`);
+      }
       
       // Visual feedback
-      event.target.classList.remove('far');
-      event.target.classList.add('fas', 'text-amber-400');
+      const button = event.target.closest('button');
+      if (button) {
+        const icon = button.querySelector('i');
+        if (icon) {
+          icon.classList.remove('far');
+          icon.classList.add('fas', 'text-amber-400');
+        }
+      }
     }
 
     function getDirections(alertId) {
@@ -1208,22 +1885,34 @@
       const url = `https://maps.google.com/?q=${encodeURIComponent(location + ', Chennai')}`;
       window.open(url, '_blank');
       hideModal();
-      showNotification('Opening Maps', 'Google Maps is opening in a new tab.');
+      showNotification('Opening Maps', 'Google Maps is opening in a new tab.', 'info');
+      if (isVoiceEnabled) {
+        speak('Opening Google Maps in new tab');
+      }
     }
 
     function getAccessibleRoute(location) {
-      showNotification('Accessible Route', 'Calculating the most accessible route with ramps, elevators, and wide pathways.');
+      showNotification('Accessible Route', 'Calculating the most accessible route with ramps, elevators, and wide pathways.', 'info');
+      if (isVoiceEnabled) {
+        speak('Calculating accessible route with ramps and elevators');
+      }
       hideModal();
     }
 
     function callAssistance() {
-      showNotification('Assistance Called', 'Transportation assistance has been notified. Help will arrive shortly.');
+      showNotification('Assistance Called', 'Transportation assistance has been notified. Help will arrive shortly.', 'success');
+      if (isVoiceEnabled) {
+        speak('Transportation assistance has been contacted');
+      }
       hideModal();
     }
 
     function copyToClipboard(text) {
       navigator.clipboard.writeText(text).then(() => {
-        showNotification('Copied', 'Alert details copied to clipboard.');
+        showNotification('Copied', 'Alert details copied to clipboard.', 'success');
+        if (isVoiceEnabled) {
+          speak('Alert details copied to clipboard');
+        }
         hideModal();
       });
     }
@@ -1273,20 +1962,26 @@
       hideModal();
       switch(action) {
         case 'route':
-          showNotification('AI Route Finder', 'Analyzing accessible routes based on your preferences...');
+          showNotification('AI Route Finder', 'Analyzing accessible routes based on your preferences...', 'info');
+          if (isVoiceEnabled) {
+            speak('Analyzing accessible routes based on your preferences');
+          }
           break;
         case 'updates':
-          showNotification('Real-time Updates', 'Fetching latest service information...');
+          showNotification('Real-time Updates', 'Fetching latest service information...', 'info');
           setTimeout(() => {
             refreshBtn.click();
           }, 1000);
           break;
         case 'filter':
-          showNotification('Smart Filtering', 'Applying personalized accessibility filters...');
+          showNotification('Smart Filtering', 'Applying personalized accessibility filters...', 'info');
           document.querySelector('[data-filter="wheelchair"]').click();
           break;
         case 'alerts':
-          showNotification('Alert Setup', 'Configuring personalized notifications for your routes...');
+          showNotification('Alert Setup', 'Configuring personalized notifications for your routes...', 'info');
+          if (isVoiceEnabled) {
+            speak('Setting up personalized alert notifications');
+          }
           break;
         case 'emergency':
           showModal('Emergency Assistance', `
@@ -1317,7 +2012,10 @@
         'transport': 'Calling accessible transportation services...',
         'medical': 'Connecting to medical assistance...'
       };
-      showNotification('Emergency Call', messages[type]);
+      showNotification('Emergency Call', messages[type], 'info');
+      if (isVoiceEnabled) {
+        speak(messages[type]);
+      }
       hideModal();
     }
 
@@ -1356,6 +2054,16 @@
       }, 5000);
     }
 
+    // Update notification count
+    function updateNotificationCount() {
+      notificationCount.textContent = notifications.length;
+      if (notifications.length === 0) {
+        notificationCount.style.display = 'none';
+      } else {
+        notificationCount.style.display = 'flex';
+      }
+    }
+
     // Notification button functionality
     notificationBtn.addEventListener('click', () => {
       showModal('Notifications', `
@@ -1365,21 +2073,17 @@
             <button onclick="clearNotifications()" class="text-sky-400 hover:text-sky-300 text-sm">Clear All</button>
           </div>
           <div class="space-y-3 max-h-60 overflow-y-auto">
-            <div class="glass p-3 rounded-lg border-l-4 border-green-400">
-              <p class="text-sm font-medium text-white">Service Restored</p>
-              <p class="text-xs text-gray-400 mt-1">Blue Line elevator at Chennai Central is now operational</p>
-              <p class="text-xs text-gray-500 mt-1">2 minutes ago</p>
-            </div>
-            <div class="glass p-3 rounded-lg border-l-4 border-amber-400">
-              <p class="text-sm font-medium text-white">Route Update</p>
-              <p class="text-xs text-gray-400 mt-1">MTC 21G now has enhanced accessibility features</p>
-              <p class="text-xs text-gray-500 mt-1">15 minutes ago</p>
-            </div>
-            <div class="glass p-3 rounded-lg border-l-4 border-sky-400">
-              <p class="text-sm font-medium text-white">New Feature</p>
-              <p class="text-xs text-gray-400 mt-1">Voice announcements now available in Tamil</p>
-              <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
-            </div>
+            ${notifications.map(notification => `
+              <div class="glass p-3 rounded-lg border-l-4 ${
+                notification.type === 'success' ? 'border-green-400' : 
+                notification.type === 'warning' ? 'border-amber-400' : 
+                'border-sky-400'
+              }">
+                <p class="text-sm font-medium text-white">${notification.title}</p>
+                <p class="text-xs text-gray-400 mt-1">${notification.message}</p>
+                <p class="text-xs text-gray-500 mt-1">${getTimeAgo(notification.time)}</p>
+              </div>
+            `).join('')}
           </div>
         </div>
       `);
@@ -1387,11 +2091,26 @@
 
     // Clear notifications function
     function clearNotifications() {
-      // Simulate clearing notifications
+      notifications = [];
+      updateNotificationCount();
       showNotification('Notifications Cleared', 'All notifications have been cleared.', 'success');
       hideModal();
-      // Optionally update notification count
     }
+
+    // Make functions available globally
+    window.shareAlert = shareAlert;
+    window.bookmarkAlert = bookmarkAlert;
+    window.getDirections = getDirections;
+    window.openGoogleMaps = openGoogleMaps;
+    window.getAccessibleRoute = getAccessibleRoute;
+    window.callAssistance = callAssistance;
+    window.copyToClipboard = copyToClipboard;
+    window.aiAction = aiAction;
+    window.emergencyCall = emergencyCall;
+    window.clearNotifications = clearNotifications;
+    window.hideVoiceHelp = hideVoiceHelp;
+    window.enableVoiceNavigation = enableVoiceNavigation;
+    window.disableVoiceNavigation = disableVoiceNavigation;
   </script>
 </body>
 </html>

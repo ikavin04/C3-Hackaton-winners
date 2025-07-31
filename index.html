@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accessible Chennai - Inclusive Transportation for All</title>
+  <title>AccessibleChennai - Mode Selection</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
@@ -14,12 +14,6 @@
       --success: #10b981;
       --dark: #0f172a;
       --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-      --glass: rgba(255, 255, 255, 0.1);
-    }
-
-    * {
-      scroll-behavior: smooth;
     }
 
     body {
@@ -41,45 +35,38 @@
     }
 
     .glass-dark {
-      background: rgba(0, 0, 0, 0.2);
-      backdrop-filter: blur(15px);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .pulse-ring {
+      animation: pulseRing 2s infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.33); opacity: 1; }
+      40%, 50% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.2); }
     }
 
     .floating {
-      animation: float 6s ease-in-out infinite;
+      animation: float 3s ease-in-out infinite;
     }
     
     @keyframes float {
-      0%, 100% { transform: translateY(0px) rotate(0deg); }
-      25% { transform: translateY(-20px) rotate(1deg); }
-      50% { transform: translateY(-10px) rotate(-1deg); }
-      75% { transform: translateY(-15px) rotate(0.5deg); }
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
     }
 
-    .morph {
-      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-      animation: morph 8s ease-in-out infinite;
+    .listening-animation {
+      animation: listening 1.5s ease-in-out infinite;
     }
 
-    @keyframes morph {
-      0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
-      100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-    }
-
-    .card-3d {
-      transform-style: preserve-3d;
-      transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-    }
-
-    .card-3d:hover {
-      transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
-    }
-
-    .parallax-element {
-      transform: translateZ(0);
-      transition: transform 0.1s ease-out;
+    @keyframes listening {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 1; }
     }
 
     .text-gradient {
@@ -89,96 +76,39 @@
       background-clip: text;
     }
 
-    .nav-item {
-      position: relative;
-      overflow: hidden;
+    .voice-wave {
+      animation: voiceWave 0.8s ease-in-out infinite alternate;
     }
 
-    .nav-item::before {
+    @keyframes voiceWave {
+      0% { height: 10px; }
+      100% { height: 30px; }
+    }
+
+    .loading-dots::after {
       content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s;
+      animation: loadingDots 1.5s infinite;
     }
 
-    .nav-item:hover::before {
-      left: 100%;
+    @keyframes loadingDots {
+      0% { content: ''; }
+      25% { content: '.'; }
+      50% { content: '..'; }
+      75% { content: '...'; }
+      100% { content: ''; }
     }
 
-    .pulse-ring {
-      animation: pulseRing 2s infinite;
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
     }
 
-    @keyframes pulseRing {
-      0% { transform: scale(0.33); }
-      40%, 50% { opacity: 1; }
-      100% { opacity: 0; transform: scale(1.2); }
-    }
-
-    .stats-counter {
-      font-variant-numeric: tabular-nums;
-    }
-
-    .magnetic {
-      transition: transform 0.3s ease;
-    }
-
-    .magnetic:hover {
-      transform: scale(1.05) translateY(-2px);
-    }
-
-    .ripple {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .ripple::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .ripple:hover::after {
-      width: 300px;
-      height: 300px;
-    }
-
-    .glow {
-      box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
-      transition: box-shadow 0.3s ease;
-    }
-
-    .glow:hover {
-      box-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
-    }
-
-    .parallax {
-      transform: translate3d(0, 0, 0);
-    }
-
-    .typing::after {
-      content: '|';
-      animation: blink 1s infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .slide-up {
-      transform: translateY(100px);
+      transform: translateY(50px);
       opacity: 0;
       transition: all 0.8s ease;
     }
@@ -187,701 +117,372 @@
       transform: translateY(0);
       opacity: 1;
     }
-
-    .testimonial-card {
-      perspective: 1000px;
-    }
-
-    .testimonial-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
-    }
-
-    .testimonial-card:hover .testimonial-inner {
-      transform: rotateY(180deg);
-    }
-
-    .testimonial-front, .testimonial-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 1rem;
-      padding: 1.5rem;
-    }
-
-    .testimonial-back {
-      transform: rotateY(180deg);
-      background: var(--gradient-secondary);
-    }
   </style>
 </head>
-<body class="text-white min-h-screen">
-<!-- Navigation (modified) -->
-<nav class="fixed top-0 w-full z-50 glass-dark">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="flex justify-between h-20">
-      <div class="flex items-center">
-        <div class="flex-shrink-0 flex items-center group">
-          <div class="relative">
-            <i class="fas fa-wheelchair text-sky-400 text-3xl mr-3"></i> <!-- Removed floating class -->
-            <div class="absolute inset-0 bg-sky-400 opacity-20 blur-lg rounded-full pulse-ring"></div>
-          </div>
-          <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
-        </div>
-        <div class="hidden sm:ml-8 sm:flex sm:space-x-2">
-          <a href="#" class="nav-item px-4 py-2 rounded-full text-white font-medium magnetic">Home</a>
-          <a href="#alerts" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic">Alerts</a>
-          <a href="#community" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic">Community</a>
-          <a href="#routes" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic">Navigate</a>
-          <a href="#settings" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic">Settings</a>
+<body class="text-white min-h-screen flex items-center justify-center">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <!-- Logo and Welcome -->
+    <div class="mb-12 slide-up">
+      <div class="flex items-center justify-center mb-6">
+        <div class="relative">
+          <i class="fas fa-wheelchair text-sky-400 text-6xl floating"></i>
+          <div class="absolute inset-0 bg-sky-400 opacity-20 blur-lg rounded-full pulse-ring"></div>
         </div>
       </div>
-      <div class="sm:hidden flex items-center">
-        <button id="mobile-menu-button" class="glass p-3 rounded-lg magnetic">
-          <i class="fas fa-bars text-xl"></i>
+      <h1 class="text-5xl md:text-6xl font-bold mb-4">
+        <span class="text-gradient">Welcome to</span><br>
+        <span class="text-white">AccessibleChennai</span>
+      </h1>
+      <p class="text-xl text-gray-300 mb-8">
+        Choose your preferred interaction mode to get started
+      </p>
+    </div>
+
+    <!-- Mode Selection Interface -->
+    <div class="glass-dark p-12 rounded-3xl mb-8 slide-up" id="modeSelector">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          <i class="fas fa-cog text-sky-400 mr-3"></i>
+          Select Your Mode
+        </h2>
+        <p class="text-gray-300 text-lg">
+          Say "Voice Mode" or "Normal Mode" or click the buttons below
+        </p>
+      </div>
+
+      <!-- Voice Input Indicator -->
+      <div class="mb-8" id="voiceIndicator">
+        <div class="flex items-center justify-center mb-4">
+          <div class="w-16 h-16 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center" id="micIcon">
+            <i class="fas fa-microphone text-2xl text-white"></i>
+          </div>
+        </div>
+        <p class="text-sky-400 font-medium" id="listeningText">Click the microphone or say your preference</p>
+        
+        <!-- Voice Wave Animation -->
+        <div class="flex items-center justify-center space-x-1 mt-4 hidden" id="voiceWaves">
+          <div class="w-1 bg-sky-400 voice-wave" style="animation-delay: 0s;"></div>
+          <div class="w-1 bg-sky-400 voice-wave" style="animation-delay: 0.1s;"></div>
+          <div class="w-1 bg-sky-400 voice-wave" style="animation-delay: 0.2s;"></div>
+          <div class="w-1 bg-sky-400 voice-wave" style="animation-delay: 0.3s;"></div>
+          <div class="w-1 bg-sky-400 voice-wave" style="animation-delay: 0.4s;"></div>
+        </div>
+      </div>
+
+      <!-- Manual Selection Buttons -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <button 
+          class="glass p-8 rounded-2xl hover:bg-gradient-to-br hover:from-sky-500/20 hover:to-cyan-500/20 transition-all duration-300 group"
+          onclick="selectMode('voice')"
+          id="voiceModeBtn">
+          <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <i class="fas fa-volume-up text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-3">Voice Mode</h3>
+          <p class="text-gray-300">
+            Full voice interaction with audio feedback for all actions and navigation
+          </p>
+          <div class="mt-4 flex items-center justify-center space-x-2 text-sm text-green-400">
+            <i class="fas fa-check"></i>
+            <span>Recommended for visually impaired users</span>
+          </div>
+        </button>
+
+        <button 
+          class="glass p-8 rounded-2xl hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-300 group"
+          onclick="selectMode('normal')"
+          id="normalModeBtn">
+          <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+            <i class="fas fa-mouse-pointer text-2xl text-white"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-white mb-3">Normal Mode</h3>
+          <p class="text-gray-300">
+            Traditional visual interface with click and touch interactions
+          </p>
+          <div class="mt-4 flex items-center justify-center space-x-2 text-sm text-purple-400">
+            <i class="fas fa-eye"></i>
+            <span>Standard visual interaction</span>
+          </div>
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- Mobile menu (modified) -->
-  <div class="hidden sm:hidden glass-dark m-4 rounded-2xl" id="mobile-menu">
-    <div class="p-6 space-y-4">
-      <a href="#" class="block text-white font-medium py-2">Home</a>
-      <a href="#alerts" class="block text-gray-300 hover:text-white font-medium py-2">Alerts</a>
-      <a href="#community" class="block text-gray-300 hover:text-white font-medium py-2">Community</a>
-      <a href="#routes" class="block text-gray-300 hover:text-white font-medium py-2">Navigate</a>
-      <a href="#settings" class="block text-gray-300 hover:text-white font-medium py-2">Settings</a>
+    <!-- Loading/Processing State -->
+    <div class="glass-dark p-8 rounded-3xl hidden" id="loadingState">
+      <div class="flex items-center justify-center mb-4">
+        <div class="w-12 h-12 border-4 border-sky-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+      <p class="text-xl text-white loading-dots" id="loadingText">Processing your selection</p>
     </div>
-  </div>
-</nav>
 
-<!-- Hero Section (modified buttons) -->
-<div class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-    
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-      <div class="grid lg:grid-cols-2 gap-12 items-center">
-        <div class="text-center lg:text-left slide-up">
-          <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            <span class="text-gradient typing">Making Chennai</span><br>
-            <span class="text-white">Accessible to</span><br>
-            <span class="text-amber-400">Everyone</span>
-          </h1>
-          <p class="text-xl text-gray-300 mb-8 max-w-2xl">
-            Experience the future of inclusive transportation with real-time accessibility information, AI-powered navigation, and community-driven insights.
-          </p>
-           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-    <a href="journey.html" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-8 py-4 rounded-full font-bold text-lg ripple glow magnetic transform hover:scale-105 transition-all">
-      <i class="fas fa-play mr-2"></i> Start Journey
-    </a>
-    <button class="glass border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg magnetic">
-      <i class="fas fa-info-circle mr-2"></i> About Us
-    </button>
-  </div>
-</div>
-        
-        <div class="relative lg:block hidden">
-          <div class="relative w-full h-96">
-            <div class="absolute inset-0 bg-gradient-to-r from-sky-400 to-cyan-400 opacity-20 rounded-3xl morph"></div>
-            <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
-                 alt="Accessible transportation" 
-                 class="w-full h-full object-cover rounded-3xl floating shadow-2xl">
-            <div class="absolute -bottom-4 -right-4 glass-dark p-4 rounded-2xl">
-              <div class="flex items-center space-x-2">
-                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                <span class="text-sm font-medium">Live Updates Active</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Stats Dashboard -->
-  <div class="py-20" id="stats">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 slide-up">
-        <h2 class="text-4xl font-bold mb-4">
-          <span class="text-gradient">Real-Time</span> City Data
-        </h2>
-        <p class="text-xl text-gray-300">Live accessibility metrics across Chennai</p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="glass-dark p-8 rounded-3xl card-3d glow group">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <i class="fas fa-users text-2xl text-white"></i>
-            </div>
-            <div class="stats-counter text-4xl font-bold text-sky-400 mb-2" data-target="1200000">0</div>
-            <p class="text-gray-300">People with disabilities in Chennai</p>
-          </div>
-        </div>
-        
-        <div class="glass-dark p-8 rounded-3xl card-3d glow group">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <i class="fas fa-bus text-2xl text-white"></i>
-            </div>
-            <div class="stats-counter text-4xl font-bold text-emerald-400 mb-2" data-target="68">0</div>
-            <p class="text-gray-300">% Accessible buses in fleet</p>
-          </div>
-        </div>
-        
-        <div class="glass-dark p-8 rounded-3xl card-3d glow group">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <i class="fas fa-subway text-2xl text-white"></i>
-            </div>
-            <div class="stats-counter text-4xl font-bold text-amber-400 mb-2" data-target="41">0</div>
-            <p class="text-gray-300">Fully accessible metro stations</p>
-          </div>
-        </div>
-        
-        <div class="glass-dark p-8 rounded-3xl card-3d glow group">
-          <div class="text-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
-              <i class="fas fa-building text-2xl text-white"></i>
-            </div>
-            <div class="stats-counter text-4xl font-bold text-purple-400 mb-2" data-target="85">0</div>
-            <p class="text-gray-300">% Buildings with ramp access</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Feature Showcase -->
-  <div class="py-20" id="features">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 slide-up">
-        <h2 class="text-5xl font-bold mb-4">
-          <span class="text-gradient">Revolutionary</span> Features
-        </h2>
-        <p class="text-xl text-gray-300">Experience accessibility like never before</p>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-        <div class="slide-up">
-          <div class="glass-dark p-8 rounded-3xl">
-            <div class="flex items-center mb-6">
-              <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-xl flex items-center justify-center mr-4">
-                <i class="fas fa-eye text-xl text-white"></i>
-              </div>
-              <h3 class="text-2xl font-bold text-white">AI Visual Recognition</h3>
-            </div>
-            <p class="text-gray-300 mb-6">
-              Advanced computer vision technology that identifies accessibility barriers in real-time and provides instant navigation alternatives.
-            </p>
-            <div class="space-y-3">
-              <div class="flex items-center text-sm">
-                <i class="fas fa-check text-green-400 mr-3"></i>
-                <span class="text-gray-300">Real-time obstacle detection</span>
-              </div>
-              <div class="flex items-center text-sm">
-                <i class="fas fa-check text-green-400 mr-3"></i>
-                <span class="text-gray-300">Smart route optimization</span>
-              </div>
-              <div class="flex items-center text-sm">
-                <i class="fas fa-check text-green-400 mr-3"></i>
-                <span class="text-gray-300">Voice-guided navigation</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="relative">
-          <div class="aspect-square bg-gradient-to-r from-sky-400/20 to-cyan-400/20 rounded-full"></div>
-          <div class="absolute inset-4 glass rounded-full flex items-center justify-center">
-            <i class="fas fa-robot text-6xl text-sky-400 floating"></i>
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-sky-500/10 hover:to-cyan-500/10 transition-all duration-500">
-          <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mb-6 floating">
-            <i class="fas fa-map-marked-alt text-2xl text-white"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white mb-4">Smart Mapping</h3>
-          <p class="text-gray-300">Interactive 3D maps with accessibility overlays and real-time updates from the community.</p>
-        </div>
-        
-        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-amber-500/10 hover:to-orange-500/10 transition-all duration-500">
-          <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 floating" style="animation-delay: -1s;">
-            <i class="fas fa-users text-2xl text-white"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white mb-4">Community Network</h3>
-          <p class="text-gray-300">Connect with local volunteers and accessibility advocates for real-time assistance and support.</p>
-        </div>
-        
-        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-500">
-          <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 floating" style="animation-delay: -2s;">
-            <i class="fas fa-bell text-2xl text-white"></i>
-          </div>
-          <h3 class="text-xl font-bold text-white mb-4">Smart Alerts</h3>
-          <p class="text-gray-300">Personalized notifications about service disruptions, new accessible routes, and community events.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Interactive Testimonials -->
-  <div class="py-20" id="testimonials">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16 slide-up">
-        <h2 class="text-4xl font-bold mb-4">
-          <span class="text-gradient">Community</span> Voices
-        </h2>
-        <p class="text-xl text-gray-300">Stories from our incredible users</p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="testimonial-card h-64">
-          <div class="testimonial-inner">
-            <div class="testimonial-front glass-dark">
-              <div class="flex items-center justify-center h-full flex-col">
-                <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Priya" class="w-16 h-16 rounded-full mb-4">
-                <h4 class="text-lg font-semibold text-white">Priya K.</h4>
-                <p class="text-sky-400 text-sm">Wheelchair User</p>
-              </div>
-            </div>
-            <div class="testimonial-back text-white flex items-center justify-center">
-              <p class="text-center italic">"This app has transformed how I navigate Chennai. The AI features are incredible!"</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial-card h-64">
-          <div class="testimonial-inner">
-            <div class="testimonial-front glass-dark">
-              <div class="flex items-center justify-center h-full flex-col">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Arun" class="w-16 h-16 rounded-full mb-4">
-                <h4 class="text-lg font-semibold text-white">Arun M.</h4>
-                <p class="text-cyan-400 text-sm">Parent</p>
-              </div>
-            </div>
-            <div class="testimonial-back text-white flex items-center justify-center">
-              <p class="text-center italic">"The community features help me connect with other parents. It's amazing!"</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial-card h-64">
-          <div class="testimonial-inner">
-            <div class="testimonial-front glass-dark">
-              <div class="flex items-center justify-center h-full flex-col">
-                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Meena" class="w-16 h-16 rounded-full mb-4">
-                <h4 class="text-lg font-semibold text-white">Meena R.</h4>
-                <p class="text-emerald-400 text-sm">Senior Citizen</p>
-              </div>
-            </div>
-            <div class="testimonial-back text-white flex items-center justify-center">
-              <p class="text-center italic">"The voice navigation feature is a game-changer for my daily commute."</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CTA Section -->
-  <div class="py-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="glass-dark p-12 rounded-3xl relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10"></div>
-        <div class="relative z-10">
-          <h2 class="text-4xl font-bold text-white mb-6">
-            Ready to Transform Your Journey?
-          </h2>
-          <p class="text-xl text-gray-300 mb-8">
-            Join thousands of users making Chennai more accessible, one trip at a time.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <button class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-8 py-4 rounded-full font-bold text-lg ripple glow magnetic">
-              <i class="fas fa-download mr-2"></i> Download Now
-            </button>
-            <button class="glass border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg magnetic">
-              <i class="fab fa-github mr-2"></i> View on GitHub
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer class="glass-dark mt-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-        <div class="col-span-1 md:col-span-2">
-          <div class="flex items-center mb-6">
-            <i class="fas fa-wheelchair text-sky-400 text-2xl mr-3"></i>
-            <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
-          </div>
-          <p class="text-gray-300 mb-6 max-w-md">
-            Empowering inclusive mobility through technology and community collaboration.
-          </p>
-          <div class="flex space-x-4">
-            <a href="#" class="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center hover:bg-sky-600 transition-colors">
-              <i class="fab fa-twitter text-white"></i>
-            </a>
-            <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
-              <i class="fab fa-facebook text-white"></i>
-            </a>
-            <a href="#" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors">
-              <i class="fab fa-instagram text-white"></i>
-            </a>
-            <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
-              <i class="fab fa-github text-white"></i>
-            </a>
-          </div>
-        </div>
-        
+    <!-- Voice Commands Help -->
+    <div class="mt-8 glass p-6 rounded-2xl slide-up">
+      <h3 class="text-lg font-semibold text-white mb-3">
+        <i class="fas fa-info-circle text-sky-400 mr-2"></i>
+        Voice Commands
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
         <div>
-          <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Developer Guide</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a></li>
-          </ul>
+          <span class="text-green-400 font-medium">"Voice Mode"</span> - Enable full voice interaction
         </div>
-        
         <div>
-          <h3 class="text-lg font-semibold text-white mb-4">Resources</h3>
-          <ul class="space-y-2">
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">API Documentation</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Accessibility Guidelines</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Transit Maps</a></li>
-          </ul>
+          <span class="text-purple-400 font-medium">"Normal Mode"</span> - Use standard interface
         </div>
-        
-        <div>
-          <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
-          <ul class="space-y-2">
-            <li><a href="mailto:support@accessiblechennai.com" class="text-gray-300 hover:text-white transition-colors">Email Support</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Live Chat</a></li>
-            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Feedback Form</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="mt-12 text-center text-gray-400 text-sm">
-        &copy; 2024 AccessibleChennai. All rights reserved.
       </div>
     </div>
-  </footer>
+  </div>
 
   <script>
-    // Mobile menu toggle
-    document.getElementById('mobile-menu-button').addEventListener('click', function() {
-      const menu = document.getElementById('mobile-menu');
-      menu.classList.toggle('hidden');
-      
-      const icon = this.querySelector('i');
-      if (menu.classList.contains('hidden')) {
-        icon.classList.remove('fa-times');
-        icon.classList.add('fa-bars');
-      } else {
-        icon.classList.remove('fa-bars');
-        icon.classList.add('fa-times');
-      }
-    });
+    let recognition;
+    let isListening = false;
+    let speechSynthesis = window.speechSynthesis;
+    let selectedMode = null;
 
-    // Stats counter animation
-    function animateCounter(element, target, duration = 2000) {
-      let start = 0;
-      const increment = target / (duration / 16);
-      
-      function updateCounter() {
-        start += increment;
-        if (start < target) {
-          element.textContent = Math.floor(start).toLocaleString();
-          requestAnimationFrame(updateCounter);
-        } else {
-          element.textContent = target.toLocaleString();
-        }
-      }
-      updateCounter();
-    }
+    // Initialize speech recognition
+    function initializeSpeechRecognition() {
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
 
-    // Intersection Observer for animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
+        recognition.onstart = function() {
+          isListening = true;
+          updateUI('listening');
+          speak("Please say Voice Mode for full audio assistance, or Normal Mode for standard interaction");
+        };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          
-          // Animate counters when stats section is visible
-          if (entry.target.id === 'stats') {
-            const counters = entry.target.querySelectorAll('.stats-counter');
-            counters.forEach(counter => {
-              const target = parseInt(counter.dataset.target);
-              animateCounter(counter, target);
-            });
+        recognition.onresult = function(event) {
+          let finalTranscript = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            }
           }
-        }
-      });
-    }, observerOptions);
 
-    // Observe slide-up elements
-    document.querySelectorAll('.slide-up').forEach(el => {
-      observer.observe(el);
-    });
+          if (finalTranscript) {
+            processVoiceCommand(finalTranscript.toLowerCase().trim());
+          }
+        };
 
-    // Observe stats section
-    const statsSection = document.getElementById('stats');
-    if (statsSection) {
-      observer.observe(statsSection);
-    }
+        recognition.onerror = function(event) {
+          console.error('Speech recognition error:', event.error);
+          updateUI('error');
+          speak("Sorry, I couldn't hear you clearly. Please try again or use the buttons.");
+        };
 
-    // Parallax effect for hero elements
-    let ticking = false;
-    
-    function updateParallax() {
-      const scrolled = window.pageYOffset;
-      const parallaxElements = document.querySelectorAll('.parallax-element');
-      
-      parallaxElements.forEach((element, index) => {
-        const speed = 0.5 + (index * 0.1);
-        const yPos = -(scrolled * speed);
-        element.style.transform = `translate3d(0, ${yPos}px, 0)`;
-      });
-      
-      ticking = false;
-    }
+        recognition.onend = function() {
+          isListening = false;
+          if (!selectedMode) {
+            updateUI('ready');
+          }
+        };
 
-    function requestTick() {
-      if (!ticking) {
-        requestAnimationFrame(updateParallax);
-        ticking = true;
-      }
-    }
-
-    window.addEventListener('scroll', requestTick);
-
-    // Smooth scrolling for navigation links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-      });
-    });
-
-    // Enhanced magnetic effect for buttons
-    document.querySelectorAll('.magnetic').forEach(element => {
-      element.addEventListener('mousemove', (e) => {
-        const rect = element.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        
-        element.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px) scale(1.05)`;
-      });
-      
-      element.addEventListener('mouseleave', () => {
-        element.style.transform = '';
-      });
-    });
-
-    // Typing effect for hero title
-    function typeWriter(element, text, speed = 100) {
-      let i = 0;
-      element.innerHTML = '';
-      
-      function type() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, speed);
-        } else {
-          element.classList.remove('typing');
-        }
-      }
-      type();
-    }
-
-    // Initialize typing effect
-    window.addEventListener('load', () => {
-      const typingElement = document.querySelector('.typing');
-      if (typingElement) {
-        const originalText = typingElement.textContent;
-        typeWriter(typingElement, originalText, 80);
-      }
-    });
-
-    // Add ripple effect to buttons
-    document.querySelectorAll('.ripple').forEach(button => {
-      button.addEventListener('click', function(e) {
-        const rect = this.getBoundingClientRect();
-        const ripple = document.createElement('span');
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        ripple.classList.add('ripple-effect');
-        
-        this.appendChild(ripple);
-        
+        // Start listening automatically
         setTimeout(() => {
-          ripple.remove();
-        }, 600);
-      });
-    });
-
-    // Enhanced card hover effects
-    document.querySelectorAll('.card-3d').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
-        
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-      });
-    });
-
-    // Navbar background change on scroll
-    const navbar = document.querySelector('nav');
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 100) {
-        navbar.classList.add('backdrop-blur-xl', 'bg-slate-900/80');
+          startListening();
+        }, 2000);
       } else {
-        navbar.classList.remove('backdrop-blur-xl', 'bg-slate-900/80');
+        console.warn('Speech recognition not supported');
+        speak("Voice recognition is not supported in your browser. Please use the buttons to select your mode.");
       }
-    });
-
-    // Add loading animation
-    window.addEventListener('load', () => {
-      document.body.classList.add('loaded');
-    });
-
-    // Dark/Light mode toggle (optional)
-    function toggleTheme() {
-      document.documentElement.classList.toggle('dark');
-      localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
 
-    // Initialize theme
-    if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
+    // Text-to-speech function
+    function speak(text, callback) {
+      if (speechSynthesis) {
+        speechSynthesis.cancel(); // Cancel any ongoing speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 0.8;
+        
+        if (callback) {
+          utterance.onend = callback;
+        }
+        
+        speechSynthesis.speak(utterance);
+      }
     }
 
-    // Performance optimization - throttle scroll events
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
+    // Start listening for voice commands
+    function startListening() {
+      if (recognition && !isListening) {
+        try {
+          recognition.start();
+        } catch (error) {
+          console.error('Error starting recognition:', error);
+        }
       }
-      scrollTimeout = setTimeout(() => {
-        // Additional scroll-based animations can be added here
-      }, 10);
+    }
+
+    // Stop listening
+    function stopListening() {
+      if (recognition && isListening) {
+        recognition.stop();
+      }
+    }
+
+    // Process voice commands
+    function processVoiceCommand(command) {
+      console.log('Received command:', command);
+      
+      if (command.includes('voice mode') || command.includes('voice')) {
+        selectMode('voice');
+      } else if (command.includes('normal mode') || command.includes('normal')) {
+        selectMode('normal');
+      } else {
+        speak("I didn't understand. Please say Voice Mode or Normal Mode, or use the buttons.");
+        updateUI('ready');
+      }
+    }
+
+    // Mode selection function
+    function selectMode(mode) {
+      selectedMode = mode;
+      stopListening();
+      updateUI('loading');
+
+      if (mode === 'voice') {
+        speak("Voice Mode selected. Enabling full audio assistance. Redirecting to the main application.", () => {
+          // Store the mode preference
+          sessionStorage.setItem('accessibilityMode', 'voice');
+          // Redirect to main page after a short delay
+          setTimeout(() => {
+            redirectToMainPage();
+          }, 1000);
+        });
+      } else {
+        speak("Normal Mode selected. Using standard interface.", () => {
+          sessionStorage.setItem('accessibilityMode', 'normal');
+          setTimeout(() => {
+            redirectToMainPage();
+          }, 1000);
+        });
+      }
+    }
+
+    // Update UI based on state
+    function updateUI(state) {
+      const micIcon = document.getElementById('micIcon');
+      const listeningText = document.getElementById('listeningText');
+      const voiceWaves = document.getElementById('voiceWaves');
+      const loadingState = document.getElementById('loadingState');
+      const modeSelector = document.getElementById('modeSelector');
+
+      switch(state) {
+        case 'listening':
+          micIcon.classList.add('listening-animation');
+          micIcon.innerHTML = '<i class="fas fa-microphone text-2xl text-white"></i>';
+          listeningText.textContent = 'Listening... Say "Voice Mode" or "Normal Mode"';
+          listeningText.classList.add('text-green-400');
+          voiceWaves.classList.remove('hidden');
+          break;
+          
+        case 'loading':
+          modeSelector.classList.add('hidden');
+          loadingState.classList.remove('hidden');
+          break;
+          
+        case 'error':
+          micIcon.classList.remove('listening-animation');
+          micIcon.innerHTML = '<i class="fas fa-microphone-slash text-2xl text-red-400"></i>';
+          listeningText.textContent = 'Error occurred. Click to try again or use buttons.';
+          listeningText.classList.add('text-red-400');
+          voiceWaves.classList.add('hidden');
+          break;
+          
+        default: // ready
+          micIcon.classList.remove('listening-animation');
+          micIcon.innerHTML = '<i class="fas fa-microphone text-2xl text-white"></i>';
+          listeningText.textContent = 'Click the microphone or say your preference';
+          listeningText.className = 'text-sky-400 font-medium';
+          voiceWaves.classList.add('hidden');
+      }
+    }
+
+    // Redirect to main page
+    function redirectToMainPage() {
+      // You can replace this with your actual homepage path
+      window.location.href = 'home.html'; // or wherever your main page is located
+    }
+
+    // Microphone click handler
+    document.getElementById('micIcon').addEventListener('click', function() {
+      if (!isListening) {
+        startListening();
+      } else {
+        stopListening();
+        updateUI('ready');
+      }
     });
 
-    // Add some easter eggs for engagement
-    let clickCount = 0;
-    document.querySelector('.text-gradient').addEventListener('click', () => {
-      clickCount++;
-      if (clickCount === 5) {
-        alert('🎉 You found the easter egg! Welcome to the accessibility revolution!');
-        clickCount = 0;
+    // Button hover effects with voice feedback
+    document.getElementById('voiceModeBtn').addEventListener('mouseenter', function() {
+      if (selectedMode !== 'voice') {
+        speak("Voice Mode - Full audio assistance");
       }
     });
 
-    // Initialize all animations when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      // Add entrance animations with delay
+    document.getElementById('normalModeBtn').addEventListener('mouseenter', function() {
+      if (selectedMode !== 'normal') {
+        speak("Normal Mode - Standard visual interface");
+      }
+    });
+
+    // Keyboard accessibility
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'v' || e.key === 'V') {
+        selectMode('voice');
+      } else if (e.key === 'n' || e.key === 'N') {
+        selectMode('normal');
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        if (!isListening) {
+          startListening();
+        }
+      }
+    });
+
+    // Initialize animations
+    function initializeAnimations() {
       const elements = document.querySelectorAll('.slide-up');
       elements.forEach((el, index) => {
         setTimeout(() => {
-          el.style.transitionDelay = `${index * 0.1}s`;
-        }, 100);
+          el.classList.add('visible');
+        }, 200 + (index * 100));
       });
+    }
+
+    // Welcome speech
+    function welcomeUser() {
+      setTimeout(() => {
+        speak("Welcome to Accessible Chennai. This app will help you navigate the city with full accessibility support. Please choose your interaction mode.");
+      }, 1000);
+    }
+
+    // Initialize everything when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeAnimations();
+      welcomeUser();
+      initializeSpeechRecognition();
+    });
+
+    // Handle page visibility change
+    document.addEventListener('visibilitychange', function() {
+      if (document.hidden && isListening) {
+        stopListening();
+      }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', function() {
+      if (speechSynthesis) {
+        speechSynthesis.cancel();
+      }
+      if (recognition && isListening) {
+        recognition.stop();
+      }
     });
   </script>
-
-  <style>
-    /* Additional CSS for ripple effect */
-    .ripple-effect {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.6);
-      transform: scale(0);
-      animation: ripple-animation 0.6s linear;
-      pointer-events: none;
-    }
-    
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
-    }
-    
-    /* Loading state */
-    body:not(.loaded) * {
-      animation-play-state: paused !important;
-    }
-    
-    /* Enhanced glow effects */
-    .glow:hover {
-      box-shadow: 
-        0 0 20px rgba(14, 165, 233, 0.4),
-        0 0 40px rgba(14, 165, 233, 0.2),
-        0 0 60px rgba(14, 165, 233, 0.1);
-    }
-    
-    /* Improved glass morphism */
-    .glass-dark {
-      background: rgba(15, 23, 42, 0.3);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.5);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
-      border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-      background: linear-gradient(135deg, #0284c7, #0891b2);
-    }
-  </style>
 </body>
 </html>

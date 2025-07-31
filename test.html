@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessible Chennai - Inclusive Transportation for All</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0ea5e9;
+      --secondary: #06b6d4;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --dark: #0f172a;
+      --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+      --glass: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-dark {
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .floating {
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      25% { transform: translateY(-20px) rotate(1deg); }
+      50% { transform: translateY(-10px) rotate(-1deg); }
+      75% { transform: translateY(-15px) rotate(0.5deg); }
+    }
+
+    .morph {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      animation: morph 8s ease-in-out infinite;
+    }
+
+    @keyframes morph {
+      0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+      100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+    }
+
+    .card-3d {
+      transform-style: preserve-3d;
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+
+    .card-3d:hover {
+      transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+    }
+
+    .text-gradient {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-item {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .nav-item:hover::before {
+      left: 100%;
+    }
+
+    .pulse-ring {
+      animation: pulseRing 2s infinite;
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.33); }
+      40%, 50% { opacity: 1; }
+      100% { opacity: 0; transform: scale(1.2); }
+    }
+
+    .stats-counter {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .magnetic {
+      transition: transform 0.3s ease;
+    }
+
+    .magnetic:hover {
+      transform: scale(1.05) translateY(-2px);
+    }
+
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:hover::after {
+      width: 300px;
+      height: 300px;
+    }
+
+    .glow {
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .glow:hover {
+      box-shadow: 0 0 40px rgba(14, 165, 233, 0.6);
+    }
+
+    .slide-up {
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.8s ease;
+    }
+
+    .slide-up.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .testimonial-card {
+      perspective: 1000px;
+    }
+
+    .testimonial-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .testimonial-card:hover .testimonial-inner {
+      transform: rotateY(180deg);
+    }
+
+    .testimonial-front, .testimonial-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
+    .testimonial-back {
+      transform: rotateY(180deg);
+      background: var(--gradient-secondary);
+    }
+
+    /* Voice Mode Specific Styles */
+    .voice-active {
+      border: 2px solid #10b981 !important;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+    }
+
+    .voice-indicator {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      padding: 12px;
+      background: rgba(16, 185, 129, 0.9);
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .listening-indicator {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      padding: 16px 24px;
+      background: rgba(14, 165, 233, 0.9);
+      border-radius: 25px;
+      color: white;
+      font-weight: bold;
+      backdrop-filter: blur(10px);
+    }
+
+    .voice-focused {
+      outline: 3px solid #10b981 !important;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="text-white min-h-screen">
+  <!-- Voice Mode Indicator -->
+  <div id="voiceIndicator" class="voice-indicator hidden">
+    <i class="fas fa-microphone mr-2"></i>Voice Mode Active
+  </div>
+
+  <!-- Listening Indicator -->
+  <div id="listeningIndicator" class="listening-indicator hidden">
+    <i class="fas fa-ear-listen mr-2"></i>Listening for commands...
+  </div>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 glass-dark" id="mainNav">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center group">
+            <div class="relative">
+              <i class="fas fa-wheelchair text-sky-400 text-3xl mr-3"></i>
+              <div class="absolute inset-0 bg-sky-400 opacity-20 blur-lg rounded-full pulse-ring"></div>
+            </div>
+            <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
+          </div>
+          <div class="hidden sm:ml-8 sm:flex sm:space-x-2">
+            <a href="#" class="nav-item px-4 py-2 rounded-full text-white font-medium magnetic" data-voice="home">Home</a>
+            <a href="alerts.html" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic" data-voice="alerts" onclick="navigateWithVoice('alerts')">Alerts</a>
+            <a href="community.html" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic" data-voice="community" onclick="navigateWithVoice('community')">Community</a>
+            <a href="navigate.html" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic" data-voice="navigate" onclick="navigateWithVoice('navigate')">Navigate</a>
+            <a href="settings.html" class="nav-item px-4 py-2 rounded-full text-gray-300 hover:text-white font-medium magnetic" data-voice="settings" onclick="navigateWithVoice('settings')">Settings</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <!-- Voice Control Toggle -->
+          <button id="voiceToggle" class="glass p-3 rounded-lg magnetic hidden">
+            <i class="fas fa-microphone text-xl"></i>
+          </button>
+          <div class="sm:hidden flex items-center">
+            <button id="mobile-menu-button" class="glass p-3 rounded-lg magnetic">
+              <i class="fas fa-bars text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="hidden sm:hidden glass-dark m-4 rounded-2xl" id="mobile-menu">
+      <div class="p-6 space-y-4">
+        <a href="#" class="block text-white font-medium py-2" data-voice="home">Home</a>
+        <a href="#alerts" class="block text-gray-300 hover:text-white font-medium py-2" data-voice="alerts" onclick="navigateWithVoice('alerts')">Alerts</a>
+        <a href="#community" class="block text-gray-300 hover:text-white font-medium py-2" data-voice="community" onclick="navigateWithVoice('community')">Community</a>
+        <a href="#routes" class="block text-gray-300 hover:text-white font-medium py-2" data-voice="navigate" onclick="navigateWithVoice('navigate')">Navigate</a>
+        <a href="#settings" class="block text-gray-300 hover:text-white font-medium py-2" data-voice="settings" onclick="navigateWithVoice('settings')">Settings</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="text-center lg:text-left slide-up">
+          <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <span class="text-gradient">Making Chennai</span><br>
+            <span class="text-white">Accessible to</span><br>
+            <span class="text-amber-400">Everyone</span>
+          </h1>
+          <p class="text-xl text-gray-300 mb-8 max-w-2xl">
+            Experience the future of inclusive transportation with real-time accessibility information, AI-powered navigation, and community-driven insights.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="journey.html" class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-8 py-4 rounded-full font-bold text-lg ripple glow magnetic transform hover:scale-105 transition-all" data-voice="start journey" onclick="navigateWithVoice('journey')">
+              <i class="fas fa-play mr-2"></i> Start Journey
+            </a>
+            <button class="glass border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg magnetic" data-voice="about us" onclick="handleAboutUs()">
+              <i class="fas fa-info-circle mr-2"></i> About Us
+            </button>
+          </div>
+        </div>
+        
+        <div class="relative lg:block hidden">
+          <div class="relative w-full h-96">
+            <div class="absolute inset-0 bg-gradient-to-r from-sky-400 to-cyan-400 opacity-20 rounded-3xl morph"></div>
+            <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                 alt="Accessible transportation" 
+                 class="w-full h-full object-cover rounded-3xl floating shadow-2xl">
+            <div class="absolute -bottom-4 -right-4 glass-dark p-4 rounded-2xl">
+              <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="text-sm font-medium">Live Updates Active</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Stats Dashboard -->
+  <div class="py-20" id="stats">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 slide-up">
+        <h2 class="text-4xl font-bold mb-4">
+          <span class="text-gradient">Real-Time</span> City Data
+        </h2>
+        <p class="text-xl text-gray-300">Live accessibility metrics across Chennai</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="glass-dark p-8 rounded-3xl card-3d glow group" data-voice="users stat">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-users text-2xl text-white"></i>
+            </div>
+            <div class="stats-counter text-4xl font-bold text-sky-400 mb-2" data-target="1200000">0</div>
+            <p class="text-gray-300">People with disabilities in Chennai</p>
+          </div>
+        </div>
+        
+        <div class="glass-dark p-8 rounded-3xl card-3d glow group" data-voice="buses stat">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-bus text-2xl text-white"></i>
+            </div>
+            <div class="stats-counter text-4xl font-bold text-emerald-400 mb-2" data-target="68">0</div>
+            <p class="text-gray-300">% Accessible buses in fleet</p>
+          </div>
+        </div>
+        
+        <div class="glass-dark p-8 rounded-3xl card-3d glow group" data-voice="metro stat">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-subway text-2xl text-white"></i>
+            </div>
+            <div class="stats-counter text-4xl font-bold text-amber-400 mb-2" data-target="41">0</div>
+            <p class="text-gray-300">Fully accessible metro stations</p>
+          </div>
+        </div>
+        
+        <div class="glass-dark p-8 rounded-3xl card-3d glow group" data-voice="buildings stat">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+              <i class="fas fa-building text-2xl text-white"></i>
+            </div>
+            <div class="stats-counter text-4xl font-bold text-purple-400 mb-2" data-target="85">0</div>
+            <p class="text-gray-300">% Buildings with ramp access</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Showcase -->
+  <div class="py-20" id="features">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 slide-up">
+        <h2 class="text-5xl font-bold mb-4">
+          <span class="text-gradient">Revolutionary</span> Features
+        </h2>
+        <p class="text-xl text-gray-300">Experience accessibility like never before</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+        <div class="slide-up">
+          <div class="glass-dark p-8 rounded-3xl">
+            <div class="flex items-center mb-6">
+              <div class="w-12 h-12 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-xl flex items-center justify-center mr-4">
+                <i class="fas fa-eye text-xl text-white"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-white">AI Visual Recognition</h3>
+            </div>
+            <p class="text-gray-300 mb-6">
+              Advanced computer vision technology that identifies accessibility barriers in real-time and provides instant navigation alternatives.
+            </p>
+            <div class="space-y-3">
+              <div class="flex items-center text-sm">
+                <i class="fas fa-check text-green-400 mr-3"></i>
+                <span class="text-gray-300">Real-time obstacle detection</span>
+              </div>
+              <div class="flex items-center text-sm">
+                <i class="fas fa-check text-green-400 mr-3"></i>
+                <span class="text-gray-300">Smart route optimization</span>
+              </div>
+              <div class="flex items-center text-sm">
+                <i class="fas fa-check text-green-400 mr-3"></i>
+                <span class="text-gray-300">Voice-guided navigation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <div class="aspect-square bg-gradient-to-r from-sky-400/20 to-cyan-400/20 rounded-full"></div>
+          <div class="absolute inset-4 glass rounded-full flex items-center justify-center">
+            <i class="fas fa-robot text-6xl text-sky-400 floating"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-sky-500/10 hover:to-cyan-500/10 transition-all duration-500" data-voice="smart mapping feature">
+          <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mb-6 floating">
+            <i class="fas fa-map-marked-alt text-2xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-4">Smart Mapping</h3>
+          <p class="text-gray-300">Interactive 3D maps with accessibility overlays and real-time updates from the community.</p>
+        </div>
+        
+        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-amber-500/10 hover:to-orange-500/10 transition-all duration-500" data-voice="community network feature">
+          <div class="w-16 h-16 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6 floating" style="animation-delay: -1s;">
+            <i class="fas fa-users text-2xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-4">Community Network</h3>
+          <p class="text-gray-300">Connect with local volunteers and accessibility advocates for real-time assistance and support.</p>
+        </div>
+        
+        <div class="glass-dark p-8 rounded-3xl card-3d glow hover:bg-gradient-to-br hover:from-purple-500/10 hover:to-pink-500/10 transition-all duration-500" data-voice="smart alerts feature">
+          <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 floating" style="animation-delay: -2s;">
+            <i class="fas fa-bell text-2xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-4">Smart Alerts</h3>
+          <p class="text-gray-300">Personalized notifications about service disruptions, new accessible routes, and community events.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Testimonials -->
+  <div class="py-20" id="testimonials">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16 slide-up">
+        <h2 class="text-4xl font-bold mb-4">
+          <span class="text-gradient">Community</span> Voices
+        </h2>
+        <p class="text-xl text-gray-300">Stories from our incredible users</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="testimonial-card h-64" data-voice="priya testimonial">
+          <div class="testimonial-inner">
+            <div class="testimonial-front glass-dark">
+              <div class="flex items-center justify-center h-full flex-col">
+                <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Priya" class="w-16 h-16 rounded-full mb-4">
+                <h4 class="text-lg font-semibold text-white">Priya K.</h4>
+                <p class="text-sky-400 text-sm">Wheelchair User</p>
+              </div>
+            </div>
+            <div class="testimonial-back text-white flex items-center justify-center">
+              <p class="text-center italic">"This app has transformed how I navigate Chennai. The AI features are incredible!"</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card h-64" data-voice="arun testimonial">
+          <div class="testimonial-inner">
+            <div class="testimonial-front glass-dark">
+              <div class="flex items-center justify-center h-full flex-col">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Arun" class="w-16 h-16 rounded-full mb-4">
+                <h4 class="text-lg font-semibold text-white">Arun M.</h4>
+                <p class="text-cyan-400 text-sm">Parent</p>
+              </div>
+            </div>
+            <div class="testimonial-back text-white flex items-center justify-center">
+              <p class="text-center italic">"The community features help me connect with other parents. It's amazing!"</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card h-64" data-voice="meena testimonial">
+          <div class="testimonial-inner">
+            <div class="testimonial-front glass-dark">
+              <div class="flex items-center justify-center h-full flex-col">
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Meena" class="w-16 h-16 rounded-full mb-4">
+                <h4 class="text-lg font-semibold text-white">Meena R.</h4>
+                <p class="text-emerald-400 text-sm">Senior Citizen</p>
+              </div>
+            </div>
+            <div class="testimonial-back text-white flex items-center justify-center">
+              <p class="text-center italic">"The voice navigation feature is a game-changer for my daily commute."</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <div class="py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="glass-dark p-12 rounded-3xl relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-sky-500/10 to-cyan-500/10"></div>
+        <div class="relative z-10">
+          <h2 class="text-4xl font-bold text-white mb-6">
+            Ready to Transform Your Journey?
+          </h2>
+          <p class="text-xl text-gray-300 mb-8">
+            Join thousands of users making Chennai more accessible, one trip at a time.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <button class="bg-gradient-to-r from-sky-500 to-cyan-500 text-white px-8 py-4 rounded-full font-bold text-lg ripple glow magnetic" data-voice="download now" onclick="handleDownload()">
+              <i class="fas fa-download mr-2"></i> Download Now
+            </button>
+            <button class="glass border border-white/20 text-white px-8 py-4 rounded-full font-bold text-lg magnetic" data-voice="view on github" onclick="handleGitHub()">
+              <i class="fab fa-github mr-2"></i> View on GitHub
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="glass-dark mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center mb-6">
+            <i class="fas fa-wheelchair text-sky-400 text-2xl mr-3"></i>
+            <span class="text-2xl font-bold text-gradient">AccessibleChennai</span>
+          </div>
+          <p class="text-gray-300 mb-6 max-w-md">
+            Empowering inclusive mobility through technology and community collaboration.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 bg-sky-500 rounded-full flex items-center justify-center hover:bg-sky-600 transition-colors">
+              <i class="fab fa-twitter text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+              <i class="fab fa-facebook text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors">
+              <i class="fab fa-instagram text-white"></i>
+            </a>
+            <a href="#" class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-800 transition-colors">
+              <i class="fab fa-github text-white"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Developer Guide</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Privacy Policy</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Terms of Service</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">Resources</h3>
+          <ul class="space-y-2">
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">API Documentation</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Accessibility Guidelines</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Transit Maps</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-4">Contact</h3>
+          <ul class="space-y-2">
+            <li><a href="mailto:support@accessiblechennai.com" class="text-gray-300 hover:text-white transition-colors">Email Support</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Live Chat</a></li>
+            <li><a href="#" class="text-gray-300 hover:text-white transition-colors">Feedback Form</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 text-center text-gray-400 text-sm">
+        &copy; 2024 AccessibleChennai. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Voice Control System
+    class VoiceController {
+      constructor() {
+        this.isVoiceMode = false;
+        this.recognition = null;
+        this.speechSynthesis = window.speechSynthesis;
+        this.isListening = false;
+        this.currentFocus = null;
+        this.navigationCommands = {
+          'home': () => this.speak("You are already on the home page"),
+          'alerts': () => this.navigateTo('alerts.html', 'Redirecting to alerts page'),
+          'community': () => this.navigateTo('community.html', 'Redirecting to community page'),
+          'navigate': () => this.navigateTo('navigate.html', 'Redirecting to navigation page'),
+          'settings': () => this.navigateTo('settings.html', 'Redirecting to settings page'),
+          'journey': () => this.navigateTo('journey.html', 'Starting your journey'),
+          'start journey': () => this.navigateTo('journey.html', 'Starting your journey'),
+          'about us': () => this.handleAboutUs(),
+          'download': () => this.handleDownload(),
+          'github': () => this.handleGitHub()
+        };
+        this.init();
+      }
+
+      init() {
+        // Check if voice mode was selected
+        const mode = sessionStorage.getItem('accessibilityMode');
+        if (mode === 'voice') {
+          this.enableVoiceMode();
+        }
+        
+        this.initializeSpeechRecognition();
+        this.setupEventListeners();
+      }
+
+      enableVoiceMode() {
+        this.isVoiceMode = true;
+        document.getElementById('voiceIndicator').classList.remove('hidden');
+        document.getElementById('voiceToggle').classList.remove('hidden');
+        
+        // Add voice-focused class to body
+        document.body.classList.add('voice-mode');
+        
+        // Welcome message
+        setTimeout(() => {
+          this.speak("Welcome to Accessible Chennai. Voice mode is active. You can say commands like Navigate, Alerts, Community, Settings, or Start Journey. Say Help for more options.");
+        }, 1000);
+        
+        // Start listening after welcome
+        setTimeout(() => {
+          this.startListening();
+        }, 6000);
+      }
+
+      initializeSpeechRecognition() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+          this.recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+          this.recognition.continuous = true;
+          this.recognition.interimResults = true;
+          this.recognition.lang = 'en-US';
+
+          this.recognition.onstart = () => {
+            this.isListening = true;
+            document.getElementById('listeningIndicator').classList.remove('hidden');
+          };
+
+          this.recognition.onresult = (event) => {
+            let finalTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+              }
+            }
+
+            if (finalTranscript) {
+              this.processVoiceCommand(finalTranscript.toLowerCase().trim());
+            }
+          };
+
+          this.recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            this.speak("Sorry, I couldn't hear you clearly. Please try again.");
+          };
+
+          this.recognition.onend = () => {
+            this.isListening = false;
+            document.getElementById('listeningIndicator').classList.add('hidden');
+            
+            // Restart listening if in voice mode
+            if (this.isVoiceMode) {
+              setTimeout(() => {
+                this.startListening();
+              }, 2000);
+            }
+          };
+        }
+      }
+
+      speak(text, callback) {
+        if (this.speechSynthesis && this.isVoiceMode) {
+          this.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.rate = 0.9;
+          utterance.pitch = 1;
+          utterance.volume = 0.8;
+          
+          if (callback) {
+            utterance.onend = callback;
+          }
+          
+          this.speechSynthesis.speak(utterance);
+        }
+      }
+
+      startListening() {
+        if (this.recognition && !this.isListening && this.isVoiceMode) {
+          try {
+            this.recognition.start();
+          } catch (error) {
+            console.error('Error starting recognition:', error);
+          }
+        }
+      }
+
+      stopListening() {
+        if (this.recognition && this.isListening) {
+          this.recognition.stop();
+        }
+      }
+
+      processVoiceCommand(command) {
+        console.log('Voice command received:', command);
+        
+        // Help command
+        if (command.includes('help')) {
+          this.speak("Available commands: Navigate for route planning, Alerts for service updates, Community to connect with others, Settings for preferences, Start Journey to begin navigation, Download to get the app, or About Us for more information.");
+          return;
+        }
+
+        // Stop or pause commands
+        if (command.includes('stop') || command.includes('pause')) {
+          this.speak("Voice mode paused. Click the microphone icon to resume.");
+          this.stopListening();
+          return;
+        }
+
+        // Check navigation commands
+        for (const [key, action] of Object.entries(this.navigationCommands)) {
+          if (command.includes(key)) {
+            action();
+            return;
+          }
+        }
+
+        // Read page content commands
+        if (command.includes('read') || command.includes('describe')) {
+          this.readPageContent();
+          return;
+        }
+
+        // Statistics commands
+        if (command.includes('stats') || command.includes('statistics')) {
+          this.readStatistics();
+          return;
+        }
+
+        // Features command
+        if (command.includes('features')) {
+          this.readFeatures();
+          return;
+        }
+
+        // Default response
+        this.speak("I didn't understand that command. Say Help to hear available options.");
+      }
+
+      navigateTo(url, message) {
+        this.speak(message, () => {
+          window.location.href = url;
+        });
+      }
+
+      handleAboutUs() {
+        this.speak("Accessible Chennai is an innovative platform designed to make Chennai's transportation system fully inclusive. We use AI technology, community insights, and real-time data to help people with disabilities navigate the city safely and independently.");
+      }
+
+      handleDownload() {
+        this.speak("Download feature coming soon. The app will be available on Google Play Store and Apple App Store.");
+      }
+
+      handleGitHub() {
+        this.speak("Opening GitHub repository for developers to contribute to this open-source accessibility project.");
+      }
+
+      readPageContent() {
+        this.speak("This is the Accessible Chennai homepage. The main sections include: Navigation menu with options for Alerts, Community, Navigate, and Settings. Hero section with Start Journey button. Statistics showing accessibility metrics for Chennai. Features showcase highlighting AI visual recognition, smart mapping, community network, and smart alerts. User testimonials and call to action section.");
+      }
+
+      readStatistics() {
+        this.speak("Chennai accessibility statistics: 1.2 million people with disabilities in Chennai. 68 percent of buses in the fleet are accessible. 41 fully accessible metro stations. 85 percent of buildings have ramp access.");
+      }
+
+      readFeatures() {
+        this.speak("Key features include: AI Visual Recognition with real-time obstacle detection and smart route optimization. Smart Mapping with interactive 3D maps and accessibility overlays. Community Network to connect with local volunteers and advocates. Smart Alerts for personalized notifications about service disruptions and new accessible routes.");
+      }
+
+      setupEventListeners() {
+        // Voice toggle button
+        document.getElementById('voiceToggle').addEventListener('click', () => {
+          if (this.isListening) {
+            this.stopListening();
+          } else {
+            this.startListening();
+          }
+        });
+
+        // Add voice focus to interactive elements
+        document.querySelectorAll('[data-voice]').forEach(element => {
+          element.addEventListener('focus', () => {
+            if (this.isVoiceMode) {
+              const voiceLabel = element.getAttribute('data-voice');
+              this.speak(`Focused on ${voiceLabel}`);
+              element.classList.add('voice-focused');
+            }
+          });
+
+          element.addEventListener('blur', () => {
+            element.classList.remove('voice-focused');
+          });
+
+          element.addEventListener('mouseenter', () => {
+            if (this.isVoiceMode) {
+              const voiceLabel = element.getAttribute('data-voice');
+              this.speak(`${voiceLabel}`);
+            }
+          });
+        });
+
+        // Keyboard shortcuts for voice mode
+        document.addEventListener('keydown', (e) => {
+          if (this.isVoiceMode) {
+            switch(e.key.toLowerCase()) {
+              case 'v':
+                if (e.ctrlKey) {
+                  e.preventDefault();
+                  if (this.isListening) {
+                    this.stopListening();
+                  } else {
+                    this.startListening();
+                  }
+                }
+                break;
+              case 'h':
+                if (e.ctrlKey) {
+                  e.preventDefault();
+                  this.speak("Keyboard shortcuts: Control V to toggle voice listening, Control H for help, Control R to read page content, Control S for statistics.");
+                }
+                break;
+              case 'r':
+                if (e.ctrlKey) {
+                  e.preventDefault();
+                  this.readPageContent();
+                }
+                break;
+              case 's':
+                if (e.ctrlKey) {
+                  e.preventDefault();
+                  this.readStatistics();
+                }
+                break;
+            }
+          }
+        });
+      }
+    }
+
+    // Global navigation functions for voice commands
+    function navigateWithVoice(destination) {
+      if (window.voiceController && window.voiceController.isVoiceMode) {
+        const messages = {
+          'alerts': 'Redirecting to alerts page to view service disruptions and accessibility updates',
+          'community': 'Redirecting to community page to connect with other users and volunteers',
+          'navigate': 'Redirecting to navigation page to plan your accessible route',
+          'settings': 'Redirecting to settings page to customize your accessibility preferences',
+          'journey': 'Starting your accessible journey planner'
+        };
+        
+        window.voiceController.speak(messages[destination] || `Redirecting to ${destination}`, () => {
+          window.location.href = `${destination}.html`;
+        });
+      } else {
+        window.location.href = `${destination}.html`;
+      }
+    }
+
+    function handleAboutUs() {
+      if (window.voiceController && window.voiceController.isVoiceMode) {
+        window.voiceController.handleAboutUs();
+      } else {
+        alert('About AccessibleChennai: Making Chennai\'s transportation accessible to everyone through AI and community collaboration.');
+      }
+    }
+
+    function handleDownload() {
+      if (window.voiceController && window.voiceController.isVoiceMode) {
+        window.voiceController.handleDownload();
+      } else {
+        alert('Download feature coming soon!');
+      }
+    }
+
+    function handleGitHub() {
+      if (window.voiceController && window.voiceController.isVoiceMode) {
+        window.voiceController.handleGitHub();
+      } else {
+        window.open('https://github.com/accessiblechennai', '_blank');
+      }
+    }
+
+    // Initialize voice controller
+    window.voiceController = new VoiceController();
+
+    // Mobile menu toggle
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+      
+      const icon = this.querySelector('i');
+      if (menu.classList.contains('hidden')) {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+        if (window.voiceController && window.voiceController.isVoiceMode) {
+          window.voiceController.speak('Menu closed');
+        }
+      } else {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+        if (window.voiceController && window.voiceController.isVoiceMode) {
+          window.voiceController.speak('Menu opened. Available options: Home, Alerts, Community, Navigate, Settings');
+        }
+      }
+    });
+
+    // Stats counter animation
+    function animateCounter(element, target, duration = 2000) {
+      let start = 0;
+      const increment = target / (duration / 16);
+      
+      function updateCounter() {
+        start += increment;
+        if (start < target) {
+          element.textContent = Math.floor(start).toLocaleString();
+          requestAnimationFrame(updateCounter);
+        } else {
+          element.textContent = target.toLocaleString();
+        }
+      }
+      updateCounter();
+    }
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          
+          // Voice announcement for sections
+          if (window.voiceController && window.voiceController.isVoiceMode) {
+            const sectionAnnouncements = {
+              'stats': 'Now viewing accessibility statistics for Chennai',
+              'features': 'Now viewing revolutionary accessibility features',
+              'testimonials': 'Now viewing community testimonials'
+            };
+            
+            const announcement = sectionAnnouncements[entry.target.id];
+            if (announcement) {
+              setTimeout(() => {
+                window.voiceController.speak(announcement);
+              }, 500);
+            }
+          }
+          
+          // Animate counters when stats section is visible
+          if (entry.target.id === 'stats') {
+            const counters = entry.target.querySelectorAll('.stats-counter');
+            counters.forEach(counter => {
+              const target = parseInt(counter.dataset.target);
+              animateCounter(counter, target);
+            });
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe slide-up elements and sections
+    document.querySelectorAll('.slide-up').forEach(el => {
+      observer.observe(el);
+    });
+
+    ['stats', 'features', 'testimonials'].forEach(id => {
+      const section = document.getElementById(id);
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    // Enhanced magnetic effect for buttons
+    document.querySelectorAll('.magnetic').forEach(element => {
+      element.addEventListener('mousemove', (e) => {
+        const rect = element.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        element.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px) scale(1.05)`;
+      });
+      
+      element.addEventListener('mouseleave', () => {
+        element.style.transform = '';
+      });
+    });
+
+    // Enhanced card hover effects
+    document.querySelectorAll('.card-3d').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        const rotateX = (y - centerY) / 10;
+        const rotateY = (centerX - x) / 10;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+
+    // Navbar background change on scroll
+    const navbar = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 100) {
+        navbar.classList.add('backdrop-blur-xl', 'bg-slate-900/80');
+      } else {
+        navbar.classList.remove('backdrop-blur-xl', 'bg-slate-900/80');
+      }
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+          
+          // Voice announcement for smooth scroll
+          if (window.voiceController && window.voiceController.isVoiceMode) {
+            const targetName = target.id || 'section';
+            window.voiceController.speak(`Scrolling to ${targetName}`);
+          }
+        }
+      });
+    });
+
+    // Add ripple effect to buttons
+    document.querySelectorAll('.ripple').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const ripple = document.createElement('span');
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple-effect');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    // Initialize animations when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add entrance animations with delay
+      const elements = document.querySelectorAll('.slide-up');
+      elements.forEach((el, index) => {
+        setTimeout(() => {
+          el.style.transitionDelay = `${index * 0.1}s`;
+        }, 100);
+      });
+
+      // Initialize voice mode if selected
+      const mode = sessionStorage.getItem('accessibilityMode');
+      if (mode === 'voice') {
+        document.body.classList.add('voice-mode-active');
+      }
+    });
+
+    // Add loading animation
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+    });
+
+    // Performance optimization - throttle scroll events
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(() => {
+        // Additional scroll-based animations can be added here
+      }, 10);
+    });
+
+    // Clean up voice controller on page unload
+    window.addEventListener('beforeunload', () => {
+      if (window.voiceController) {
+        window.voiceController.stopListening();
+        if (window.voiceController.speechSynthesis) {
+          window.voiceController.speechSynthesis.cancel();
+        }
+      }
+    });
+
+    // Handle page visibility change for voice mode
+    document.addEventListener('visibilitychange', () => {
+      if (window.voiceController) {
+        if (document.hidden && window.voiceController.isListening) {
+          window.voiceController.stopListening();
+        } else if (!document.hidden && window.voiceController.isVoiceMode) {
+          setTimeout(() => {
+            window.voiceController.startListening();
+          }, 1000);
+        }
+      }
+    });
+  </script>
+
+  <style>
+    /* Additional CSS for voice mode enhancements */
+    .ripple-effect {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      transform: scale(0);
+      animation: ripple-animation 0.6s linear;
+      pointer-events: none;
+    }
+    
+    @keyframes ripple-animation {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+    
+    /* Loading state */
+    body:not(.loaded) * {
+      animation-play-state: paused !important;
+    }
+    
+    /* Enhanced glow effects for voice mode */
+    .voice-mode-active .glow:hover {
+      box-shadow: 
+        0 0 20px rgba(16, 185, 129, 0.4),
+        0 0 40px rgba(16, 185, 129, 0.2),
+        0 0 60px rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Voice mode active body styling */
+    .voice-mode-active {
+      --primary: #10b981;
+      --secondary: #059669;
+    }
+    
+    .voice-mode-active .text-gradient {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Improved glass morphism */
+    .glass-dark {
+      background: rgba(15, 23, 42, 0.3);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #0ea5e9, #06b6d4);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #0284c7, #0891b2);
+    }
+    
+    /* Voice mode scrollbar */
+    .voice-mode-active ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    .voice-mode-active ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #047857, #065f46);
+    }
+
+    /* Focus indicators for voice mode */
+    .voice-focused {
+      outline: 3px solid #10b981 !important;
+      outline-offset: 2px;
+      animation: focusPulse 2s infinite;
+    }
+
+    @keyframes focusPulse {
+      0% { outline-color: #10b981; }
+      50% { outline-color: #34d399; }
+      100% { outline-color: #10b981; }
+    }
+
+    /* Enhanced voice indicators */
+    .voice-indicator {
+      animation: voiceIndicatorPulse 3s infinite;
+    }
+
+    @keyframes voiceIndicatorPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+    }
+
+    /* Listening indicator animation */
+    .listening-indicator {
+      animation: listeningPulse 1.5s infinite;
+    }
+
+    @keyframes listeningPulse {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.05); }
+    }
+  </style>
+</body>
+</html>
