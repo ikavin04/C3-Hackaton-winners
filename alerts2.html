@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Interactive Alerts - Accessible Chennai</title>
+  <meta name="description" content="Voice-controlled accessibility alerts for Chennai's public transport system designed for blind and visually impaired users.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0b596c;
+      --primary-dark: #106e8d;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --blue-gradient: linear-gradient(135deg, #0a4861 0%, #145974 100%);
+      --glow-blue: 0 0 20px rgba(59, 130, 246, 0.5);
+      --glow-accent: 0 0 15px rgba(245, 158, 11, 0.6);
+    }
+
+    * {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(135deg, #08354a 0%, #05374e 25%, #0e4e6c 50%, #0d5565 75%, #0e5f71 100%);
+      background-size: 400% 400%;
+      animation: gradientFlow 15s ease infinite;
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      color: #f8fafc;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .glass-strong {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .voice-indicator {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%);
+      animation: voicePulse 2s ease-in-out infinite;
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    .voice-indicator.listening {
+      animation: voiceListening 1s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.4) 0%, rgba(16, 185, 129, 0) 70%);
+    }
+
+    .voice-indicator.speaking {
+      animation: voiceSpeaking 0.5s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.4) 0%, rgba(245, 158, 11, 0) 70%);
+    }
+
+    @keyframes voicePulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+    }
+
+    @keyframes voiceListening {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+      50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.4; }
+    }
+
+    @keyframes voiceSpeaking {
+      0%, 100% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.7; }
+      50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0.2; }
+    }
+
+    .command-display {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1001;
+      min-width: 300px;
+      text-align: center;
+    }
+
+    .audio-wave {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin: 0 auto;
+    }
+
+    .wave-bar {
+      width: 4px;
+      height: 20px;
+      background: #3b82f6;
+      border-radius: 2px;
+      animation: waveAnimation 1s ease-in-out infinite;
+    }
+
+    .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+    @keyframes waveAnimation {
+      0%, 50%, 100% { height: 20px; }
+      25% { height: 40px; }
+      75% { height: 10px; }
+    }
+
+    .sr-only-focusable:not(:focus) {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0, 0, 0, 0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .alert-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      border: 3px solid transparent;
+    }
+
+    .alert-card.focused {
+      border: 3px solid #f59e0b;
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+      transform: scale(1.02);
+    }
+
+    .command-help {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      max-width: 300px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .focusable:focus {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .mic-status {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+
+    .emergency-button {
+      position: fixed;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      z-index: 1000;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: #ef4444;
+      border: none;
+      color: white;
+      font-size: 24px;
+      animation: emergencyPulse 2s infinite;
+    }
+
+    @keyframes emergencyPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+      50% { box-shadow: 0 0 0 20px rgba(239, 68, 68, 0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Skip to main content -->
+  <a href="#main-content" class="sr-only-focusable focus:absolute focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-amber-400 focus:text-black focus:rounded-md focus:z-50">
+    Skip to main content
+  </a>
+
+  <!-- Voice Indicator -->
+  <div id="voiceIndicator" class="voice-indicator"></div>
+
+  <!-- Microphone Status -->
+  <div class="mic-status glass-strong p-4 rounded-2xl">
+    <div class="flex items-center space-x-3">
+      <div id="micStatus" class="w-4 h-4 bg-green-400 rounded-full"></div>
+      <span class="text-white text-sm font-medium">Voice Active</span>
+    </div>
+    <div class="audio-wave mt-2" id="audioWave" style="display: none;">
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+      <div class="wave-bar"></div>
+    </div>
+  </div>
+
+  <!-- Emergency Button -->
+  <button id="emergencyBtn" class="emergency-button focusable" title="Emergency Help - Press or say Emergency" aria-label="Emergency assistance button">
+    <i class="fas fa-exclamation-triangle"></i>
+  </button>
+
+  <!-- Command Help -->
+  <div class="command-help glass-strong p-4 rounded-2xl">
+    <h3 class="text-white font-bold mb-2 text-sm">Voice Commands:</h3>
+    <ul class="text-blue-200 text-xs space-y-1">
+      <li>"Read alerts" - Hear all alerts</li>
+      <li>"Filter metro" - Metro alerts only</li>
+      <li>"Filter bus" - Bus alerts only</li>
+      <li>"Next alert" - Move to next</li>
+      <li>"Previous alert" - Move to previous</li>
+      <li>"Repeat" - Repeat current</li>
+      <li>"Emergency" - Get help</li>
+      <li>"Stop" - Stop speaking</li>
+      <li>"Help" - List all commands</li>
+    </ul>
+  </div>
+
+  <!-- Command Display -->
+  <div class="command-display">
+    <div id="commandDisplay" class="glass-strong p-4 rounded-2xl">
+      <div id="commandTitle" class="text-white font-bold text-lg mb-2">Voice Assistant Ready</div>
+      <div id="commandText" class="text-blue-200 text-sm">Say "Help" for commands or "Read alerts" to begin</div>
+      <div id="listeningIndicator" class="mt-2 text-center" style="display: none;">
+        <div class="audio-wave">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+        <div class="text-green-400 text-sm mt-2">Listening...</div>
+      </div>
+    </div>
+  </div>
+
+  <main id="main-content" class="pt-24 pb-12 max-w-7xl mx-auto px-4 flex-grow">
+    <!-- Screen Reader Instructions -->
+    <div class="sr-only" aria-live="polite" id="screenReaderAnnouncements"></div>
+    
+    <section class="glass-strong p-8 rounded-3xl mb-8">
+      <h1 class="text-3xl font-bold text-white mb-4">
+        <i class="fas fa-microphone text-blue-400 mr-3"></i>
+        Voice Interactive Alerts
+      </h1>
+      <p class="text-blue-200 text-lg mb-4">
+        Welcome to the voice-controlled transportation alerts system. Your microphone is active and ready to receive commands.
+      </p>
+      <div class="bg-blue-900/30 p-4 rounded-2xl border border-blue-400/30">
+        <h2 class="text-white font-bold mb-2">Getting Started:</h2>
+        <ul class="text-blue-200 space-y-1">
+          <li>• The system will automatically read alerts when you arrive</li>
+          <li>• Say "Read alerts" to hear all current transportation alerts</li>
+          <li>• Say "Help" anytime to hear available voice commands</li>
+          <li>• Use "Emergency" for immediate assistance</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Alerts Container -->
+    <section id="alertsSection" class="space-y-6">
+      <h2 class="sr-only">Transportation Alerts</h2>
+      <div id="alertsContainer" class="space-y-4" role="main" aria-label="Transportation alerts"></div>
+    </section>
+
+    <!-- Hidden elements for screen readers -->
+    <div class="sr-only">
+      <div id="currentAlertIndex" aria-live="polite">Alert 1 of 8</div>
+      <div id="filterStatus" aria-live="polite">Showing all alerts</div>
+      <div id="voiceStatus" aria-live="polite">Voice assistant active</div>
+    </div>
+  </main>
+
+  <script>
+    // Voice Assistant Class
+    class VoiceAssistant {
+      constructor() {
+        this.recognition = null;
+        this.synthesis = window.speechSynthesis;
+        this.isListening = false;
+        this.isSpeaking = false;
+        this.currentAlertIndex = 0;
+        this.currentFilter = 'all';
+        this.alerts = [];
+        this.voices = [];
+        this.preferredVoice = null;
+        this.permissionDenied = false;
+        this.domReady = false;
+        
+        // Initialize immediately available components
+        this.initializeBasicFeatures();
+      }
+
+      initializeBasicFeatures() {
+        // Initialize Text-to-Speech first (always available)
+        this.synthesis.onvoiceschanged = () => {
+          this.voices = this.synthesis.getVoices();
+          // Prefer female voice with Indian accent if available
+          this.preferredVoice = this.voices.find(voice => 
+            voice.lang.includes('en-IN') || voice.name.includes('Indian')
+          ) || this.voices.find(voice => voice.lang.includes('en')) || this.voices[0];
+        };
+
+        // Wait for DOM to be ready
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => {
+            this.domReady = true;
+            this.initializeFullSystem();
+          });
+        } else {
+          this.domReady = true;
+          this.initializeFullSystem();
+        }
+      }
+
+      initializeFullSystem() {
+        this.initializeUI();
+        this.initializeVoiceAssistant();
+        this.setupEventListeners();
+        this.loadAlerts();
+        this.scheduleWelcomeMessage();
+      }
+
+      scheduleWelcomeMessage() {
+        const startWelcome = () => {
+          this.speak("Welcome to Accessible Chennai Voice Interactive Alerts. This system is designed for blind and visually impaired users. Text-to-speech is active. Click anywhere or press any key to activate voice commands, or use keyboard shortcuts to navigate.");
+          document.removeEventListener('click', startWelcome);
+          document.removeEventListener('keydown', startWelcome);
+        };
+
+        // Start welcome immediately, then set up activation
+        setTimeout(() => {
+          this.speak("Welcome to Accessible Chennai Voice Interactive Alerts. Loading transportation data...");
+        }, 1000);
+
+        // Set up activation for full voice features
+        document.addEventListener('click', startWelcome);
+        document.addEventListener('keydown', startWelcome);
+      }
+
+      initializeVoiceAssistant() {
+        // Initialize Speech Recognition with better error handling
+        this.initializeSpeechRecognition();
+      }
+
+      initializeSpeechRecognition() {
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+          this.handleNoSpeechRecognition();
+          return;
+        }
+
+        try {
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          this.recognition = new SpeechRecognition();
+          this.recognition.continuous = true;
+          this.recognition.interimResults = false;
+          this.recognition.lang = 'en-IN';
+          
+          this.recognition.onstart = () => {
+            this.isListening = true;
+            this.updateVoiceIndicator('listening');
+            this.showListeningIndicator(true);
+            this.updateCommandDisplay('Voice Assistant Active', 'Listening for commands...');
+          };
+          
+          this.recognition.onend = () => {
+            this.isListening = false;
+            this.updateVoiceIndicator('ready');
+            this.showListeningIndicator(false);
+            // Only restart if we have permission and aren't speaking
+            if (!this.isSpeaking && !this.permissionDenied) {
+              setTimeout(() => this.startListening(), 1000);
+            }
+          };
+          
+          this.recognition.onresult = (event) => {
+            const lastResult = event.results[event.results.length - 1];
+            if (lastResult.isFinal) {
+              const command = lastResult[0].transcript.toLowerCase().trim();
+              this.processVoiceCommand(command);
+            }
+          };
+          
+          this.recognition.onerror = (event) => {
+            console.log('Speech recognition error:', event.error);
+            if (event.error === 'not-allowed') {
+              this.permissionDenied = true;
+              this.handlePermissionDenied();
+            } else if (event.error === 'network') {
+              this.handleNetworkError();
+            } else {
+              // For other errors, try to restart after a delay
+              setTimeout(() => {
+                if (!this.permissionDenied) this.startListening();
+              }, 2000);
+            }
+          };
+
+          // Try to start listening
+          this.requestMicrophoneAccess();
+          
+        } catch (error) {
+          console.log('Speech recognition initialization error:', error);
+          this.handleNoSpeechRecognition();
+        }
+      }
+
+      requestMicrophoneAccess() {
+        // Use a user interaction to request microphone access
+        this.updateCommandDisplay('Microphone Setup', 'Click anywhere or press any key to activate voice commands');
+        
+        const activateVoice = () => {
+          if (!this.permissionDenied && !this.isListening) {
+            this.startListening();
+          }
+          document.removeEventListener('click', activateVoice);
+          document.removeEventListener('keydown', activateVoice);
+        };
+
+        document.addEventListener('click', activateVoice);
+        document.addEventListener('keydown', activateVoice);
+        
+        // Also try to start automatically after a short delay
+        setTimeout(() => {
+          if (!this.isListening && !this.permissionDenied) {
+            this.startListening();
+          }
+        }, 2000);
+      }
+
+      handlePermissionDenied() {
+        this.updateCommandDisplay('Voice Commands Unavailable', 'Microphone access denied. Using keyboard controls only.');
+        this.updateVoiceIndicator('error');
+        if (this.micStatus) {
+          this.micStatus.className = 'w-4 h-4 bg-red-400 rounded-full';
+        }
+        
+        // Provide alternative instructions
+        this.speak('Microphone access is not available. You can use keyboard shortcuts: Press Control R to read alerts, Control H for help, Control E for emergency, or click on alerts to hear them.');
+        
+        // Show keyboard instructions prominently
+        this.showKeyboardInstructions();
+      }
+
+      handleNetworkError() {
+        this.updateCommandDisplay('Network Error', 'Voice recognition temporarily unavailable. Retrying...');
+        setTimeout(() => {
+          if (!this.permissionDenied) this.startListening();
+        }, 3000);
+      }
+
+      handleNoSpeechRecognition() {
+        this.updateCommandDisplay('Voice Recognition Unavailable', 'Speech recognition not supported. Using keyboard and click controls.');
+        this.updateVoiceIndicator('error');
+        if (this.micStatus) {
+          this.micStatus.className = 'w-4 h-4 bg-gray-400 rounded-full';
+        }
+        
+        this.speak('Voice recognition is not available in your browser. You can use keyboard shortcuts or click on alerts to hear them read aloud.');
+        this.showKeyboardInstructions();
+      }
+
+      showKeyboardInstructions() {
+        const helpDiv = document.querySelector('.command-help ul');
+        if (helpDiv) {
+          helpDiv.innerHTML = `
+            <li><strong>Ctrl + R:</strong> Read all alerts</li>
+            <li><strong>Ctrl + H:</strong> Show help</li>
+            <li><strong>Ctrl + E:</strong> Emergency</li>
+            <li><strong>Ctrl + Space:</strong> Stop speaking</li>
+            <li><strong>Click alerts:</strong> Read aloud</li>
+            <li><strong>Tab:</strong> Navigate elements</li>
+            <li><strong>Enter:</strong> Activate focused item</li>
+          `;
+        }
+      }
+
+      initializeUI() {
+        // Safely get DOM elements with null checks
+        this.voiceIndicator = document.getElementById('voiceIndicator');
+        this.commandDisplay = document.getElementById('commandDisplay');
+        this.commandTitle = document.getElementById('commandTitle');
+        this.commandText = document.getElementById('commandText');
+        this.listeningIndicator = document.getElementById('listeningIndicator');
+        this.alertsContainer = document.getElementById('alertsContainer');
+        this.screenReaderAnnouncements = document.getElementById('screenReaderAnnouncements');
+        this.micStatus = document.getElementById('micStatus');
+        this.audioWave = document.getElementById('audioWave');
+        this.currentAlertIndexElement = document.getElementById('currentAlertIndex');
+        this.filterStatusElement = document.getElementById('filterStatus');
+        this.voiceStatusElement = document.getElementById('voiceStatus');
+      }
+
+      setupEventListeners() {
+        // Emergency button
+        const emergencyBtn = document.getElementById('emergencyBtn');
+        if (emergencyBtn) {
+          emergencyBtn.addEventListener('click', () => {
+            this.handleEmergency();
+          });
+        }
+
+        // Keyboard shortcuts with better handling
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey) {
+            switch(e.key) {
+              case 'h':
+                e.preventDefault();
+                this.showHelp();
+                break;
+              case 'r':
+                e.preventDefault();
+                this.readAllAlerts();
+                break;
+              case 'e':
+                e.preventDefault();
+                this.handleEmergency();
+                break;
+              case ' ':
+                e.preventDefault();
+                this.stopSpeaking();
+                break;
+              case '1':
+                e.preventDefault();
+                this.filterAlerts('metro');
+                break;
+              case '2':
+                e.preventDefault();
+                this.filterAlerts('bus');
+                break;
+              case '3':
+                e.preventDefault();
+                this.filterAlerts('wheelchair');
+                break;
+              case '0':
+                e.preventDefault();
+                this.filterAlerts('all');
+                break;
+            }
+          } else {
+            // Non-Ctrl shortcuts
+            switch(e.key) {
+              case 'ArrowRight':
+                if (e.target === document.body) {
+                  e.preventDefault();
+                  this.navigateAlert('next');
+                }
+                break;
+              case 'ArrowLeft':
+                if (e.target === document.body) {
+                  e.preventDefault();
+                  this.navigateAlert('previous');
+                }
+                break;
+              case 'Enter':
+                if (e.target === document.body) {
+                  e.preventDefault();
+                  this.repeatCurrentAlert();
+                }
+                break;
+            }
+          }
+        });
+
+        // Stop speaking when clicking anywhere
+        document.addEventListener('click', () => {
+          if (this.isSpeaking) {
+            this.stopSpeaking();
+          }
+        });
+      }
+
+      startListening() {
+        if (this.recognition && !this.isListening && !this.isSpeaking && !this.permissionDenied) {
+          try {
+            this.recognition.start();
+          } catch (error) {
+            console.log('Failed to start recognition:', error);
+            if (error.name === 'InvalidStateError') {
+              // Recognition is already running, just update UI
+              this.isListening = true;
+              this.updateVoiceIndicator('listening');
+            }
+          }
+        }
+      }
+
+      stopListening() {
+        if (this.recognition && this.isListening) {
+          this.recognition.stop();
+        }
+      }
+
+      speak(text, interrupt = false) {
+        if (interrupt) {
+          this.synthesis.cancel();
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = this.preferredVoice;
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        
+        utterance.onstart = () => {
+          this.isSpeaking = true;
+          this.stopListening();
+          this.updateVoiceIndicator('speaking');
+          this.updateCommandDisplay('Speaking...', text);
+        };
+        
+        utterance.onend = () => {
+          this.isSpeaking = false;
+          this.updateVoiceIndicator('ready');
+          this.updateCommandDisplay('Voice Assistant Ready', 'Listening for commands...');
+          setTimeout(() => this.startListening(), 500);
+        };
+        
+        this.synthesis.speak(utterance);
+        this.announceToScreenReader(text);
+      }
+
+      stopSpeaking() {
+        this.synthesis.cancel();
+        this.isSpeaking = false;
+        this.updateVoiceIndicator('ready');
+        this.updateCommandDisplay('Voice Assistant Ready', 'Speech stopped. Listening for commands...');
+        setTimeout(() => this.startListening(), 500);
+      }
+
+      processVoiceCommand(command) {
+        this.updateCommandDisplay('Command Received', `"${command}"`);
+        
+        // Normalize command
+        const normalizedCommand = command.toLowerCase().trim();
+        
+        // Command processing
+        if (normalizedCommand.includes('read alerts') || normalizedCommand.includes('read all')) {
+          this.readAllAlerts();
+        } else if (normalizedCommand.includes('filter metro') || normalizedCommand.includes('metro only')) {
+          this.filterAlerts('metro');
+        } else if (normalizedCommand.includes('filter bus') || normalizedCommand.includes('bus only')) {
+          this.filterAlerts('bus');
+        } else if (normalizedCommand.includes('filter wheelchair') || normalizedCommand.includes('accessible only')) {
+          this.filterAlerts('wheelchair');
+        } else if (normalizedCommand.includes('show all') || normalizedCommand.includes('all alerts')) {
+          this.filterAlerts('all');
+        } else if (normalizedCommand.includes('next alert') || normalizedCommand.includes('next')) {
+          this.navigateAlert('next');
+        } else if (normalizedCommand.includes('previous alert') || normalizedCommand.includes('previous') || normalizedCommand.includes('back')) {
+          this.navigateAlert('previous');
+        } else if (normalizedCommand.includes('repeat') || normalizedCommand.includes('again')) {
+          this.repeatCurrentAlert();
+        } else if (normalizedCommand.includes('emergency') || normalizedCommand.includes('help me')) {
+          this.handleEmergency();
+        } else if (normalizedCommand.includes('stop') || normalizedCommand.includes('quiet') || normalizedCommand.includes('silence')) {
+          this.stopSpeaking();
+        } else if (normalizedCommand.includes('help') || normalizedCommand.includes('commands')) {
+          this.showHelp();
+        } else if (normalizedCommand.includes('status') || normalizedCommand.includes('what\'s happening')) {
+          this.readStatus();
+        } else if (normalizedCommand.includes('refresh') || normalizedCommand.includes('update')) {
+          this.refreshAlerts();
+        } else {
+          this.speak(`I didn't understand "${command}". Say "help" for available commands.`);
+        }
+      }
+
+      readAllAlerts() {
+        const filteredAlerts = this.getFilteredAlerts();
+        if (filteredAlerts.length === 0) {
+          this.speak('No alerts match your current filter. Say "show all" to see all alerts.');
+          return;
+        }
+
+        this.currentAlertIndex = 0;
+        
+        // Mark filtered alerts as read
+        const filterName = this.currentFilter === 'all' ? 'all alerts' : `${this.currentFilter} alerts`;
+        let alertText = `Reading ${filterName}. Found ${filteredAlerts.length} alert${filteredAlerts.length > 1 ? 's' : ''}. `;
+        
+        filteredAlerts.forEach((alert, index) => {
+          alertText += `Alert ${index + 1}: ${alert.title} at ${alert.location}. ${alert.message}. Status: ${alert.status}. `;
+          if (alert.countdown) {
+            alertText += `Arriving in ${alert.countdown} minutes. `;
+          }
+          alertText += 'Next alert. ';
+          
+          // Mark this alert as read
+          alert.isRead = true;
+        });
+
+        alertText += 'End of alerts. Say "next", "previous", or "repeat" to navigate.';
+        this.speak(alertText);
+        this.highlightAlert(0);
+        
+        // Re-render alerts to show read status
+        this.renderAlerts();
+      }
+
+      filterAlerts(filter) {
+        this.currentFilter = filter;
+        this.currentAlertIndex = 0;
+        
+        const filteredAlerts = this.getFilteredAlerts();
+        const filterName = filter === 'all' ? 'all alerts' : `${filter} alerts`;
+        
+        this.announceToScreenReader(`Filtering by ${filterName}`);
+        this.speak(`Filtering by ${filterName}. Found ${filteredAlerts.length} alert${filteredAlerts.length > 1 ? 's' : ''}. Say "read alerts" to hear them.`);
+        
+        this.renderAlerts();
+        if (this.filterStatusElement) {
+          this.filterStatusElement.textContent = `Showing ${filterName}`;
+        }
+      }
+
+      navigateAlert(direction) {
+        const filteredAlerts = this.getFilteredAlerts();
+        if (filteredAlerts.length === 0) {
+          this.speak('No alerts available. Say "show all" to see all alerts.');
+          return;
+        }
+
+        if (direction === 'next') {
+          this.currentAlertIndex = (this.currentAlertIndex + 1) % filteredAlerts.length;
+        } else {
+          this.currentAlertIndex = this.currentAlertIndex > 0 ? this.currentAlertIndex - 1 : filteredAlerts.length - 1;
+        }
+
+        const alert = filteredAlerts[this.currentAlertIndex];
+        let alertText = `Alert ${this.currentAlertIndex + 1} of ${filteredAlerts.length}. ${alert.title} at ${alert.location}. ${alert.message}. Status: ${alert.status}.`;
+        
+        if (alert.countdown) {
+          alertText += ` Arriving in ${alert.countdown} minutes.`;
+        }
+
+        this.speak(alertText);
+        this.highlightAlert(this.currentAlertIndex);
+        if (this.currentAlertIndexElement) {
+          this.currentAlertIndexElement.textContent = `Alert ${this.currentAlertIndex + 1} of ${filteredAlerts.length}`;
+        }
+      }
+
+      repeatCurrentAlert() {
+        const filteredAlerts = this.getFilteredAlerts();
+        if (filteredAlerts.length === 0) {
+          this.speak('No alerts available.');
+          return;
+        }
+
+        const alert = filteredAlerts[this.currentAlertIndex];
+        let alertText = `Repeating alert ${this.currentAlertIndex + 1}. ${alert.title} at ${alert.location}. ${alert.message}. Status: ${alert.status}.`;
+        
+        if (alert.countdown) {
+          alertText += ` Arriving in ${alert.countdown} minutes.`;
+        }
+
+        this.speak(alertText);
+        this.highlightAlert(this.currentAlertIndex);
+      }
+
+      handleEmergency() {
+        this.speak('Emergency assistance activated. Transportation helpline numbers: Metro helpline zero four four, two three four five six seven eight nine. MTC control room zero four four, two three four five six seven eight zero. Police one zero zero. Say "call help" if you need assistance making the call.', true);
+        
+        // Visual emergency indication
+        document.body.style.border = '5px solid red';
+        setTimeout(() => {
+          document.body.style.border = '';
+        }, 3000);
+      }
+
+      showHelp() {
+        const helpText = `Available commands: 
+        Voice commands if microphone is enabled: Say "Read alerts", "Filter metro", "Filter bus", "Next alert", "Previous alert", "Repeat", "Emergency", or "Stop". 
+        Keyboard shortcuts: Press Control R to read alerts, Control H for help, Control E for emergency, Control Space to stop speaking. 
+        Press Control 1 for metro alerts, Control 2 for bus alerts, Control 3 for wheelchair accessible alerts, Control 0 for all alerts.
+        Use arrow keys to navigate between alerts, Enter to repeat current alert.
+        Click on any alert card to hear it read aloud.
+        All features work without voice recognition.`;
+        this.speak(helpText);
+      }
+
+      readStatus() {
+        const filteredAlerts = this.getFilteredAlerts();
+        const statusText = `Voice assistant is active. Currently showing ${this.currentFilter === 'all' ? 'all alerts' : this.currentFilter + ' alerts'}. ${filteredAlerts.length} alert${filteredAlerts.length > 1 ? 's' : ''} available. Currently on alert ${this.currentAlertIndex + 1} of ${filteredAlerts.length}.`;
+        this.speak(statusText);
+      }
+
+      refreshAlerts() {
+        this.speak('Refreshing transportation data...');
+        // Simulate refresh with new alerts
+        setTimeout(() => {
+          // Remove old read alerts and add new ones
+          this.alerts = this.alerts.filter(alert => !alert.isRead);
+          
+          // Add new sample alerts
+          const newAlerts = [
+            {
+              id: Date.now(),
+              type: 'metro',
+              title: 'Purple Line Express Service',
+              location: 'Nehru Park Station',
+              message: 'Express service now running with enhanced accessibility features and real-time audio updates.',
+              status: 'available',
+              time: new Date(),
+              priority: 'high',
+              tags: ['wheelchair', 'audio', 'express'],
+              countdown: 2,
+              category: 'metro wheelchair audio',
+              isRead: false
+            },
+            {
+              id: Date.now() + 1,
+              type: 'bus',
+              title: 'MTC Route 15H Update',
+              location: 'Anna Salai',
+              message: 'New accessible bus with voice announcements and tactile buttons now operational.',
+              status: 'available',
+              time: new Date(),
+              priority: 'medium',
+              tags: ['wheelchair', 'voice', 'tactile'],
+              countdown: 5,
+              category: 'bus wheelchair audio',
+              isRead: false
+            }
+          ];
+          
+          // Add new alerts to the beginning
+          this.alerts = [...newAlerts, ...this.alerts];
+          
+          this.renderAlerts();
+          
+          // Count unread alerts matching current filter
+          const unreadFilteredAlerts = this.getFilteredAlerts().filter(alert => !alert.isRead);
+          
+          if (unreadFilteredAlerts.length > 0) {
+            this.speak(`Alerts updated successfully. ${unreadFilteredAlerts.length} new alert${unreadFilteredAlerts.length > 1 ? 's' : ''} available. Say "read alerts" to hear the latest information.`);
+          } else {
+            this.speak('Alerts updated successfully. No new alerts for your current filter.');
+          }
+        }, 2000);
+      }
+
+      getFilteredAlerts() {
+        if (this.currentFilter === 'all') return this.alerts;
+        return this.alerts.filter(alert => {
+          if (this.currentFilter === 'wheelchair') {
+            return alert.category.includes('wheelchair') || alert.tags.includes('wheelchair');
+          }
+          return alert.type === this.currentFilter || alert.category.includes(this.currentFilter);
+        });
+      }
+
+      highlightAlert(index) {
+        const alertCards = document.querySelectorAll('.alert-card');
+        alertCards.forEach((card, i) => {
+          card.classList.toggle('focused', i === index);
+        });
+        
+        const focusedCard = document.querySelector('.alert-card.focused');
+        if (focusedCard) {
+          focusedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+
+      updateVoiceIndicator(state) {
+        if (this.voiceIndicator) {
+          this.voiceIndicator.className = `voice-indicator ${state}`;
+        }
+        
+        // Update mic status
+        if (this.micStatus) {
+          if (state === 'listening') {
+            this.micStatus.className = 'w-4 h-4 bg-green-400 rounded-full animate-pulse';
+            if (this.audioWave) this.audioWave.style.display = 'flex';
+          } else if (state === 'speaking') {
+            this.micStatus.className = 'w-4 h-4 bg-amber-400 rounded-full animate-pulse';
+            if (this.audioWave) this.audioWave.style.display = 'none';
+          } else if (state === 'error') {
+            this.micStatus.className = 'w-4 h-4 bg-red-400 rounded-full';
+            if (this.audioWave) this.audioWave.style.display = 'none';
+          } else {
+            this.micStatus.className = 'w-4 h-4 bg-blue-400 rounded-full';
+            if (this.audioWave) this.audioWave.style.display = 'none';
+          }
+        }
+      }
+
+      updateCommandDisplay(title, text) {
+        if (this.commandTitle) {
+          this.commandTitle.textContent = title;
+        }
+        if (this.commandText) {
+          this.commandText.textContent = text;
+        }
+      }
+
+      showListeningIndicator(show) {
+        if (this.listeningIndicator) {
+          this.listeningIndicator.style.display = show ? 'block' : 'none';
+        }
+      }
+
+      announceToScreenReader(text) {
+        if (this.screenReaderAnnouncements) {
+          this.screenReaderAnnouncements.textContent = text;
+        }
+      }
+
+      loadAlerts() {
+        // Sample alerts data
+        this.alerts = [
+          {
+            id: 1,
+            type: 'metro',
+            title: 'Blue Line Chennai Central',
+            location: 'Platform 2',
+            message: 'Next metro train has wheelchair access and audio announcements available.',
+            status: 'available',
+            time: new Date(Date.now() - 2 * 60 * 1000),
+            priority: 'high',
+            tags: ['wheelchair', 'audio', 'tactile'],
+            countdown: 3,
+            category: 'metro wheelchair audio',
+            isRead: false
+          },
+          {
+            id: 2,
+            type: 'bus',
+            title: 'MTC Route 21G',
+            location: 'T. Nagar Bus Stand',
+            message: 'Low-floor accessible bus arriving with kneeling feature and priority seating.',
+            status: 'available',
+            time: new Date(Date.now() - 3 * 60 * 1000),
+            priority: 'high',
+            tags: ['wheelchair', 'low-floor', 'kneeling'],
+            countdown: 4,
+            category: 'bus wheelchair',
+            isRead: false
+          },
+          {
+            id: 3,
+            type: 'metro',
+            title: 'Green Line Service Update',
+            location: 'Guindy to Airport',
+            message: 'All stations now equipped with tactile path markers and braille signage for enhanced navigation.',
+            status: 'info',
+            time: new Date(Date.now() - 15 * 60 * 1000),
+            priority: 'medium',
+            tags: ['tactile', 'visual', 'braille'],
+            category: 'metro tactile visual',
+            isRead: false
+          },
+          {
+            id: 4,
+            type: 'bus',
+            title: 'MTC Route 29C Service Delay',
+            location: 'Vadapalani to KK Nagar',
+            message: 'Service delayed by 15 minutes due to heavy traffic. Alternative accessible routes available via Route 47A.',
+            status: 'delayed',
+            time: new Date(Date.now() - 5 * 60 * 1000),
+            priority: 'high',
+            tags: ['delay', 'wheelchair', 'alternative'],
+            category: 'bus delay wheelchair',
+            isRead: false
+          },
+          {
+            id: 5,
+            type: 'station',
+            title: 'Chennai Central Railway Station',
+            location: 'Platform 7',
+            message: 'New accessible restroom facility opened with adult changing table and emergency assistance button.',
+            status: 'info',
+            time: new Date(Date.now() - 25 * 60 * 1000),
+            priority: 'medium',
+            tags: ['restroom', 'wheelchair', 'changing-table'],
+            category: 'station wheelchair',
+            isRead: false
+          },
+          {
+            id: 6,
+            type: 'metro',
+            title: 'Airport Metro Technical Issue',
+            location: 'Meenambakkam Station',
+            message: 'Elevator temporarily out of service. Station staff available for assistance. Alternative lift access via Platform B.',
+            status: 'unavailable',
+            time: new Date(Date.now() - 10 * 60 * 1000),
+            priority: 'high',
+            tags: ['elevator', 'assistance', 'wheelchair'],
+            category: 'metro wheelchair emergency',
+            isRead: false
+          },
+          {
+            id: 7,
+            type: 'bus',
+            title: 'MTC Route 54C New Fleet',
+            location: 'Thiruvanmiyur to OMR',
+            message: 'New fleet of electric buses with enhanced accessibility features now operational. Features include USB charging and wider aisles.',
+            status: 'available',
+            time: new Date(Date.now() - 30 * 60 * 1000),
+            priority: 'medium',
+            tags: ['electric', 'wheelchair', 'audio', 'visual'],
+            category: 'bus wheelchair audio visual',
+            isRead: false
+          },
+          {
+            id: 8,
+            type: 'metro',
+            title: 'Red Line Voice System Upgrade',
+            location: 'All Stations',
+            message: 'Voice announcement system upgraded with multilingual support in Tamil, English, and Hindi with improved clarity.',
+            status: 'info',
+            time: new Date(Date.now() - 45 * 60 * 1000),
+            priority: 'medium',
+            tags: ['audio', 'multilingual', 'announcement'],
+            category: 'metro audio',
+            isRead: false
+          }
+        ];
+        
+        this.renderAlerts();
+      }
+
+      renderAlerts() {
+        if (!this.alertsContainer) return;
+        
+        const filteredAlerts = this.getFilteredAlerts();
+        this.alertsContainer.innerHTML = '';
+
+        if (filteredAlerts.length === 0) {
+          this.alertsContainer.innerHTML = `
+            <div class="glass-strong p-8 rounded-3xl text-center">
+              <i class="fas fa-search text-blue-200 text-4xl mb-4"></i>
+              <h3 class="text-xl font-bold text-blue-200 mb-2">No Alerts Found</h3>
+              <p class="text-blue-200">No alerts match your current filter. Say "show all" to see all alerts.</p>
+            </div>
+          `;
+          return;
+        }
+
+        filteredAlerts.forEach((alert, index) => {
+          const alertCard = this.createAlertCard(alert, index);
+          this.alertsContainer.appendChild(alertCard);
+        });
+      }
+
+      createAlertCard(alert, index) {
+        const card = document.createElement('div');
+        card.className = `alert-card glass-strong p-6 rounded-3xl ${alert.isRead ? 'opacity-75' : ''}`;
+        card.setAttribute('role', 'article');
+        card.setAttribute('aria-label', `Alert ${index + 1}: ${alert.title} at ${alert.location}${alert.isRead ? ' - Read' : ' - Unread'}`);
+        card.setAttribute('tabindex', '0');
+
+        const statusColors = {
+          available: 'text-green-400 border-green-400',
+          delayed: 'text-amber-400 border-amber-400',
+          unavailable: 'text-red-400 border-red-400',
+          info: 'text-blue-400 border-blue-400'
+        };
+
+        const statusBgColors = {
+          available: 'bg-green-400',
+          delayed: 'bg-amber-400',
+          unavailable: 'bg-red-400',
+          info: 'bg-blue-400'
+        };
+
+        const typeIcons = {
+          metro: 'fas fa-subway',
+          bus: 'fas fa-bus',
+          station: 'fas fa-map-marker-alt'
+        };
+
+        const typeColors = {
+          metro: 'from-blue-400 to-cyan-400',
+          bus: 'from-green-400 to-emerald-400',
+          station: 'from-purple-400 to-pink-400'
+        };
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex items-center space-x-3 flex-1">
+              <div class="w-12 h-12 bg-gradient-to-r ${typeColors[alert.type]} rounded-xl flex items-center justify-center relative">
+                <i class="${typeIcons[alert.type]} text-white text-xl" aria-hidden="true"></i>
+                ${alert.isRead ? '<div class="absolute -top-1 -right-1 w-4 h-4 bg-gray-500 rounded-full flex items-center justify-center"><i class="fas fa-check text-white text-xs"></i></div>' : '<div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>'}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-xl font-bold text-white">${alert.title} ${alert.isRead ? '<span class="text-sm text-gray-400">(Read)</span>' : '<span class="text-sm text-green-400">(New)</span>'}</h3>
+                <p class="text-blue-200 flex items-center mt-1">
+                  <i class="fas fa-map-marker-alt text-sm mr-2" aria-hidden="true"></i>
+                  <span>${alert.location}</span>
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0">
+              <div class="w-3 h-3 ${statusBgColors[alert.status]} rounded-full animate-pulse" aria-label="Status: ${alert.status}"></div>
+              <span class="text-sm font-bold ${statusColors[alert.status]} uppercase tracking-wide">${alert.status}</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <p class="text-blue-200 text-lg leading-relaxed">${alert.message}</p>
+          </div>
+
+          ${alert.countdown ? `
+            <div class="bg-blue-900/30 p-4 rounded-2xl mb-4 border border-blue-400/30">
+              <div class="flex items-center justify-center space-x-4">
+                <div class="text-center">
+                  <div class="text-3xl font-bold text-blue-400" aria-label="Arriving in ${alert.countdown} minutes">${alert.countdown}</div>
+                  <div class="text-blue-200 text-sm">minutes</div>
+                </div>
+                <div class="text-blue-200">
+                  <i class="fas fa-clock text-blue-400 mr-2"></i>
+                  Arriving soon
+                </div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="flex flex-wrap gap-2 mb-4" role="list" aria-label="Alert features">
+            ${alert.tags.map(tag => `
+              <span class="glass px-3 py-1 rounded-full text-sm font-medium text-blue-400 border border-blue-400/30" role="listitem">
+                ${this.getTagIcon(tag)} ${tag}
+              </span>
+            `).join('')}
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-white/20">
+            <div class="flex items-center space-x-4">
+              <p class="text-blue-200 text-sm flex items-center space-x-1">
+                <i class="far fa-clock" aria-hidden="true"></i>
+                <span>${this.getTimeAgo(alert.time)}</span>
+              </p>
+              <span class="px-3 py-1 rounded-full text-sm font-bold ${this.getPriorityColor(alert.priority)}">${alert.priority.toUpperCase()}</span>
+            </div>
+            <button class="glass px-4 py-2 rounded-2xl text-blue-400 hover:text-white hover:bg-white/10 transition-all duration-300 focusable" 
+                    onclick="if(window.voiceAssistant) window.voiceAssistant.readSpecificAlert(${index})" 
+                    aria-label="Read this alert aloud">
+              <i class="fas fa-volume-up mr-2"></i>
+              Read Aloud
+            </button>
+          </div>
+        `;
+
+        // Add click handler for voice reading
+        card.addEventListener('click', () => {
+          this.readSpecificAlert(index);
+          this.currentAlertIndex = index;
+          this.highlightAlert(index);
+        });
+
+        return card;
+      }
+
+      readSpecificAlert(index) {
+        const filteredAlerts = this.getFilteredAlerts();
+        if (index >= filteredAlerts.length) return;
+
+        const alert = filteredAlerts[index];
+        let alertText = `Alert ${index + 1} of ${filteredAlerts.length}. ${alert.title} at ${alert.location}. ${alert.message}. Status: ${alert.status}.`;
+        
+        if (alert.countdown) {
+          alertText += ` Vehicle arriving in ${alert.countdown} minutes.`;
+        }
+
+        if (alert.tags.length > 0) {
+          alertText += ` Available features: ${alert.tags.join(', ')}.`;
+        }
+
+        this.speak(alertText);
+        this.currentAlertIndex = index;
+        this.highlightAlert(index);
+      }
+
+      getTagIcon(tag) {
+        const icons = {
+          'wheelchair': '♿',
+          'audio': '🔊',
+          'visual': '👁️',
+          'tactile': '✋',
+          'low-floor': '📐',
+          'kneeling': '🔽',
+          'elevator': '🛗',
+          'delay': '⏰',
+          'braille': '⠃',
+          'electric': '⚡',
+          'multilingual': '🌐',
+          'restroom': '🚻',
+          'assistance': '🤝',
+          'alternative': '🔄',
+          'changing-table': '👶',
+          'announcement': '📢'
+        };
+        return icons[tag] || '🏷️';
+      }
+
+      getTimeAgo(time) {
+        const now = new Date();
+        const diff = Math.floor((now - time) / 1000 / 60);
+        if (diff < 1) return 'Just now';
+        if (diff < 60) return `${diff} minutes ago`;
+        return `${Math.floor(diff / 60)} hours ago`;
+      }
+
+      getPriorityColor(priority) {
+        const colors = {
+          high: 'bg-red-500/20 text-red-400 border border-red-400/30',
+          medium: 'bg-amber-500/20 text-amber-400 border border-amber-400/30',
+          low: 'bg-gray-500/20 text-blue-200 border border-blue-200/30'
+        };
+        return colors[priority];
+      }
+    }
+
+    // Initialize Voice Assistant when page loads
+    let voiceAssistant;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize voice assistant immediately without permission requests
+      voiceAssistant = new VoiceAssistant();
+
+      // Add focus management for better accessibility
+      document.addEventListener('focusin', (e) => {
+        if (e.target.classList.contains('alert-card')) {
+          const index = Array.from(document.querySelectorAll('.alert-card')).indexOf(e.target);
+          if (index !== -1 && voiceAssistant) {
+            voiceAssistant.currentAlertIndex = index;
+            voiceAssistant.highlightAlert(index);
+          }
+        }
+      });
+
+      // Enhanced keyboard navigation for alerts
+      document.addEventListener('keydown', (e) => {
+        if (e.target.classList.contains('alert-card')) {
+          switch(e.key) {
+            case 'Enter':
+            case ' ':
+              e.preventDefault();
+              const index = Array.from(document.querySelectorAll('.alert-card')).indexOf(e.target);
+              if (index !== -1 && voiceAssistant) {
+                voiceAssistant.readSpecificAlert(index);
+              }
+              break;
+            case 'ArrowDown':
+              e.preventDefault();
+              const nextCard = e.target.nextElementSibling;
+              if (nextCard) nextCard.focus();
+              break;
+            case 'ArrowUp':
+              e.preventDefault();
+              const prevCard = e.target.previousElementSibling;
+              if (prevCard) prevCard.focus();
+              break;
+          }
+        }
+      });
+
+      // Add click-to-activate voice features
+      let voiceActivated = false;
+      const activateVoiceFeatures = () => {
+        if (!voiceActivated && voiceAssistant) {
+          voiceActivated = true;
+          voiceAssistant.speak("Voice features activated. You can now use voice commands or continue with keyboard shortcuts.");
+          if (!voiceAssistant.permissionDenied) {
+            voiceAssistant.startListening();
+          }
+        }
+      };
+
+      document.addEventListener('click', activateVoiceFeatures, { once: true });
+      document.addEventListener('keydown', activateVoiceFeatures, { once: true });
+    });
+
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', () => {
+      if (voiceAssistant) {
+        if (document.hidden) {
+          voiceAssistant.stopListening();
+          voiceAssistant.stopSpeaking();
+        } else if (!voiceAssistant.permissionDenied) {
+          setTimeout(() => voiceAssistant.startListening(), 1000);
+        }
+      }
+    });
+
+    // Make voiceAssistant globally accessible for onclick handlers
+    window.voiceAssistant = null;
+    document.addEventListener('DOMContentLoaded', () => {
+      window.voiceAssistant = voiceAssistant;
+    });
+  </script>
+</body>
+</html>
