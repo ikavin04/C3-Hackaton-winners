@@ -6,10 +6,11 @@
   <title>AccessibleChennai - Mode Selection</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #0ea5e9;
-      --secondary: #06b6d4;
+      --primary: #136087;
+      --secondary: #0876ae;
       --accent: #f59e0b;
       --success: #10b981;
       --dark: #0f172a;
@@ -17,15 +18,9 @@
     }
 
     body {
-      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      font-family: 'Poppins', sans-serif;
+      background-color: #0a415d;
+      color: #f8fafc;
     }
 
     .glass {
@@ -35,7 +30,7 @@
     }
 
     .glass-dark {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -70,7 +65,7 @@
     }
 
     .text-gradient {
-      background: var(--gradient-primary);
+      background: linear-gradient(90deg, #ffffff 0%, #e0f2fe 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -117,6 +112,41 @@
       transform: translateY(0);
       opacity: 1;
     }
+
+    /* Feature card hover effects */
+    .feature-card {
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .feature-card:hover {
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-card:active {
+      transform: scale(0.98);
+    }
+
+    /* Glow effect */
+    .glow {
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+    }
+
+    /* Accessibility focus styles */
+    .focusable:focus {
+      outline: 3px solid rgba(255, 255, 255, 0.8);
+      outline-offset: 2px;
+    }
+
+    /* Reduced motion settings */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
   </style>
 </head>
 <body class="text-white min-h-screen flex items-center justify-center">
@@ -125,15 +155,17 @@
     <div class="mb-12 slide-up">
       <div class="flex items-center justify-center mb-6">
         <div class="relative">
-          <i class="fas fa-wheelchair text-sky-400 text-6xl floating"></i>
-          <div class="absolute inset-0 bg-sky-400 opacity-20 blur-lg rounded-full pulse-ring"></div>
+          <div class="w-24 h-24 rounded-full flex items-center justify-center">
+            <img src="ACCESSIBLECHENNAII.png" alt="Accessible Chennai Logo" class="w-20 h-20 object-cover rounded-full floating glow">
+          </div>
+          <div class="absolute inset-0 bg-white opacity-20 blur-lg rounded-full pulse-ring"></div>
         </div>
       </div>
       <h1 class="text-5xl md:text-6xl font-bold mb-4">
         <span class="text-gradient">Welcome to</span><br>
-        <span class="text-white">AccessibleChennai</span>
+        <span class="text-white">Accessible Chennai</span>
       </h1>
-      <p class="text-xl text-gray-300 mb-8">
+      <p class="text-xl text-white/90 mb-8">
         Choose your preferred interaction mode to get started
       </p>
     </div>
@@ -145,15 +177,15 @@
           <i class="fas fa-cog text-sky-400 mr-3"></i>
           Select Your Mode
         </h2>
-        <p class="text-gray-300 text-lg">
+        <p class="text-white/80 text-lg">
           Say "Voice Mode" or "Normal Mode" or click the buttons below
         </p>
       </div>
 
       <!-- Voice Input Indicator -->
-      <div class="mb-8" id="voiceIndicator">
+      <div class="mb-8 glass-dark p-6 rounded-2xl" id="voiceIndicator">
         <div class="flex items-center justify-center mb-4">
-          <div class="w-16 h-16 bg-gradient-to-r from-sky-500 to-cyan-500 rounded-full flex items-center justify-center" id="micIcon">
+          <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full flex items-center justify-center focusable" id="micIcon" role="button" tabindex="0" aria-label="Click to activate voice recognition">
             <i class="fas fa-microphone text-2xl text-white"></i>
           </div>
         </div>
@@ -172,14 +204,14 @@
       <!-- Manual Selection Buttons -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <button 
-          class="glass p-8 rounded-2xl hover:bg-gradient-to-br hover:from-sky-500/20 hover:to-cyan-500/20 transition-all duration-300 group"
+          class="feature-card glass-dark p-8 rounded-2xl hover:border-white/30 transition-all duration-300 group focusable"
           onclick="selectMode('voice')"
           id="voiceModeBtn">
-          <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-16 h-16 bg-gradient-to-r from-emerald-400 to-green-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
             <i class="fas fa-volume-up text-2xl text-white"></i>
           </div>
           <h3 class="text-2xl font-bold text-white mb-3">Voice Mode</h3>
-          <p class="text-gray-300">
+          <p class="text-white/80">
             Full voice interaction with audio feedback for all actions and navigation
           </p>
           <div class="mt-4 flex items-center justify-center space-x-2 text-sm text-green-400">
@@ -189,14 +221,14 @@
         </button>
 
         <button 
-          class="glass p-8 rounded-2xl hover:bg-gradient-to-br hover:from-purple-500/20 hover:to-pink-500/20 transition-all duration-300 group"
+          class="feature-card glass-dark p-8 rounded-2xl hover:border-white/30 transition-all duration-300 group focusable"
           onclick="selectMode('normal')"
           id="normalModeBtn">
-          <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+          <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
             <i class="fas fa-mouse-pointer text-2xl text-white"></i>
           </div>
           <h3 class="text-2xl font-bold text-white mb-3">Normal Mode</h3>
-          <p class="text-gray-300">
+          <p class="text-white/80">
             Traditional visual interface with click and touch interactions
           </p>
           <div class="mt-4 flex items-center justify-center space-x-2 text-sm text-purple-400">
@@ -216,12 +248,12 @@
     </div>
 
     <!-- Voice Commands Help -->
-    <div class="mt-8 glass p-6 rounded-2xl slide-up">
+    <div class="mt-8 glass-dark p-6 rounded-2xl slide-up">
       <h3 class="text-lg font-semibold text-white mb-3">
         <i class="fas fa-info-circle text-sky-400 mr-2"></i>
         Voice Commands
       </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-white/80">
         <div>
           <span class="text-green-400 font-medium">"Voice Mode"</span> - Enable full voice interaction
         </div>
@@ -414,6 +446,14 @@
       } else {
         stopListening();
         updateUI('ready');
+      }
+    });
+
+    // Keyboard support for microphone
+    document.getElementById('micIcon').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        this.click();
       }
     });
 

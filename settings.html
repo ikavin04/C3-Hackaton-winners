@@ -1,910 +1,782 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings - Accessible Chennai</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="js/app.js"></script>
-  <style>
-    :root {
-      --primary: #0ea5e9;
-      --secondary: #06b6d4;
-      --accent: #f59e0b;
-      --success: #10b981;
-      --dark: #0f172a;
-      --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-      --gradient-secondary: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-      --glass: rgba(255, 255, 255, 0.1);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Accessible Chennai</title>
+    <meta name="description" content="Customize your accessibility settings for Chennai's public transport navigation system.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #136087;
+            --secondary: #0876ae;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a415d;
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        /* Reduced motion settings */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+        
+        /* Accessibility focus styles */
+        .focusable:focus {
+            outline: 3px solid rgba(255, 255, 255, 0.8);
+            outline-offset: 2px;
+        }
+        
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(90deg, #ffffff 0%, #e0f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Glassmorphic container style */
+        .glass-dark {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
 
-    /* Body background with homepage animated gradient */
-    body {
-      background: linear-gradient(-45deg, #0f172a, #1e293b, #334155, #475569);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
-      color: #e0e7ff;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      min-height: 100vh;
-      font-family: "Inter", sans-serif;
-    }
+        .glass-dark:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+        /* Headings */
+        h1 {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 2.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
 
-    /* Glassmorphic container style for all sections */
-    .glass-dark {
-      background: rgba(15, 23, 42, 0.5);
-      backdrop-filter: blur(15px);
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      transition: background-color 0.3s ease;
-    }
+        h1 i {
+            color: var(--secondary);
+            animation: spinSlow 3s linear infinite;
+        }
 
-    /* Headings */
-    h1, h2 {
-      color: #E0E7FF;
-    }
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-    h1 {
-      font-weight: 900;
-      font-size: 2.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+        h2 {
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
 
-    h1 i {
-      color: var(--primary);
-      animation: spinSlow 3s linear infinite;
-    }
+        h2 i {
+            color: var(--secondary);
+        }
 
-    @keyframes spinSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
+        /* Section containers */
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
 
-    h2 {
-      font-weight: 700;
-      font-size: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-      color: var(--secondary);
-    }
+        /* Labels for toggles */
+        label.flex.items-center {
+            cursor: pointer;
+            padding: 0.75rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+            color: #f8fafc;
+        }
 
-    /* Section containers */
-    .section {
-      margin-bottom: 2rem;
-      padding: 1.5rem 1.5rem 2rem 1.5rem;
-    }
+        label.flex.items-center:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
 
-    /* Labels for toggles */
-    label.flex.items-center {
-      cursor: pointer;
-      border-radius: 0.75rem;
-      transition: background-color 0.3s ease;
-    }
+        /* Toggle components */
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
 
-    label.flex.items-center:hover {
-      background-color: rgba(6, 182, 212, 0.15);
-    }
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+            z-index: 2;
+            cursor: pointer;
+        }
 
-    /* Text inside toggles */
-    span {
-      color: #cbd5e1;
-      font-weight: 600;
-    }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            border-radius: 24px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
 
-    /* Toggle components */
-    .toggle {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 24px;
-    }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
 
-    .toggle input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-      position: absolute;
-      z-index: 2;
-      cursor: pointer;
-    }
+        input:checked + .slider {
+            background-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(8, 118, 174, 0.4);
+        }
 
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #374151; /* dark gray bg */
-      transition: background-color 0.3s ease;
-      border-radius: 24px;
-      box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.3);
-      z-index: 1;
-    }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
 
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 16px;
-      width: 16px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: transform 0.2s ease;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgb(0 0 0 / 0.3);
-    }
+        input:focus + .slider {
+            box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.5);
+        }
 
-    input:checked + .slider {
-      background-color: var(--primary);
-      box-shadow: 0 0 6px var(--primary);
-    }
+        /* Form controls */
+        select, input[type="range"] {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            transition: all 0.3s ease;
+        }
 
-    input:checked + .slider:before {
-      transform: translateX(26px);
-    }
+        select:focus, input[type="range"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 2px rgba(8, 118, 174, 0.3);
+        }
 
-    input:focus + .slider {
-      box-shadow: 0 0 6px 2px var(--secondary);
-    }
+        select option {
+            background: #0a415d;
+            color: #f8fafc;
+        }
 
-    /* Contrast Mode additional styling */
-    .contrast {
-      background-color: rgb(0 0 0 / 0.9) !important;
-      color: rgb(255 255 255 / 0.95) !important;
-    }
-    .contrast .glass-dark {
-      background-color: #000 !important;
-      border-color: #333 !important;
-      box-shadow: 0 0 20px rgba(255 255 255 / 0.3) !important;
-    }
-    .contrast label.flex.items-center:hover {
-      background-color: rgba(255 255 255 / 0.1);
-    }
-    .contrast .slider {
-      background-color: #222 !important;
-    }
-    .contrast input:checked + .slider {
-      background-color: var(--accent) !important;
-      box-shadow: 0 0 6px var(--accent) !important;
-    }
+        input[type="range"] {
+            accent-color: var(--secondary);
+        }
 
-    /* Buttons */
-    button {
-      cursor: pointer;
-      border-radius: 0.75rem;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      user-select: none;
-    }
+        /* Radio buttons */
+        input[type="radio"] {
+            accent-color: var(--secondary);
+            margin-right: 0.5rem;
+        }
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 12px var(--primary);
-    }
+        /* Buttons */
+        button {
+            cursor: pointer;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            user-select: none;
+            border: none;
+        }
 
-    .btn-scale {
-      transition: transform 0.1s ease;
-    }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
 
-    .btn-scale:active {
-      transform: scale(0.95);
-    }
+        button:active {
+            transform: translateY(0);
+        }
 
-    /* Toast */
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: var(--success);
-      color: white;
-      padding: 16px 20px;
-      border-radius: 8px;
-      z-index: 1100;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      box-shadow: 0 0 15px rgba(16, 185, 129, 0.8);
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+        }
 
-    #toast.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  </style>
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* High Contrast Mode */
+        body.contrast {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
+
+        body.contrast .glass-dark {
+            background: #111111 !important;
+            border-color: #333333 !important;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1) !important;
+        }
+
+        body.contrast label.flex.items-center:hover {
+            background-color: #222222 !important;
+        }
+
+        body.contrast .slider {
+            background-color: #333333 !important;
+        }
+
+        body.contrast input:checked + .slider {
+            background-color: var(--accent) !important;
+            box-shadow: 0 0 6px var(--accent) !important;
+        }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            z-index: 1100;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header styles to match homepage */
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animation for page load */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Reduced motion override */
+        body.reduce-motion * {
+            animation: none !important;
+            transition: none !important;
+        }
+    </style>
 </head>
-<body class="transition-all duration-300">
+<body class="min-h-screen flex flex-col">
+    <!-- Skip to content link for screen readers -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:px-4 focus:py-2 focus:bg-white focus:text-blue-600 focus:rounded-md focus:z-50">
+        Skip to main content
+    </a>
 
-  <div class="max-w-4xl mx-auto p-6">
-    <h1 class="mb-6">
-      <i class="fas fa-cog"></i> Settings
-    </h1>
-
-    <!-- Voice & Audio -->
-    <section class="section glass-dark">
-      <h2><i class="fas fa-volume-up"></i> Voice & Audio</h2>
-      <div class="space-y-3">
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-comment-alt text-primary"></i>
-            <span>Text-to-Speech (Voice Guidance)</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="ttsToggle" />
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-bell text-primary"></i>
-            <span>Audio Notifications</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="audioNotifToggle" checked />
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <div class="pt-2 mt-2 border-t border-gray-700">
-          <label for="voiceVolume" class="block mb-2 text-gray-300 font-semibold">Voice Volume</label>
-          <input
-            type="range" id="voiceVolume" min="0" max="100" value="80"
-            class="w-full h-2 rounded-lg cursor-pointer accent-primary"
-          />
-          <div class="flex justify-between text-xs text-gray-400 mt-1">
-            <span>Low</span>
-            <span>High</span>
-          </div>
+    <!-- Header with navigation -->
+    <header class="bg-blue-600/20 backdrop-blur-md sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="flex items-center space-x-3 focusable rounded-md">
+                    <div class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-white">
+                            <path d="M30,20 L70,20 L80,40 L75,60 L60,80 L40,80 L25,60 L20,40 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="3"/>
+                            <circle cx="50" cy="50" r="5" fill="currentColor"/>
+                            <path d="M65,50 L80,50 M50,65 L50,80 M35,50 L20,50 M50,35 L50,20" stroke="currentColor" stroke-width="3"/>
+                        </svg>
+                    </div>
+                    <h1 class="text-xl font-bold text-white">Accessible<span class="text-gradient">Chennai</span></h1>
+                </a>
+            </div>
+            
+            <nav aria-label="Main navigation">
+                <ul class="flex space-x-1">
+                    <li>
+                        <a href="Home.html" class="px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focusable transition-all duration-300">Home</a>
+                    </li>
+                    <li>
+                        <a href="alerts.html" class="px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focusable transition-all duration-300">Alerts</a>
+                    </li>
+                    <li>
+                        <a href="community.html" class="px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focusable transition-all duration-300">Community</a>
+                    </li>
+                    <li>
+                        <a href="navigate.html" class="px-3 py-2 rounded-md text-sm font-medium text-white/80 hover:text-white hover:bg-white/10 focusable transition-all duration-300">Navigate</a>
+                    </li>
+                    <li>
+                        <a href="#" class="px-3 py-2 rounded-md text-sm font-medium text-white hover:bg-white/10 focusable transition-all duration-300" aria-current="page">Settings</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
-      </div>
-    </section>
+    </header>
 
-    <!-- Visual Settings -->
-    <section class="section glass-dark">
-      <h2><i class="fas fa-eye"></i> Visual Settings</h2>
-      <div class="space-y-4">
-        <div>
-          <label for="fontSizeSelect" class="block mb-2 text-gray-300 font-semibold">Font Size</label>
-          <select
-            id="fontSizeSelect"
-            class="w-full p-2 rounded-lg border border-gray-700 bg-[rgba(15,23,42,0.6)] text-white focus:ring-2 focus:ring-secondary"
-          >
-            <option value="small">Small</option>
-            <option value="medium" selected>Medium</option>
-            <option value="large">Large</option>
-            <option value="xlarge">Extra Large</option>
-          </select>
+    <!-- Main content -->
+    <main id="main-content" class="flex-grow">
+        <div class="max-w-4xl mx-auto p-6 fade-in">
+            <h1 class="mb-8">
+                <i class="fas fa-cog"></i> Settings
+            </h1>
+
+            <!-- Voice & Audio -->
+            <section class="section glass-dark">
+                <h2><i class="fas fa-volume-up"></i> Voice & Audio</h2>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between gap-4 rounded-lg transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-comment-alt text-secondary"></i>
+                            <span>Text-to-Speech (Voice Guidance)</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="ttsToggle" />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+
+                    <label class="flex items-center justify-between gap-4 rounded-lg transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-bell text-secondary"></i>
+                            <span>Audio Notifications</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="audioNotifToggle" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+
+                    <div class="pt-4 mt-4 border-t border-white/10">
+                        <label for="voiceVolume" class="block mb-2 text-white/90 font-semibold">Voice Volume</label>
+                        <input
+                            type="range" id="voiceVolume" min="0" max="100" value="80"
+                            class="w-full h-2 rounded-lg cursor-pointer"
+                        />
+                        <div class="flex justify-between text-xs text-white/60 mt-1">
+                            <span>Low</span>
+                            <span>High</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Visual Settings -->
+            <section class="section glass-dark">
+                <h2><i class="fas fa-eye"></i> Visual Settings</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="fontSizeSelect" class="block mb-2 text-white/90 font-semibold">Font Size</label>
+                        <select id="fontSizeSelect" class="w-full p-3 rounded-lg focus:ring-2 focus:ring-secondary">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                            <option value="xlarge">Extra Large</option>
+                        </select>
+                    </div>
+
+                    <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-adjust text-secondary"></i>
+                            <span>High Contrast Mode</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="contrastToggle" />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+
+                    <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-moon text-secondary"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="darkModeToggle" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+
+                    <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-running text-secondary"></i>
+                            <span>Reduce Motion</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="motionToggle" />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Screen Reader -->
+            <section class="section glass-dark">
+                <h2><i class="fas fa-assistive-listening-systems"></i> Screen Reader</h2>
+                <div class="space-y-3">
+                    <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-universal-access text-secondary"></i>
+                            <span>Enable Screen Reader Optimization</span>
+                        </div>
+                        <label class="toggle">
+                            <input type="checkbox" id="screenReaderToggle" checked />
+                            <span class="slider"></span>
+                        </label>
+                    </label>
+
+                    <div id="screenReaderOptions" class="pl-12 space-y-3">
+                        <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                            <span>Enhanced Descriptions</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="enhancedDescToggle" checked />
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+
+                        <label class="flex items-center justify-between gap-4 rounded-lg cursor-pointer transition-all duration-300">
+                            <span>Navigation Hints</span>
+                            <label class="toggle">
+                                <input type="checkbox" id="navHintsToggle" checked />
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Language & Region -->
+            <section class="section glass-dark">
+                <h2><i class="fas fa-globe"></i> Language & Region</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label for="languageSelect" class="block mb-2 text-white/90 font-semibold">Preferred Language</label>
+                        <select id="languageSelect" class="w-full p-3 rounded-lg focus:ring-2 focus:ring-secondary">
+                            <option selected>English (India)</option>
+                            <option>Tamil</option>
+                            <option>Hindi</option>
+                            <option>Telugu</option>
+                            <option>Malayalam</option>
+                            <option>Kannada</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block mb-3 text-white/90 font-semibold">Time Format</label>
+                        <div class="flex gap-6">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="timeFormat" value="12-hour" class="radio" checked />
+                                <span>12-hour</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="timeFormat" value="24-hour" class="radio" />
+                                <span>24-hour</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="section glass-dark">
+                <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                <div class="flex flex-wrap gap-3 mt-4">
+                    <button class="btn-secondary px-6 py-3 rounded-lg flex items-center gap-2" onclick="resetSettings()">
+                        <i class="fas fa-undo"></i> Reset Settings
+                    </button>
+                    <button class="btn-secondary px-6 py-3 rounded-lg flex items-center gap-2" onclick="restoreDefaults()">
+                        <i class="fas fa-history"></i> Restore Defaults
+                    </button>
+                    <button class="btn-primary w-full py-4 rounded-lg flex items-center justify-center gap-2 mt-2 font-semibold text-lg" onclick="saveSettings()">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </section>
         </div>
+    </main>
 
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-adjust text-secondary"></i>
-            <span>High Contrast Mode</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="contrastToggle" />
-            <span class="slider"></span>
-          </label>
-        </label>
+    <!-- Toast Notification -->
+    <div id="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Settings saved successfully!</span>
+    </div>
 
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-moon text-secondary"></i>
-            <span>Dark Mode</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="darkModeToggle" />
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-running text-secondary"></i>
-            <span>Reduce Motion</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="motionToggle" />
-            <span class="slider"></span>
-          </label>
-        </label>
-      </div>
-    </section>
-
-    <!-- Screen Reader -->
-    <section class="section glass-dark">
-      <h2><i class="fas fa-assistive-listening-systems"></i> Screen Reader</h2>
-      <div class="space-y-3">
-        <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-          <div class="flex items-center gap-3">
-            <i class="fas fa-universal-access text-secondary"></i>
-            <span>Enable Screen Reader Optimization</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="screenReaderToggle" checked />
-            <span class="slider"></span>
-          </label>
-        </label>
-
-        <div id="screenReaderOptions" class="pl-12 space-y-3">
-          <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-            <span>Enhanced Descriptions</span>
-            <label class="toggle">
-              <input type="checkbox" id="enhancedDescToggle" checked />
-              <span class="slider"></span>
-            </label>
-          </label>
-
-          <label class="flex items-center justify-between gap-4 p-3 rounded-lg cursor-pointer transition hover:bg-[rgba(6,182,212,0.15)]">
-            <span>Navigation Hints</span>
-            <label class="toggle">
-              <input type="checkbox" id="navHintsToggle" checked />
-              <span class="slider"></span>
-            </label>
-          </label>
-        </div>
-      </div>
-    </section>
-
-    <!-- Language & Region -->
-    <section class="section glass-dark">
-      <h2><i class="fas fa-globe"></i> Language & Region</h2>
-      <div class="space-y-4">
-        <div>
-          <label for="languageSelect" class="block mb-2 text-gray-300 font-semibold">Preferred Language</label>
-          <select
-            id="languageSelect"
-            class="w-full p-2 rounded-lg border border-gray-700 bg-[rgba(15,23,42,0.6)] text-white focus:ring-2 focus:ring-secondary"
-          >
-            <option selected>English (India)</option>
-            <option>Tamil</option>
-            <option>Hindi</option>
-            <option>Telugu</option>
-            <option>Malayalam</option>
-            <option>Kannada</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-2 text-gray-300 font-semibold">Time Format</label>
-          <div class="flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="timeFormat" class="radio" checked />
-              <span>12-hour</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <input type="radio" name="timeFormat" class="radio" />
-              <span>24-hour</span>
-            </label>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Quick Actions -->
-    <section class="section glass-dark">
-      <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-      <div class="flex flex-wrap gap-3 mt-2">
-        <button
-          class="bg-secondary px-4 py-2 rounded-lg text-white hover:bg-cyan-600 transition duration-200 flex items-center gap-2 btn-scale"
-          onclick="resetSettings()"
-          style="background: var(--primary);"
-        >
-          <i class="fas fa-undo"></i> Reset Settings
-        </button>
-        <button
-          class="bg-[rgba(255,255,255,0.1)] text-white px-4 py-2 rounded-lg hover:bg-[rgba(255,255,255,0.2)] transition duration-200 flex items-center gap-2 btn-scale"
-          onclick="restoreDefaults()"
-        >
-          <i class="fas fa-history"></i> Restore Defaults
-        </button>
-        <button
-          class="w-full bg-[linear-gradient(135deg,#0ea5e9,#06b6d4)] py-3 rounded-lg text-white hover:brightness-110 transition duration-200 btn-scale font-medium flex items-center justify-center gap-2 mt-2"
-          onclick="saveSettings()"
-          style="box-shadow: 0 0 20px var(--primary);"
-        >
-          <i class="fas fa-save"></i> Save Changes
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <!-- Toast Notification -->
-  <div id="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <i class="fas fa-check-circle"></i>
-    <span id="toastMessage">Settings saved successfully!</span>
-  </div>
-
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-      <script>
-      // Load saved settings from localStorage
-      function loadSettings() {
-        // Dark Mode
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        if (darkMode) {
-          document.body.classList.add('dark');
-          document.getElementById('darkModeToggle').checked = true;
-        }
-
-        // Font Size
-        const fontSize = localStorage.getItem('fontSize') || 'medium';
-        document.getElementById('fontSizeSelect').value = fontSize;
-        updateFontSize(fontSize);
-
-        // Other settings
-        document.getElementById('ttsToggle').checked = localStorage.getItem('ttsEnabled') !== 'false';
-        document.getElementById('audioNotifToggle').checked = localStorage.getItem('audioNotifEnabled') !== 'false';
-        document.getElementById('contrastToggle').checked = localStorage.getItem('highContrast') === 'true';
-        document.getElementById('motionToggle').checked = localStorage.getItem('reduceMotion') === 'true';
-        document.getElementById('screenReaderToggle').checked = localStorage.getItem('screenReaderEnabled') !== 'false';
-        document.getElementById('enhancedDescToggle').checked = localStorage.getItem('enhancedDescEnabled') !== 'false';
-        document.getElementById('navHintsToggle').checked = localStorage.getItem('navHintsEnabled') !== 'false';
-        document.getElementById('voiceVolume').value = localStorage.getItem('voiceVolume') || 80;
-        
-        const language = localStorage.getItem('language') || 'English (India)';
-        document.getElementById('languageSelect').value = language;
-        
-        const timeFormat = localStorage.getItem('timeFormat') || '12-hour';
-        document.querySelector(`input[name="timeFormat"][value="${timeFormat}"]`).checked = true;
-      }
-
-      // Update font size
-      function updateFontSize(size) {
-        const sizes = {
-          small: '14px',
-          medium: '16px',
-          large: '18px',
-          xlarge: '20px',
-        };
-        document.body.style.fontSize = sizes[size];
-      }
-
-      // Toggle Dark Mode
-      document.getElementById('darkModeToggle')?.addEventListener('change', function() {
-        document.body.classList.toggle('dark');
-        localStorage.setItem('darkMode', this.checked);
-      });
-
-      // Font Size Change
-      document.getElementById('fontSizeSelect')?.addEventListener('change', function(e) {
-        const size = e.target.value;
-        updateFontSize(size);
-        localStorage.setItem('fontSize', size);
-      });
-
-      // High Contrast Mode
-      document.getElementById('contrastToggle')?.addEventListener('change', function(e) {
-        document.body.classList.toggle('contrast', e.target.checked);
-        localStorage.setItem('highContrast', e.target.checked);
-      });
-
-      // Reduced Motion
-      document.getElementById('motionToggle')?.addEventListener('change', function(e) {
-        document.body.classList.toggle('reduce-motion', e.target.checked);
-        localStorage.setItem('reduceMotion', e.target.checked);
-      });
-
-      // Screen Reader Toggle
-      document.getElementById('screenReaderToggle')?.addEventListener('change', function(e) {
-        const optionsDiv = document.getElementById('screenReaderOptions');
-        if (e.target.checked) {
-          optionsDiv.style.display = 'block';
-        } else {
-          optionsDiv.style.display = 'none';
-        }
-        localStorage.setItem('screenReaderEnabled', e.target.checked);
-      });
-
-      // Voice Volume
-      document.getElementById('voiceVolume')?.addEventListener('input', function(e) {
-        localStorage.setItem('voiceVolume', e.target.value);
-      });
-
-      // Language Select
-      document.getElementById('languageSelect')?.addEventListener('change', function(e) {
-        localStorage.setItem('language', e.target.value);
-      });
-
-      // Time Format
-      document.querySelectorAll('input[name="timeFormat"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-          localStorage.setItem('timeFormat', this.value);
-        });
-      });
-
-      // Screen Reader Options
-      document.getElementById('enhancedDescToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('enhancedDescEnabled', e.target.checked);
-      });
-
-      document.getElementById('navHintsToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('navHintsEnabled', e.target.checked);
-      });
-
-      // TTS Toggle
-      document.getElementById('ttsToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('ttsEnabled', e.target.checked);
-      });
-
-      // Audio Notifications Toggle
-      document.getElementById('audioNotifToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('audioNotifEnabled', e.target.checked);
-      });
-
-      // Reset Settings
-      function resetSettings() {
-        if (confirm('Are you sure you want to reset all settings to their previous values?')) {
-          localStorage.clear();
-          loadSettings();
-          showToast('Settings reset successfully');
-        }
-      }
-
-      // Restore Defaults
-      function restoreDefaults() {
-        if (confirm('Are you sure you want to restore all settings to their default values?')) {
-          const defaults = {
-            darkMode: false,
-            fontSize: 'medium',
-            ttsEnabled: true,
-            audioNotifEnabled: true,
-            highContrast: false,
-            reduceMotion: false,
-            screenReaderEnabled: true,
-            enhancedDescEnabled: true,
-            navHintsEnabled: true,
-            voiceVolume: 80,
-            language: 'English (India)',
-            timeFormat: '12-hour'
-          };
-
-          for (const [key, value] of Object.entries(defaults)) {
-            localStorage.setItem(key, value);
-          }
-
-          loadSettings();
-          showToast('Default settings restored');
-        }
-      }
-
-      // Save settings to localStorage and apply immediately
-      function saveSettings() {
-        const settings = {
-          darkMode: document.getElementById('darkModeToggle').checked,
-          fontSize: document.getElementById('fontSizeSelect').value,
-          highContrast: document.getElementById('contrastToggle').checked,
-          reduceMotion: document.getElementById('motionToggle').checked,
-          ttsEnabled: document.getElementById('ttsToggle').checked,
-          audioNotifEnabled: document.getElementById('audioNotifToggle').checked,
-          screenReaderEnabled: document.getElementById('screenReaderToggle').checked,
-          language: document.getElementById('languageSelect').value
-        };
-        localStorage.setItem('appSettings', JSON.stringify(settings));
-        
-        // Show toast notification
-        showToast('Settings saved successfully');
-        
-        // Reload the page after a short delay to see the toast
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500); // 1.5 seconds
-      }
-
-      // Show toast notification
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-        toastMessage.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 1500);
-      }
-
-      // Apply settings immediately to the UI
-      function applySettings(settings) {
-        // Dark Mode
-        if (settings.darkMode) {
-          document.body.classList.add('dark');
-        } else {
-          document.body.classList.remove('dark');
-        }
-        // Font Size
-        document.body.style.fontSize = {
-          small: '14px',
-          medium: '16px',
-          large: '18px',
-          xlarge: '20px'
-        }[settings.fontSize];
-        // High Contrast
-        document.body.classList.toggle('contrast', settings.highContrast);
-        // Reduced Motion
-        document.body.classList.toggle('reduce-motion', settings.reduceMotion);
-      }
-
-      // Load settings when page loads
-      document.addEventListener('DOMContentLoaded', function() {
-        const savedSettings = localStorage.getItem('appSettings');
-        if (savedSettings) {
-          const settings = JSON.parse(savedSettings);
-          // Set UI elements to match saved settings
-          document.getElementById('darkModeToggle').checked = settings.darkMode;
-          document.getElementById('fontSizeSelect').value = settings.fontSize;
-          document.getElementById('contrastToggle').checked = settings.highContrast;
-          document.getElementById('motionToggle').checked = settings.reduceMotion;
-          document.getElementById('ttsToggle').checked = settings.ttsEnabled;
-          document.getElementById('audioNotifToggle').checked = settings.audioNotifEnabled;
-          document.getElementById('screenReaderToggle').checked = settings.screenReaderEnabled;
-          document.getElementById('languageSelect').value = settings.language;
-          // Apply settings
-          applySettings(settings);
-        }
-        // ...existing initialization code...
-        loadSettings();
-        document.getElementById('screenReaderOptions').style.display =
-          document.getElementById('screenReaderToggle').checked ? 'block' : 'none';
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-          if (!radio.id) {
-            radio.id = `radio-${Math.random().toString(36).substr(2, 9)}`;
-          }
-          if (radio.nextElementSibling?.tagName === 'SPAN') {
-            radio.nextElementSibling.setAttribute('for', radio.id);
-          }
-        });
-      });
-    </script>
-
-  <!-- Your existing JS logic for toggle handlers, localStorage, toast notification, etc. remains exactly as before -->
-   <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <script>
-      // Load saved settings from localStorage
-      function loadSettings() {
-        // Dark Mode
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        if (darkMode) {
-          document.body.classList.add('dark');
-          document.getElementById('darkModeToggle').checked = true;
-        }
+        // Global settings object to manage all settings
+        const SettingsManager = {
+            // Load settings from localStorage
+            load() {
+                const savedSettings = localStorage.getItem('accessibleChennaiSettings');
+                if (savedSettings) {
+                    return JSON.parse(savedSettings);
+                }
+                return this.getDefaults();
+            },
 
-        // Font Size
-        const fontSize = localStorage.getItem('fontSize') || 'medium';
-        document.getElementById('fontSizeSelect').value = fontSize;
-        updateFontSize(fontSize);
+            // Get default settings
+            getDefaults() {
+                return {
+                    darkMode: true,
+                    fontSize: 'medium',
+                    ttsEnabled: true,
+                    audioNotifEnabled: true,
+                    highContrast: false,
+                    reduceMotion: false,
+                    screenReaderEnabled: true,
+                    enhancedDescEnabled: true,
+                    navHintsEnabled: true,
+                    voiceVolume: 80,
+                    language: 'English (India)',
+                    timeFormat: '12-hour'
+                };
+            },
 
-        // Other settings
-        document.getElementById('ttsToggle').checked = localStorage.getItem('ttsEnabled') !== 'false';
-        document.getElementById('audioNotifToggle').checked = localStorage.getItem('audioNotifEnabled') !== 'false';
-        document.getElementById('contrastToggle').checked = localStorage.getItem('highContrast') === 'true';
-        document.getElementById('motionToggle').checked = localStorage.getItem('reduceMotion') === 'true';
-        document.getElementById('screenReaderToggle').checked = localStorage.getItem('screenReaderEnabled') !== 'false';
-        document.getElementById('enhancedDescToggle').checked = localStorage.getItem('enhancedDescEnabled') !== 'false';
-        document.getElementById('navHintsToggle').checked = localStorage.getItem('navHintsEnabled') !== 'false';
-        document.getElementById('voiceVolume').value = localStorage.getItem('voiceVolume') || 80;
-        
-        const language = localStorage.getItem('language') || 'English (India)';
-        document.getElementById('languageSelect').value = language;
-        
-        const timeFormat = localStorage.getItem('timeFormat') || '12-hour';
-        document.querySelector(`input[name="timeFormat"][value="${timeFormat}"]`).checked = true;
-      }
+            // Save settings to localStorage
+            save(settings) {
+                localStorage.setItem('accessibleChennaiSettings', JSON.stringify(settings));
+                // Also save individual settings for backward compatibility
+                Object.keys(settings).forEach(key => {
+                    localStorage.setItem(key, settings[key]);
+                });
+            },
 
-      // Update font size
-      function updateFontSize(size) {
-        const sizes = {
-          small: '14px',
-          medium: '16px',
-          large: '18px',
-          xlarge: '20px',
+            // Apply settings to current page
+            apply(settings) {
+                // Dark Mode
+                document.body.classList.toggle('dark', settings.darkMode);
+                
+                // Font Size
+                const fontSizes = {
+                    small: '14px',
+                    medium: '16px',
+                    large: '18px',
+                    xlarge: '20px'
+                };
+                document.body.style.fontSize = fontSizes[settings.fontSize];
+                
+                // High Contrast
+                document.body.classList.toggle('contrast', settings.highContrast);
+                
+                // Reduced Motion
+                document.body.classList.toggle('reduce-motion', settings.reduceMotion);
+                
+                // Apply to UI elements
+                this.updateUI(settings);
+            },
+
+            // Update UI elements to reflect settings
+            updateUI(settings) {
+                const elements = {
+                    'darkModeToggle': settings.darkMode,
+                    'fontSizeSelect': settings.fontSize,
+                    'contrastToggle': settings.highContrast,
+                    'motionToggle': settings.reduceMotion,
+                    'ttsToggle': settings.ttsEnabled,
+                    'audioNotifToggle': settings.audioNotifEnabled,
+                    'screenReaderToggle': settings.screenReaderEnabled,
+                    'enhancedDescToggle': settings.enhancedDescEnabled,
+                    'navHintsToggle': settings.navHintsEnabled,
+                    'voiceVolume': settings.voiceVolume,
+                    'languageSelect': settings.language
+                };
+
+                Object.keys(elements).forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = elements[id];
+                        } else if (element.type === 'range') {
+                            element.value = elements[id];
+                        } else if (element.tagName === 'SELECT') {
+                            element.value = elements[id];
+                        }
+                    }
+                });
+
+                // Handle radio buttons for time format
+                const timeFormatRadio = document.querySelector(`input[name="timeFormat"][value="${settings.timeFormat}"]`);
+                if (timeFormatRadio) {
+                    timeFormatRadio.checked = true;
+                }
+
+                // Handle screen reader options visibility
+                const screenReaderOptions = document.getElementById('screenReaderOptions');
+                if (screenReaderOptions) {
+                    screenReaderOptions.style.display = settings.screenReaderEnabled ? 'block' : 'none';
+                }
+            },
+
+            // Get current settings from UI
+            getCurrentSettings() {
+                const getRadioValue = (name) => {
+                    const radio = document.querySelector(`input[name="${name}"]:checked`);
+                    return radio ? radio.value : '12-hour';
+                };
+
+                return {
+                    darkMode: document.getElementById('darkModeToggle')?.checked || false,
+                    fontSize: document.getElementById('fontSizeSelect')?.value || 'medium',
+                    highContrast: document.getElementById('contrastToggle')?.checked || false,
+                    reduceMotion: document.getElementById('motionToggle')?.checked || false,
+                    ttsEnabled: document.getElementById('ttsToggle')?.checked || false,
+                    audioNotifEnabled: document.getElementById('audioNotifToggle')?.checked || false,
+                    screenReaderEnabled: document.getElementById('screenReaderToggle')?.checked || false,
+                    enhancedDescEnabled: document.getElementById('enhancedDescToggle')?.checked || false,
+                    navHintsEnabled: document.getElementById('navHintsToggle')?.checked || false,
+                    voiceVolume: parseInt(document.getElementById('voiceVolume')?.value) || 80,
+                    language: document.getElementById('languageSelect')?.value || 'English (India)',
+                    timeFormat: getRadioValue('timeFormat')
+                };
+            }
         };
-        document.body.style.fontSize = sizes[size];
-      }
 
-      // Toggle Dark Mode
-      document.getElementById('darkModeToggle')?.addEventListener('change', function() {
-        document.body.classList.toggle('dark');
-        localStorage.setItem('darkMode', this.checked);
-      });
+        // Event listeners
+        function setupEventListeners() {
+            // Font Size Change
+            document.getElementById('fontSizeSelect')?.addEventListener('change', function(e) {
+                const fontSizes = {
+                    small: '14px',
+                    medium: '16px',
+                    large: '18px',
+                    xlarge: '20px'
+                };
+                document.body.style.fontSize = fontSizes[e.target.value];
+            });
 
-      // Font Size Change
-      document.getElementById('fontSizeSelect')?.addEventListener('change', function(e) {
-        const size = e.target.value;
-        updateFontSize(size);
-        localStorage.setItem('fontSize', size);
-      });
+            // High Contrast Mode
+            document.getElementById('contrastToggle')?.addEventListener('change', function(e) {
+                document.body.classList.toggle('contrast', e.target.checked);
+            });
 
-      // High Contrast Mode
-      document.getElementById('contrastToggle')?.addEventListener('change', function(e) {
-        document.body.classList.toggle('contrast', e.target.checked);
-        localStorage.setItem('highContrast', e.target.checked);
-      });
+            // Reduced Motion
+            document.getElementById('motionToggle')?.addEventListener('change', function(e) {
+                document.body.classList.toggle('reduce-motion', e.target.checked);
+            });
 
-      // Reduced Motion
-      document.getElementById('motionToggle')?.addEventListener('change', function(e) {
-        document.body.classList.toggle('reduce-motion', e.target.checked);
-        localStorage.setItem('reduceMotion', e.target.checked);
-      });
+            // Screen Reader Toggle
+            document.getElementById('screenReaderToggle')?.addEventListener('change', function(e) {
+                const optionsDiv = document.getElementById('screenReaderOptions');
+                if (optionsDiv) {
+                    optionsDiv.style.display = e.target.checked ? 'block' : 'none';
+                }
+            });
 
-      // Screen Reader Toggle
-      document.getElementById('screenReaderToggle')?.addEventListener('change', function(e) {
-        const optionsDiv = document.getElementById('screenReaderOptions');
-        if (e.target.checked) {
-          optionsDiv.style.display = 'block';
-        } else {
-          optionsDiv.style.display = 'none';
+            // Dark Mode Toggle
+            document.getElementById('darkModeToggle')?.addEventListener('change', function(e) {
+                document.body.classList.toggle('dark', e.target.checked);
+            });
         }
-        localStorage.setItem('screenReaderEnabled', e.target.checked);
-      });
 
-      // Voice Volume
-      document.getElementById('voiceVolume')?.addEventListener('input', function(e) {
-        localStorage.setItem('voiceVolume', e.target.value);
-      });
-
-      // Language Select
-      document.getElementById('languageSelect')?.addEventListener('change', function(e) {
-        localStorage.setItem('language', e.target.value);
-      });
-
-      // Time Format
-      document.querySelectorAll('input[name="timeFormat"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-          localStorage.setItem('timeFormat', this.value);
-        });
-      });
-
-      // Screen Reader Options
-      document.getElementById('enhancedDescToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('enhancedDescEnabled', e.target.checked);
-      });
-
-      document.getElementById('navHintsToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('navHintsEnabled', e.target.checked);
-      });
-
-      // TTS Toggle
-      document.getElementById('ttsToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('ttsEnabled', e.target.checked);
-      });
-
-      // Audio Notifications Toggle
-      document.getElementById('audioNotifToggle')?.addEventListener('change', function(e) {
-        localStorage.setItem('audioNotifEnabled', e.target.checked);
-      });
-
-      // Reset Settings
-      function resetSettings() {
-        if (confirm('Are you sure you want to reset all settings to their previous values?')) {
-          localStorage.clear();
-          loadSettings();
-          showToast('Settings reset successfully');
+        // Reset Settings
+        function resetSettings() {
+            if (confirm('Are you sure you want to reset all settings to their previous saved values?')) {
+                const settings = SettingsManager.load();
+                SettingsManager.apply(settings);
+                showToast('Settings reset successfully');
+            }
         }
-      }
 
-      // Restore Defaults
-      function restoreDefaults() {
-        if (confirm('Are you sure you want to restore all settings to their default values?')) {
-          const defaults = {
-            darkMode: false,
-            fontSize: 'medium',
-            ttsEnabled: true,
-            audioNotifEnabled: true,
-            highContrast: false,
-            reduceMotion: false,
-            screenReaderEnabled: true,
-            enhancedDescEnabled: true,
-            navHintsEnabled: true,
-            voiceVolume: 80,
-            language: 'English (India)',
-            timeFormat: '12-hour'
-          };
-
-          for (const [key, value] of Object.entries(defaults)) {
-            localStorage.setItem(key, value);
-          }
-
-          loadSettings();
-          showToast('Default settings restored');
+        // Restore Defaults
+        function restoreDefaults() {
+            if (confirm('Are you sure you want to restore all settings to their default values?')) {
+                const defaults = SettingsManager.getDefaults();
+                SettingsManager.apply(defaults);
+                showToast('Default settings restored');
+            }
         }
-      }
 
-      // Save settings to localStorage and apply immediately
-      function saveSettings() {
-        const settings = {
-          darkMode: document.getElementById('darkModeToggle').checked,
-          fontSize: document.getElementById('fontSizeSelect').value,
-          highContrast: document.getElementById('contrastToggle').checked,
-          reduceMotion: document.getElementById('motionToggle').checked,
-          ttsEnabled: document.getElementById('ttsToggle').checked,
-          audioNotifEnabled: document.getElementById('audioNotifToggle').checked,
-          screenReaderEnabled: document.getElementById('screenReaderToggle').checked,
-          language: document.getElementById('languageSelect').value
-        };
-        localStorage.setItem('appSettings', JSON.stringify(settings));
-        
+        // Save Settings
+        function saveSettings() {
+            const currentSettings = SettingsManager.getCurrentSettings();
+            SettingsManager.save(currentSettings);
+            showToast('Settings saved successfully! Changes will apply across all pages.');
+            
+            // Broadcast settings change to other tabs/pages
+            localStorage.setItem('settingsChanged', Date.now().toString());
+        }
+
         // Show toast notification
-        showToast('Settings saved successfully');
-        
-        // Reload the page after a short delay to see the toast
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500); // 1.5 seconds
-      }
-
-      // Show toast notification
-      function showToast(message) {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-        toastMessage.textContent = message;
-        toast.classList.add('show');
-        setTimeout(() => {
-          toast.classList.remove('show');
-        }, 1500);
-      }
-
-      // Apply settings immediately to the UI
-      function applySettings(settings) {
-        // Dark Mode
-        if (settings.darkMode) {
-          document.body.classList.add('dark');
-        } else {
-          document.body.classList.remove('dark');
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            if (toast && toastMessage) {
+                toastMessage.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
         }
-        // Font Size
-        document.body.style.fontSize = {
-          small: '14px',
-          medium: '16px',
-          large: '18px',
-          xlarge: '20px'
-        }[settings.fontSize];
-        // High Contrast
-        document.body.classList.toggle('contrast', settings.highContrast);
-        // Reduced Motion
-        document.body.classList.toggle('reduce-motion', settings.reduceMotion);
-      }
 
-      // Load settings when page loads
-      document.addEventListener('DOMContentLoaded', function() {
-        const savedSettings = localStorage.getItem('appSettings');
-        if (savedSettings) {
-          const settings = JSON.parse(savedSettings);
-          // Set UI elements to match saved settings
-          document.getElementById('darkModeToggle').checked = settings.darkMode;
-          document.getElementById('fontSizeSelect').value = settings.fontSize;
-          document.getElementById('contrastToggle').checked = settings.highContrast;
-          document.getElementById('motionToggle').checked = settings.reduceMotion;
-          document.getElementById('ttsToggle').checked = settings.ttsEnabled;
-          document.getElementById('audioNotifToggle').checked = settings.audioNotifEnabled;
-          document.getElementById('screenReaderToggle').checked = settings.screenReaderEnabled;
-          document.getElementById('languageSelect').value = settings.language;
-          // Apply settings
-          applySettings(settings);
-        }
-        // ...existing initialization code...
-        loadSettings();
-        document.getElementById('screenReaderOptions').style.display =
-          document.getElementById('screenReaderToggle').checked ? 'block' : 'none';
-        document.querySelectorAll('input[type="radio"]').forEach(radio => {
-          if (!radio.id) {
-            radio.id = `radio-${Math.random().toString(36).substr(2, 9)}`;
-          }
-          if (radio.nextElementSibling?.tagName === 'SPAN') {
-            radio.nextElementSibling.setAttribute('for', radio.id);
-          }
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load and apply saved settings
+            const settings = SettingsManager.load();
+            SettingsManager.apply(settings);
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Listen for settings changes from other tabs
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'settingsChanged') {
+                    const settings = SettingsManager.load();
+                    SettingsManager.apply(settings);
+                }
+            });
         });
-      });
-    </script>
 
+        // Apply settings immediately when page loads (for other pages)
+        (function() {
+            const settings = SettingsManager.load();
+            SettingsManager.apply(settings);
+        })();
+    </script>
 </body>
 </html>
