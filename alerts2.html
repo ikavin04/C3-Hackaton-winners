@@ -214,44 +214,37 @@
     Skip to main content
   </a>
 
+  <!-- Header -->
+  <header class="fixed top-0 w-full z-50 glass backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center">
+          <a href="#" class="flex items-center space-x-1 focusable rounded-md" aria-label="Accessible Chennai Home">
+            <div class="w-20 h-20 rounded-full flex items-center justify-center">
+              <img src="ACCESSIBLECHENNAII.png" alt="Accessible Chennai Logo" class="w-16 h-16 object-cover rounded-full">
+            </div>
+            <h1 class="text-2xl font-bold">Accessible<span class="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent"> Chennai</span></h1>
+          </a>
+        </div>
+        <nav>
+          <a href="home.html" class="text-blue-200 hover:text-white mx-3" aria-label="Home">Home</a>
+          <a href="navigate.html" class="text-blue-200 hover:text-white mx-3" aria-label="Navigate">Navigate</a>
+          <a href="alerts.html" class="text-white font-semibold mx-3" aria-label="Alerts">Alerts</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
   <!-- Voice Indicator -->
   <div id="voiceIndicator" class="voice-indicator"></div>
 
-  <!-- Microphone Status -->
-  <div class="mic-status glass-strong p-4 rounded-2xl">
-    <div class="flex items-center space-x-3">
-      <div id="micStatus" class="w-4 h-4 bg-green-400 rounded-full"></div>
-      <span class="text-white text-sm font-medium">Voice Active</span>
-    </div>
-    <div class="audio-wave mt-2" id="audioWave" style="display: none;">
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-      <div class="wave-bar"></div>
-    </div>
-  </div>
-
+  
   <!-- Emergency Button -->
   <button id="emergencyBtn" class="emergency-button focusable" title="Emergency Help - Press or say Emergency" aria-label="Emergency assistance button">
     <i class="fas fa-exclamation-triangle"></i>
   </button>
 
-  <!-- Command Help -->
-  <div class="command-help glass-strong p-4 rounded-2xl">
-    <h3 class="text-white font-bold mb-2 text-sm">Voice Commands:</h3>
-    <ul class="text-blue-200 text-xs space-y-1">
-      <li>"Read alerts" - Hear all alerts</li>
-      <li>"Filter metro" - Metro alerts only</li>
-      <li>"Filter bus" - Bus alerts only</li>
-      <li>"Next alert" - Move to next</li>
-      <li>"Previous alert" - Move to previous</li>
-      <li>"Repeat" - Repeat current</li>
-      <li>"Emergency" - Get help</li>
-      <li>"Stop" - Stop speaking</li>
-      <li>"Help" - List all commands</li>
-    </ul>
-  </div>
+  
 
   <!-- Command Display -->
   <div class="command-display">
@@ -360,7 +353,7 @@
 
       scheduleWelcomeMessage() {
         const startWelcome = () => {
-          this.speak("Welcome to Accessible Chennai Voice Interactive Alerts. This system is designed for blind and visually impaired users. Text-to-speech is active. Click anywhere or press any key to activate voice commands, or use keyboard shortcuts to navigate.");
+          this.speak("Welcome to Accessible Chennai Voice Interactive Alerts.Click anywhere or press any key to activate voice commands, or use keyboard shortcuts to navigate.");
           document.removeEventListener('click', startWelcome);
           document.removeEventListener('keydown', startWelcome);
         };
